@@ -18,8 +18,12 @@ import {
 } from "@/components/ui/form"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { set, useForm } from "react-hook-form"
 import * as z from "zod"
+import { signIn } from 'next-auth/react';
+import { sign } from 'crypto';
+import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
 	email: z.string().email(),
@@ -39,11 +43,45 @@ export default function LoginPage() {
 	})
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values)
-		// TODO
-		// nextauth sign in
+
+		setIsLoading(true)
+
+		signIn('credentials', {
+			...values,
+			redirect: false,
+		}).then((res) => {
+			if (res?.error) {
+				toast.error(res.error)
+			}
+			if (res?.ok && !res?.error) {
+				toast.success('Logged in successfully')
+			}
+		}).catch((err) => {
+			toast.error('Something went wrong')
+		}).finally(() => setIsLoading(false))
+
+
+		// toast.promise(
+		// 	signIn('credentials', {
+		// 		...values,
+		// 		redirect: false,
+		// 	}),
+		// 	{
+		// 		loading: 'Logging in',
+		// 		success: (res) => {
+		// 			if (res?.error) {
+		// 				return res.error
+		// 			}
+		// 			if (res?.ok && !res?.error) {
+		// 				return 'Logged in successfully'
+		// 			}
+		// 			return null
+		// 		},
+		// 		error: (err) => {
+		// 			return 'Something went wrong'
+		// 		}
+		// 	}
+		// ).finally(() => setIsLoading(false))
 	}
 
 	return (
@@ -73,7 +111,7 @@ export default function LoginPage() {
 										</FormItem>
 									)}
 								/>
-								
+
 								<FormField
 									control={form.control}
 									name="password"
@@ -87,9 +125,14 @@ export default function LoginPage() {
 										</FormItem>
 									)}
 								/>
-								
+
 							</div>
-							<Button type="submit" className='w-full'>Login</Button>
+							<Button type="submit" className='w-full' disabled={isLoading}>
+								{isLoading && (
+									<Loader2 className={`mr-2 h-4 w-4 animate-spin`} />
+								)}
+								Login
+							</Button>
 
 							<div className="relative">
 								<div className="absolute inset-0 flex items-center">
@@ -115,7 +158,7 @@ export default function LoginPage() {
 
 						</CardContent>
 						<CardFooter className='flex flex-col gap-4'>
-							
+
 							<div className='text-sm flex gap-1'>
 								<p>Don't have an account yet?</p>
 								<Link href={"/register"} className='hover:underline text-primary font-semibold hover:cursor-pointer'>Create account</Link>

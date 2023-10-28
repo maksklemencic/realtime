@@ -2,11 +2,9 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -17,9 +15,13 @@ import React, { useState } from 'react'
 import { AiOutlineGoogle } from 'react-icons/ai'
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { set, useForm } from "react-hook-form"
 import * as z from "zod"
 import { Loader2 } from 'lucide-react'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
     name: z.string().min(2).max(50),
@@ -30,6 +32,8 @@ const formSchema = z.object({
 
 function RegisterPage() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const { theme } = useTheme()
+    const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -42,13 +46,23 @@ function RegisterPage() {
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values);
-        
-        // TODO
-        // axios post call to register new user
 
+        setIsLoading(true)
+        toast.promise(
+            axios.post('/api/auth/register', values),
+            {
+                loading: 'Creating account',
+                success: (res) => {
+                    setIsLoading(false)
+                    router.push('/login');
+                    return 'Account created successfully'
+                },
+                error: (err) => {
+                    setIsLoading(false)
+                    return 'Account creation failed'
+                }
+            }
+        );
     }
 
     return (
@@ -107,12 +121,19 @@ function RegisterPage() {
                                         <FormItem>
                                             <FormLabel>Password</FormLabel>
                                             <FormControl>
-                                                <Input {...field} type="password"/>
+                                                <Input {...field} type="password" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                             </div>
+                            <Button type="submit" className='w-full' disabled={isLoading}>
+                                {isLoading && (
+                                    <Loader2 className={`mr-2 h-4 w-4 animate-spin`} />
+
+                                )}
+                                Create account
+                            </Button>
 
                             <div className="relative ">
                                 <div className="absolute inset-0 flex items-center">
@@ -139,7 +160,7 @@ function RegisterPage() {
 
                         </CardContent>
                         <CardFooter className='flex flex-col gap-4'>
-                            <Button type="submit" className='w-full'>Create account</Button>
+
                             <div className='text-sm flex gap-1'>
                                 <p>Already have an account?</p>
                                 <Link href={"/login"} className='hover:underline text-primary font-semibold hover:cursor-pointer'>Log in</Link>
