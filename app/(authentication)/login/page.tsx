@@ -2,15 +2,13 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AiOutlineGoogle } from 'react-icons/ai'
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -20,10 +18,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { set, useForm } from "react-hook-form"
 import * as z from "zod"
-import { signIn } from 'next-auth/react';
-import { sign } from 'crypto';
+import { signIn, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+import { sign } from 'crypto';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
 	email: z.string().email(),
@@ -33,6 +32,17 @@ const formSchema = z.object({
 export default function LoginPage() {
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isLoadingGoogle, setIsLoadingGoogle] = useState<boolean>(false);
+
+	const { data: session } = useSession();
+	const router = useRouter()
+
+	useEffect(() => {
+		if (session) {
+			router.push('/')
+		}
+	}, [session])
+
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -60,28 +70,22 @@ export default function LoginPage() {
 			toast.error('Something went wrong')
 		}).finally(() => setIsLoading(false))
 
+	}
 
-		// toast.promise(
-		// 	signIn('credentials', {
-		// 		...values,
-		// 		redirect: false,
-		// 	}),
-		// 	{
-		// 		loading: 'Logging in',
-		// 		success: (res) => {
-		// 			if (res?.error) {
-		// 				return res.error
-		// 			}
-		// 			if (res?.ok && !res?.error) {
-		// 				return 'Logged in successfully'
-		// 			}
-		// 			return null
-		// 		},
-		// 		error: (err) => {
-		// 			return 'Something went wrong'
-		// 		}
-		// 	}
-		// ).finally(() => setIsLoading(false))
+	function SocialActionGoogle() {
+		setIsLoadingGoogle(true)
+
+		signIn('google', {redirect: false}).then((res) => {
+			if (res?.error) {
+				toast.error(res.error)
+			}
+			if (res?.ok && !res?.error) {
+				toast.success('Logged in successfully')
+			}
+		}).catch((err) => {
+			toast.error('Something went wrong')
+		}
+		).finally(() => setIsLoadingGoogle(false))
 	}
 
 	return (
@@ -146,9 +150,9 @@ export default function LoginPage() {
 							</div>
 
 							<div className='space-y-2'>
-								<Button variant="outline" type="button" disabled={isLoading} className='w-full'>
-									{isLoading ? (
-										<AiOutlineGoogle className="mr-2 h-4 w-4 animate-spin" />
+								<Button variant="outline" type="button" disabled={isLoadingGoogle} onClick={() => SocialActionGoogle()} className='w-full'>
+									{isLoadingGoogle ? (
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									) : (
 										<AiOutlineGoogle className="mr-2 h-4 w-4" />
 									)}{" "}

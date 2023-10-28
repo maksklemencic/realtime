@@ -22,6 +22,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 const formSchema = z.object({
     name: z.string().min(2).max(50),
@@ -32,6 +33,7 @@ const formSchema = z.object({
 
 function RegisterPage() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoadingGoogle, setIsLoadingGoogle] = useState<boolean>(false)
     const { theme } = useTheme()
     const router = useRouter()
 
@@ -64,6 +66,23 @@ function RegisterPage() {
             }
         );
     }
+
+    function SocialActionGoogle() {
+		setIsLoadingGoogle(true)
+
+		signIn('google', {redirect: false}).then((res) => {
+			if (res?.error) {
+				toast.error(res.error)
+			}
+			if (res?.ok && !res?.error) {
+				toast.success('Created new account')
+			}
+		}).catch((err) => {
+			toast.error('Something went wrong')
+		}
+		).finally(() => setIsLoadingGoogle(false))
+	}
+
 
     return (
         <div className="flex w-screen h-screen justify-center items-center bg-background">
@@ -130,7 +149,6 @@ function RegisterPage() {
                             <Button type="submit" className='w-full' disabled={isLoading}>
                                 {isLoading && (
                                     <Loader2 className={`mr-2 h-4 w-4 animate-spin`} />
-
                                 )}
                                 Create account
                             </Button>
@@ -148,8 +166,8 @@ function RegisterPage() {
 
 
                             <div className='mb-4 space-y-2'>
-                                <Button variant="outline" type="button" disabled={isLoading} className='w-full'>
-                                    {isLoading ? (
+                                <Button variant="outline" type="button" disabled={isLoadingGoogle} className='w-full' onClick={() => SocialActionGoogle()}>
+                                    {isLoadingGoogle ? (
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     ) : (
                                         <AiOutlineGoogle className="mr-2 h-4 w-4" />
