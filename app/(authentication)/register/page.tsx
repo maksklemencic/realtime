@@ -26,7 +26,6 @@ import { signIn } from 'next-auth/react'
 
 const formSchema = z.object({
     name: z.string().min(2).max(50),
-    surname: z.string().min(2).max(50),
     email: z.string().email(),
     password: z.string().min(8).max(100),
 })
@@ -41,7 +40,6 @@ function RegisterPage() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
-            surname: "",
             email: "",
             password: "",
         },
@@ -61,6 +59,7 @@ function RegisterPage() {
                 },
                 error: (err) => {
                     setIsLoading(false)
+                    console.log(err)
                     return 'Account creation failed'
                 }
             }
@@ -102,19 +101,7 @@ function RegisterPage() {
                                     name="name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Name</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                <FormField
-                                    control={form.control}
-                                    name="surname"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Surname</FormLabel>
+                                            <FormLabel>Fullname</FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
                                             </FormControl>

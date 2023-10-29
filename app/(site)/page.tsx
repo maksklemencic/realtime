@@ -13,7 +13,8 @@ export default function Home() {
       <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>Toggle theme</button>
       {session ? (
         <>
-          <p>Logged in as {session!.user?.email}</p>
+          <p>Logged in as {session!.user?.email} - {session.user?.name}</p>
+          <img src={session.user?.image!} className="h-32 w-32" alt="" />
           <button onClick={() => signOut()}>Logout</button>
         </>
       ) : (
