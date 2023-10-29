@@ -37,10 +37,10 @@ function RegisterPage() {
     const { data: session } = useSession();
 
     useEffect(() => {
-		if (session) {
-			router.push('/home')
-		}
-	}, [session])
+        if (session) {
+            router.push('/home')
+        }
+    }, [session])
 
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -74,27 +74,27 @@ function RegisterPage() {
     }
 
     function SocialActionGoogle() {
-		setIsLoadingGoogle(true)
+        setIsLoadingGoogle(true)
 
-		signIn('google', {redirect: false}).then((res) => {
-			if (res?.error) {
-				toast.error(res.error)
-			}
-			if (res?.ok && !res?.error) {
-				toast.success('Created new account')
-			}
-		}).catch((err) => {
-			toast.error('Something went wrong')
-		}
-		).finally(() => setIsLoadingGoogle(false))
-	}
+        signIn('google', { redirect: false }).then((res) => {
+            if (res?.error) {
+                toast.error(res.error)
+            }
+            if (res?.ok && !res?.error) {
+                toast.success('Created new account')
+            }
+        }).catch((err) => {
+            toast.error('Something went wrong')
+        }
+        ).finally(() => setIsLoadingGoogle(false))
+    }
 
 
     return (
         <div className="flex w-screen h-screen justify-center items-center bg-background">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <Card className='min-w-[400px]'>
+                    <Card className='xs:w-[400px] w-screen border-0 xs:border shadow-none xs:shadow-sm'>
                         <CardHeader>
                             <CardTitle>Register</CardTitle>
                             <CardDescription>
