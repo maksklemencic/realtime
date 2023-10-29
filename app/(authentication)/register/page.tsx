@@ -11,18 +11,18 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineGoogle } from 'react-icons/ai'
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { set, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Loader2 } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
+
 
 const formSchema = z.object({
     name: z.string().min(2).max(50),
@@ -33,8 +33,15 @@ const formSchema = z.object({
 function RegisterPage() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isLoadingGoogle, setIsLoadingGoogle] = useState<boolean>(false)
-    const { theme } = useTheme()
     const router = useRouter()
+    const { data: session } = useSession();
+
+    useEffect(() => {
+		if (session) {
+			router.push('/home')
+		}
+	}, [session])
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

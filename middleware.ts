@@ -21,10 +21,13 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
         return NextResponse.redirect('http://localhost:3000/login');
     }
 
-    // User is authenticated, continue to the requested page
+    if (isAuthenticated && (req.url === '/login' || req.url === '/register')) {
+        return NextResponse.redirect('http://localhost:3000/home');
+    }
+
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/home']
+    matcher: ['/home'],
 }
