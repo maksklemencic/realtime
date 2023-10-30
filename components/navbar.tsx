@@ -15,8 +15,11 @@ function Navbar() {
 
     
     return (
-        <nav className='h-16'>
-            <ul className='flex items-center justify-end gap-4 h-full mx-4'>
+        <nav className='h-16 border-b'>
+            
+            <ul className='flex items-center justify-end gap-4 h-full px-4 bg-accent'>
+                {session?.user?.name}  {session?.user?.email}
+                {/* <img src={session?.user?.image ?? ''} alt="" /> */}
                 <li>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -49,7 +52,7 @@ function Navbar() {
                         <DropdownMenuTrigger asChild>
                             <Avatar className="hover:cursor-pointer h-10 w-10 rounded-lg">
                                 <AvatarImage src={session?.user!.image!} />
-                                <AvatarFallback className=''><User /></AvatarFallback>
+                                <AvatarFallback className='hover:cursor-pointer h-10 w-10 rounded-lg'><User /></AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" align='end'>

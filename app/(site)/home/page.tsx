@@ -14,7 +14,7 @@ export default function HomePage() {
   })
 
   return (
-    <div className={`w-full h-full`}>
+    <div className={`w-full h-full bg-blue-200`}>
           <p>Home page</p>
     </div>
   )

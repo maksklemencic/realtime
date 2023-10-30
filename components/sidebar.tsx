@@ -1,58 +1,71 @@
 "use client"
-import React, { use, useEffect, useState } from 'react'
-import { Contact, Users, Search, Home, MessageCircle } from "lucide-react";
+import React, {useEffect, useState } from 'react'
+import { Contact, Users, Search, Home, MessageCircle, PlusCircle } from "lucide-react";
 import Link from 'next/link';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { usePathname } from 'next/navigation';
 
 export const Sidebar: React.FC = () => {
 
     const pathname = usePathname()
 
+    const iconSize = "h-6 w-6";
     const sidebarItems = [
         {
-            icon: <Home className={`h-8 w-8 ${pathname === '/home' && 'text-primary'}`} />,
+            icon: <Home  />,
             link: "/home",
             tooltip: "Home",
         },
         {
-            icon: <Search className={`h-8 w-8 ${pathname === '/search' && 'text-primary'}`} />,
+            icon: <Search />,
             link: "/search",
             tooltip: "Search",
         },
         {
-            icon: <MessageCircle className={`h-8 w-8 ${pathname === '/messages' && 'text-primary'}`} />,
+            icon: <Users  />,
+            link: "/groups",
+            tooltip: "Groups",
+        },
+        {
+            icon: <MessageCircle  />,
             link: "/messages",
             tooltip: "Messages",
         },
+        // {
+        //     icon: <Contact className={`${iconSize} ${pathname === '/profile' && 'text-primary'}`} />,
+        //     link: "/profile",
+        //     tooltip: "Profile",
+        // },
         {
-            icon: <Users className={`h-8 w-8 ${pathname === '/communities' && 'text-primary'}`} />,
-            link: "/communities",
-            tooltip: "Communities",
+            icon: <PlusCircle  />,
+            link: "/create",
+            tooltip: "Create post",
         },
-        {
-            icon: <Contact className={`h-8 w-8 ${pathname === '/profile' && 'text-primary'}`} />,
-            link: "/profile",
-            tooltip: "Profile",
-        },
+        
     ];
+
+    const addtionalSidebarItems = [
+        {
+            icon: <PlusCircle />,
+            link: "/create",
+            tooltip: "Create post",
+        },
+    ]
 
 
     return (
-        <div className="md:h-full h-16 md:w-16 w-full md:pt-6 pt-2 mb-4 flex md:flex-col flex-row sm:gap-12 xs:gap-10 gap-8 items-center md:justify-start justify-center md:border-r border-t">
+        <div className="bg-accent md:h-full h-16 md:w-20 lg:w-52 w-full md:pt-6 pt-2 pb-4 px-4 flex md:flex-col flex-row sm:gap-12 xs:gap-10 gap-8 items-center md:items-start md:justify-start justify-center md:border-0 border-t">
 
             {sidebarItems.map((item: any) => {
                 return (
-                    <TooltipProvider>
-                        <Tooltip>
+                    <TooltipProvider >
+                        <Tooltip >
                             <TooltipTrigger asChild>
-                                <Link href={item.link} key={item.link}>
-                                    {item.icon}
+                                <Link href={item.link} key={item.link} className="w-full ">
+                                    <div className={`flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
+                                        {item.icon}
+                                        <p className='hidden lg:block'>{item.tooltip}</p>
+                                    </div>
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -63,6 +76,9 @@ export const Sidebar: React.FC = () => {
                 );
             }
             )}
+            <div className="hidden">
+
+            </div>
 
         </div>
     );

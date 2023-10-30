@@ -9,7 +9,7 @@ export default function SiteLayout({
 }: {
     children: React.ReactNode
 }) {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     return (
         <>
             {status === 'authenticated' && (
