@@ -65,8 +65,8 @@ export const Sidebar: React.FC = () => {
                             <TooltipProvider >
                                 <Tooltip >
                                     <TooltipTrigger asChild>
-                                        <Link href={item.link} key={item.link} className="w-full ">
-                                            <div className={`flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
+                                        <Link href={item.link} key={item.link} className="w-full flex justify-center">
+                                            <div className={`flex items-center justify-center lg:justify-start gap-2 w-fit md:w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
                                                 {item.icon}
                                                 <p className='hidden lg:block'>{item.tooltip}</p>
                                             </div>
@@ -77,24 +77,24 @@ export const Sidebar: React.FC = () => {
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
-                            <ScrollArea className={`${item.link == "/groups" ? "hidden md:block overflow-y-auto h-[500px]" : "hidden"} w-full `}>
-                                {testGroups.map((group: any) => {
-                                    return (
-                                        <Link href={`/groups/${group.name}`} key={group.name}>
-                                                <div className="flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold hover:bg-primary hover:text-white rounded-lg" >
-                                                    {/* <img src={group.image} className="h-6 w-6 rounded-full" /> */}
-                                                    <div className="h-6 w-6 rounded-lg bg-blue-200"></div>
-                                                    <p className='hidden lg:block text-xs'>{group.name}</p>
-                                                </div>
-                                        </Link>
-                                    );
-                                }
-                                )}
-                            </ScrollArea>
                         </>
                     );
                 }
                 )}
+                <ScrollArea className={`hidden md:flex h-[calc(100vh-400px)] min-h-[48px] w-full `} >
+                    {testGroups.map((group: any) => {
+                        return (
+                            <Link href={`/groups/${group.name}`} key={group.name}>
+                                <div className="h-12 flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold hover:bg-primary hover:text-white rounded-lg" >
+                                    {/* <img src={group.image} className="h-6 w-6 rounded-full" /> */}
+                                    <div className="h-6 w-6 rounded-lg bg-blue-200"></div>
+                                    <p className='hidden lg:block text-xs'>{group.name}</p>
+                                </div>
+                            </Link>
+                        );
+                    }
+                    )}
+                </ScrollArea>
             </div>
             <div className="hidden md:block">
                 <p className="w-full border-b text-sm p-2 mb-2">New</p>
