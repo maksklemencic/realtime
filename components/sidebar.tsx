@@ -1,9 +1,11 @@
 "use client"
-import React, {useEffect, useState } from 'react'
-import { Contact, Users, Search, Home, MessageCircle, PlusCircle } from "lucide-react";
+import React, { useEffect, useState } from 'react'
+import { Contact, Users, Search, Home, MessageCircle, PlusCircle, Heart, MailPlus, BadgePlus } from "lucide-react";
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { usePathname } from 'next/navigation';
+import { Separator } from '@radix-ui/react-dropdown-menu';
+import { ScrollArea } from './ui/scroll-area';
 
 export const Sidebar: React.FC = () => {
 
@@ -12,85 +14,112 @@ export const Sidebar: React.FC = () => {
     const iconSize = "h-6 w-6";
     const sidebarItems = [
         {
-            icon: <Home  />,
+            icon: <Home />,
             link: "/home",
             tooltip: "Home",
         },
         {
-            icon: <Search />,
-            link: "/search",
-            tooltip: "Search",
+            icon: <MessageCircle />,
+            link: "/chat",
+            tooltip: "Chat",
         },
         {
-            icon: <Users  />,
+            icon: <Users />,
             link: "/groups",
             tooltip: "Groups",
         },
-        {
-            icon: <MessageCircle  />,
-            link: "/messages",
-            tooltip: "Messages",
-        },
-        // {
-        //     icon: <Contact className={`${iconSize} ${pathname === '/profile' && 'text-primary'}`} />,
-        //     link: "/profile",
-        //     tooltip: "Profile",
-        // },
-        {
-            icon: <PlusCircle  />,
-            link: "/create",
-            tooltip: "Create post",
-        },
-        
     ];
 
-    const addtionalSidebarItems = [
+    const testGroups = [
         {
-            icon: <PlusCircle />,
-            link: "/create",
-            tooltip: "Create post",
+            name: "test group 1",
+            image: "https://unsplash.com/photos/a-scuba-diver-swims-over-a-colorful-coral-reef-_tDdlCJIwOA",
         },
-    ]
+        {
+            name: "test group 2",
+            image: "https://unsplash.com/photos/a-red-house-sitting-on-top-of-a-rock-next-to-the-ocean-6w9qArq4DT4",
+        }
+    ];
+
+
+    const actions = [
+        {
+            icon: <MailPlus />,
+            link: "/home?new",
+            tooltip: "Post",
+        },
+        {
+            icon: <BadgePlus />,
+            link: "/groups/new",
+            tooltip: "Group",
+        },
+    ];
 
 
     return (
-        <div className="bg-accent md:h-full h-16 md:w-20 lg:w-52 w-full md:pt-6 pt-2 pb-4 px-4 flex md:flex-col flex-row sm:gap-12 xs:gap-10 gap-8 items-center md:items-start md:justify-start justify-center md:border-0 border-t">
-
-            {sidebarItems.map((item: any) => {
-                return (
-                    <TooltipProvider >
-                        <Tooltip >
-                            <TooltipTrigger asChild>
-                                <Link href={item.link} key={item.link} className="w-full ">
-                                    <div className={`flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
-                                        {item.icon}
-                                        <p className='hidden lg:block'>{item.tooltip}</p>
-                                    </div>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                            <p>{item.tooltip}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                );
-            }
-            )}
-            <div className="hidden">
-
+        <div className="md:h-full h-16 md:w-20 lg:w-52 w-full md:pt-6 pt-2 pb-4 px-4 flex flex-col justify-between md:border-r md:border-t-0 border-t">
+            <div className='flex md:flex-col flex-row sm:gap-12 xs:gap-10 gap-8 md:gap-4 items-center md:items-start md:justify-start justify-center'>
+                {sidebarItems.map((item: any) => {
+                    return (
+                        <>
+                            <TooltipProvider >
+                                <Tooltip >
+                                    <TooltipTrigger asChild>
+                                        <Link href={item.link} key={item.link} className="w-full ">
+                                            <div className={`flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
+                                                {item.icon}
+                                                <p className='hidden lg:block'>{item.tooltip}</p>
+                                            </div>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{item.tooltip}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                            <ScrollArea className={`${item.link == "/groups" ? "hidden md:block overflow-y-auto h-[500px]" : "hidden"} w-full `}>
+                                {testGroups.map((group: any) => {
+                                    return (
+                                        <Link href={`/groups/${group.name}`} key={group.name}>
+                                                <div className="flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold hover:bg-primary hover:text-white rounded-lg" >
+                                                    {/* <img src={group.image} className="h-6 w-6 rounded-full" /> */}
+                                                    <div className="h-6 w-6 rounded-lg bg-blue-200"></div>
+                                                    <p className='hidden lg:block text-xs'>{group.name}</p>
+                                                </div>
+                                        </Link>
+                                    );
+                                }
+                                )}
+                            </ScrollArea>
+                        </>
+                    );
+                }
+                )}
+            </div>
+            <div className="hidden md:block">
+                <p className="w-full border-b text-sm p-2 mb-2">New</p>
+                {actions.map((item: any) => {
+                    return (
+                        <TooltipProvider >
+                            <Tooltip >
+                                <TooltipTrigger asChild>
+                                    <Link href={item.link} key={item.link} className="w-full ">
+                                        <div className={`flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
+                                            {item.icon}
+                                            <p className='hidden lg:block'>{item.tooltip}</p>
+                                        </div>
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{item.tooltip}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    );
+                }
+                )}
             </div>
 
         </div>
     );
 };
-
-// buttons
-/*
- 
-home (posts from all the communities you're in + maybe all the postt from people you follow) + ability to filter to just followers or just communities (all or just some combination)
-search (able to search for communities and people)
-messages (either message people that you follow or message people in communities that you're in or both), individual or group chats
-communities ? (which communities you're in)
-  profile (your profile and the ability to edit it, see your posts, see your comments, see your followers, see who you follow)
-
-*/

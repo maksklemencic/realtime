@@ -1,58 +1,39 @@
 "use client"
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Moon, Sun, Bell, User, Settings, LogOut } from 'lucide-react'
+import { Moon, Sun, Bell, User, Settings, LogOut, LucideUserCog, UserCog, SunMoon, Search } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { signOut, useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { Input } from './ui/input'
 
 function Navbar() {
     const { theme, setTheme } = useTheme()
     const { data: session } = useSession()
 
-    
+
     return (
-        <nav className='h-16 border-b'>
-            
-            <ul className='flex items-center justify-end gap-4 h-full px-4 bg-accent'>
-                {session?.user?.name}  {session?.user?.email}
-                {/* <img src={session?.user?.image ?? ''} alt="" /> */}
-                <li>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon" className=''>
-                                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                                <span className="sr-only">Toggle theme</span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setTheme("light")}>
-                                Light
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                Dark
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setTheme("system")}>
-                                System
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </li>
-                <li>
-                    <Button variant="outline" size="icon" className=''>
-                        <Bell className="h-[1.2rem] w-[1.2rem]" />
-                    </Button>
-                </li>
+        <nav className='h-16 border-b flex justify-between'>
+            <div className=" flex md:hidden items-center px-4">
+                <Link href='/search'>
+                    <Search className="h-[1.5rem] w-[1.5rem]" />
+                </Link>
+            </div>
+            <div className="hidden lg:ml-48 ml-20 md:flex items-center px-4">
+                <Input placeholder="Search" />
+            </div>
+            <ul className='flex items-center justify-end gap-4 h-full px-4'>
+                {/* {session?.user?.name}  {session?.user?.email} */}
                 <li>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Avatar className="hover:cursor-pointer h-10 w-10 rounded-lg">
                                 <AvatarImage src={session?.user!.image!} />
-                                <AvatarFallback className='hover:cursor-pointer h-10 w-10 rounded-lg'><User /></AvatarFallback>
+                                <AvatarFallback className='hover:cursor-pointer h-10 w-10 rounded-lg bg-background border hover:bg-accent'><User /></AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" align='end'>
@@ -60,9 +41,44 @@ function Navbar() {
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                                 <DropdownMenuItem className='hover:cursor-pointer'>
-                                    <Settings className="mr-2 h-4 w-4" />
-                                    <span>Settings</span>
+                                    <User className="mr-2 h-4 w-4" />
+                                    <span>Profile</span>
                                 </DropdownMenuItem>
+                                <DropdownMenuItem className='hover:cursor-pointer'>
+                                    <UserCog className="mr-2 h-4 w-4" />
+                                    <span>Edit profile</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup >
+                                <DropdownMenuItem disabled>
+                                    {theme === "light" && <Sun className="mr-2 h-4 w-4" />}
+                                    {theme === "dark" && <Moon className="mr-2 h-4 w-4" />}
+                                    {theme === "system" && <SunMoon className="mr-2 h-4 w-4" />}
+                                    <span >Appearance</span>
+                                    
+                                </DropdownMenuItem>
+                                <DropdownMenuCheckboxItem
+                                    checked={theme === "system"}
+                                    onCheckedChange={() => setTheme("system")}
+                                    className='hover:cursor-pointer'
+                                >
+                                    System
+                                </DropdownMenuCheckboxItem>
+                                <DropdownMenuCheckboxItem
+                                    checked={theme === "light"}
+                                    onCheckedChange={() => setTheme("light")}
+                                    className='hover:cursor-pointer'
+                                >
+                                    Light
+                                </DropdownMenuCheckboxItem>
+                                <DropdownMenuCheckboxItem
+                                    checked={theme === "dark"}
+                                    onCheckedChange={() => setTheme("dark")}
+                                    className='hover:cursor-pointer'
+                                >
+                                    Dark
+                                </DropdownMenuCheckboxItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => signOut()} className='text-destructive font-semibold hover:cursor-pointer'>

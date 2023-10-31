@@ -14,8 +14,9 @@ export default function HomePage() {
   })
 
   return (
-    <div className={`w-full h-full bg-blue-200`}>
+    <div className={`w-full h-full `}>
           <p>Home page</p>
+          <p className=" flex sm:hidden">sm:</p>
     </div>
   )
 }
