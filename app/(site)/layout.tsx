@@ -15,21 +15,21 @@ export default function SiteLayout({
     return (
         <>
             {status === 'authenticated' && (
-                <div className="w-screen h-screen bg-background flex flex-col">
-                    <div className="w-full h-16">
+                <div className="w-screen h-screen bg-background flex flex-col ">
+                    <div className="w-full">
                         <Navbar />
                     </div>
-                    <div className="flex flex-col-reverse md:flex-row w-full  overflow-hidden">
+                    <div className="flex flex-col-reverse md:flex-row w-full h-[calc(100%-64px)]">
 
                         <Sidebar />
 
-                        <div className="w-full h-full flex flex-col bg-gray-50 dark:bg-background ">
+                        <div className="w-full md:h-full h-[calc(100%-64px)] flex flex-col dark:bg-background bg-blue-50">
                             <div className="h-14">
                                 <BreadCrumb />
                             </div>
                             
-                            <div className='w-full h-full grid grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 '>
-                                <ScrollArea className='col-span-4 lg:col-span-4 xl:col-span-6 bg-violet-200 h-[calc(100%-56px)]'>
+                            <div className='w-full h-[calc(100%-56px)] grid grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 '>
+                                <ScrollArea className='col-span-4 lg:col-span-4 xl:col-span-6 h-[calc(100%)]'>
                                     {children}
                                 </ScrollArea>
                                 <div className="hidden lg:block col-span-1" />
