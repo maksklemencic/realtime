@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { usePathname } from 'next/navigation';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { ScrollArea } from './ui/scroll-area';
+import { useSession } from 'next-auth/react';
 
 export const Sidebar: React.FC = () => {
 

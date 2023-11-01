@@ -17,7 +17,7 @@ function Navbar() {
 
     return (
         <nav className='h-16 border-b flex justify-between'>
-            
+
             <div className=" flex md:hidden items-center px-4">
                 <Link href='/search'>
                     <Search className="h-[1.5rem] w-[1.5rem]" />
@@ -40,14 +40,18 @@ function Navbar() {
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <DropdownMenuItem className='hover:cursor-pointer'>
-                                    <User className="mr-2 h-4 w-4" />
-                                    <span>Profile</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className='hover:cursor-pointer'>
-                                    <UserCog className="mr-2 h-4 w-4" />
-                                    <span>Edit profile</span>
-                                </DropdownMenuItem>
+                                <Link href={"/users/" + session?.user.id}>
+                                    <DropdownMenuItem className='hover:cursor-pointer'>
+                                        <User className="mr-2 h-4 w-4" />
+                                        <span>Profile</span>
+                                    </DropdownMenuItem>
+                                </Link>
+                                <Link href={"/users/" + session?.user.id + "/edit"}>
+                                    <DropdownMenuItem className='hover:cursor-pointer'>
+                                        <UserCog className="mr-2 h-4 w-4" />
+                                        <span>Edit profile</span>
+                                    </DropdownMenuItem>
+                                </Link>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup >
@@ -56,7 +60,7 @@ function Navbar() {
                                     {theme === "dark" && <Moon className="mr-2 h-4 w-4" />}
                                     {theme === "system" && <SunMoon className="mr-2 h-4 w-4" />}
                                     <span >Appearance</span>
-                                    
+
                                 </DropdownMenuItem>
                                 <DropdownMenuCheckboxItem
                                     checked={theme === "system"}

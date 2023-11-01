@@ -1,4 +1,5 @@
 "use client"
+import BreadCrumb from "@/components/breadcrumb";
 import Navbar from "@/components/navbar"
 import { Sidebar } from "@/components/sidebar";
 import { Loader2 } from "lucide-react";
@@ -19,8 +20,14 @@ export default function SiteLayout({
                     </div>
                     <div className="flex flex-col-reverse md:flex-row h-full w-full">
                         <Sidebar />
-                        <div className="w-full h-full bg-gray-50 dark:bg-background">
-                            {children}
+                        <div className="w-full h-full flex flex-col bg-gray-50 dark:bg-background">
+                            <BreadCrumb />
+                            <div className='w-full h-full grid grid-cols-4 lg:grid-cols-5 xl:grid-cols-7'>
+                                <div className='col-span-4 lg:col-span-4 xl:col-span-5 h-full'>
+                                    {children}
+                                </div>
+                                <div className="hidden lg:block col-span-2 "/>
+                            </div>
                         </div>
                     </div>
                 </div>
