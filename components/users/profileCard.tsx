@@ -37,12 +37,12 @@ function ProfileCard(props: ProfileCardProps) {
     }, [])
 
     return (
-        <Card className='mx-6 md:mx-12 xl:mx-24 2xl:mx-48 w-full h-80 '>
+        <Card className='mx-6 md:mx-12 xl:mx-24 2xl:mx-48 h-80 '>
             <CardContent className='px-0 '>
                 {/* <p>{props.userId}</p> */}
                 <AspectRatio ratio={5 / 1}>
                     <Image
-                        src="https://images.unsplash.com/photo-1533282960533-51328aa49826?auto=format&fit=crop&q=80&w=2142&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        src="https://images.unsplash.com/photo-1578070181910-f1e514afdd08?auto=format&fit=crop&q=80&w=2133&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         alt="Photo by Drew Beamer"
                         className="rounded-t-md object-cover"
                         fill

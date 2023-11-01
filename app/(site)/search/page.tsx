@@ -13,7 +13,7 @@ async function SearchPage() {
     }
 
     return (
-        <div>SearchPage</div>
+        <div className='w-full h-full'>SearchPage</div>
     )
 }
 
