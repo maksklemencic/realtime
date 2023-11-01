@@ -19,7 +19,7 @@ export default function SiteLayout({
                     </div>
                     <div className="flex flex-col-reverse md:flex-row h-full w-full">
                         <Sidebar />
-                        <div className="w-full h-full">
+                        <div className="w-full h-full bg-gray-50 dark:bg-background">
                             {children}
                         </div>
                     </div>

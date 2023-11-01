@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -15,9 +15,9 @@ function Navbar() {
     const { theme, setTheme } = useTheme()
     const { data: session } = useSession()
 
-
     return (
         <nav className='h-16 border-b flex justify-between'>
+            
             <div className=" flex md:hidden items-center px-4">
                 <Link href='/search'>
                     <Search className="h-[1.5rem] w-[1.5rem]" />

@@ -57,7 +57,7 @@ export const Sidebar: React.FC = () => {
 
 
     return (
-        <div className="md:h-full h-16 md:w-20 lg:w-52 w-full md:pt-6 pt-2 pb-4 px-4 flex flex-col justify-between md:border-r md:border-t-0 border-t">
+        <div className="md:h-full h-16 md:w-20 lg:w-52 w-full md:pt-6 pt-2 pb-4 px-4 flex flex-col justify-between md:shadow-lg md:border-t-0 border-t">
             <div className='flex md:flex-col flex-row sm:gap-12 xs:gap-10 gap-8 md:gap-4 items-center md:items-start md:justify-start justify-center'>
                 {sidebarItems.map((item: any) => {
                     return (
