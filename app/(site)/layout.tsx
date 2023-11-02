@@ -23,7 +23,7 @@ export default function SiteLayout({
 
                         <Sidebar />
 
-                        <div className="w-full md:h-full h-[calc(100%-64px)] flex flex-col dark:bg-background bg-blue-50">
+                        <div className="w-full md:h-full h-[calc(100%-64px)] flex flex-col dark:bg-background bg-gray-50">
                             <div className="h-14">
                                 <BreadCrumb />
                             </div>

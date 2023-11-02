@@ -12,8 +12,8 @@ datasource db {
 
 model User {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
-  name            String?
-  email           String?   @unique
+  name            String
+  email           String   @unique
   emailVerified   DateTime?
   bio             String?
   image           String?
@@ -29,6 +29,18 @@ model User {
 
   accounts Account[]
   messages Message[]
+
+  // User can have many posts
+  posts           Post[]
+
+  // User can have many comments
+  comments        Comment[]
+
+  // User can have many followers
+  followers       Follower[] @relation("FollowersFollower")
+  following       Follower[] @relation("FollowersFollowing")
+
+  likes           Like[]
 }
 
 model Account {
@@ -62,6 +74,7 @@ model Conversation {
 
   userIds String[] @db.ObjectId
   users User[] @relation(fields: [userIds], references: [id])
+  
 }
 
 model Message {
@@ -78,4 +91,54 @@ model Message {
   
   senderId String @db.ObjectId
   sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  content         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Post belongs to a user
+  author          User @relation(fields: [authorId], references: [id])
+  authorId        String @db.ObjectId
+
+  // Post can have many comments
+  comments        Comment[]
+  likes           Like[]
+}
+
+model Comment {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  text            String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Comment belongs to a user
+  author          User @relation(fields: [authorId], references: [id])
+  authorId        String @db.ObjectId
+
+  // Comment belongs to a post
+  post            Post @relation(fields: [postId], references: [id])
+  postId           String @db.ObjectId
+
+  // ... other fields
+}
+
+model Follower {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  follower        User @relation("FollowersFollower", fields: [followerId], references: [id])
+  followerId      String @db.ObjectId
+  following       User @relation("FollowersFollowing", fields: [followingId], references: [id])
+  followingId     String @db.ObjectId
+
+  @@unique([followerId, followingId])
+}
+
+model Like {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  user          User   @relation(fields: [userId], references: [id])
+  userId        String @db.ObjectId
+  likedPost     Post   @relation(fields: [likedPostId], references: [id])
+  likedPostId   String @db.ObjectId
 }
