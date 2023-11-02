@@ -11,6 +11,8 @@ import { Edit, User } from 'lucide-react'
 import { Button } from '../ui/button'
 import { ScrollArea } from '../ui/scroll-area'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 
 type ProfileCardProps = {
@@ -22,6 +24,9 @@ function ProfileCard(props: ProfileCardProps) {
     const { data: session } = useSession();
     const [displayUser, setDisplayUser] = React.useState<any>(null);
     const isMyUser = props.userId === session?.user?.id;
+
+    const router = useRouter();
+
 
     useEffect(() => {
         // fetch user data
@@ -86,21 +91,46 @@ function ProfileCard(props: ProfileCardProps) {
                     <div className=' px-6'>
                         <p className='text-sm text-gray-500'>{displayUser?.email}</p>
                     </div>
-                    {displayUser?.bio && (
+                    {/* {displayUser?.bio && (
                         <Card className='mx-6 my-2 bg-gray-50 dark:bg-muted overflow-auto'>
                             <CardContent className='py-2 max-h-32 '>
                                 <p className='font-semibold'>Bio</p>
                                 <p className='text-sm '>{displayUser?.bio} </p>
                             </CardContent>
                         </Card >
-                    )}
+                    )} */}
                 </CardContent>
             </Card >
-            <Tabs className='mt-4'>
-                <TabsList defaultValue={"posts"} className="grid w-full grid-cols-3">
-                    <TabsTrigger value="posts">Posts</TabsTrigger>
-                    <TabsTrigger value="liked">Liked</TabsTrigger>
-                    <TabsTrigger value="comments">Comments</TabsTrigger>
+            <Tabs className='mt-4' defaultValue='posts'>
+                <TabsList  className="grid w-full grid-cols-3">
+                    <Link
+                        href={{
+                            pathname: `/users/${props.userId}`,
+                            query: { show: 'posts' }
+                        }}
+                        className=' w-full flex justify-center'
+                    >
+                        <TabsTrigger value="posts" className='w-full'>Posts</TabsTrigger>
+                    </Link>
+                    <Link
+                        href={{
+                            pathname: `/users/${props.userId}`,
+                            query: { show: 'liked' }
+                        }}
+                        className=' w-full flex justify-center'
+                    >
+                        <TabsTrigger value="liked" className='w-full'>Liked</TabsTrigger>
+                    </Link>
+                    <Link
+                        href={{
+                            pathname: `/users/${props.userId}`,
+                            query: { show: 'comments' }
+                        }}
+                        className=' w-full flex justify-center'
+                    >
+                        <TabsTrigger value="comments" className='w-full'>Comments</TabsTrigger>
+                    </Link>
+
                 </TabsList>
             </Tabs>
 

@@ -3,6 +3,7 @@ import React from 'react'
 import ProfileCard from '@/components/users/profileCard'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
+import PostFeed from '@/components/posts/postFeed'
 
 export default function UsersUserIdPage({ params }: { params: { userId: string } }) {
 
@@ -14,8 +15,9 @@ export default function UsersUserIdPage({ params }: { params: { userId: string }
       })
 
     return (
-        <div className=' space-y-4'>
+        <div className=' space-y-4 mb-4'>
             <ProfileCard userId={params.userId} />
+            <PostFeed />
         </div >
     )
 }

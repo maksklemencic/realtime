@@ -40,7 +40,7 @@ function Navbar() {
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <Link href={"/users/" + session?.user.id}>
+                                <Link href={"/users/" + session?.user.id + '?show=posts'}>
                                     <DropdownMenuItem className='hover:cursor-pointer'>
                                         <User className="mr-2 h-4 w-4" />
                                         <span>Profile</span>

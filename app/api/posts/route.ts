@@ -51,6 +51,11 @@ export async function GET(request: NextRequest) {
                     equals: id ?? undefined,
                 },
             },
+            orderBy: [
+                {
+                    createdAt: 'asc',
+                },
+            ],
         });
 
         return new NextResponse(JSON.stringify(posts), {
