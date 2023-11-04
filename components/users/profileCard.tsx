@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react'
 import { AspectRatio } from '@radix-ui/react-aspect-ratio'
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Edit, User } from 'lucide-react'
+import { Edit, User, UserPlus } from 'lucide-react'
 import { Button } from '../ui/button'
 import { ScrollArea } from '../ui/scroll-area'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
@@ -70,8 +70,21 @@ function ProfileCard(props: ProfileCardProps) {
                                 <AvatarFallback className=' h-16 w-16 rounded-lg bg-background border'><User /></AvatarFallback>
                             </Avatar>
                         </div>
+                        <div className="absolute right-6 -bottom-4">
+                            {isMyUser ? (
+                                <Button className='h-8'>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit profile
+                                </Button>
+                            ) : (
+                                <Button className='h-8'>
+                                    <UserPlus className="mr-2 h-4 w-4" />
+                                    Follow
+                                </Button>
+                            )}
+                        </div>
                     </div>
-                    <div className="flex justify-end items-center gap-2 px-6 py-2">
+                    {/* <div className="flex justify-end items-center gap-2 px-6 py-2">
                         {isMyUser ? (
                             <Button className='h-8'>
                                 <Edit className="mr-2 h-4 w-4" />
@@ -83,9 +96,9 @@ function ProfileCard(props: ProfileCardProps) {
                             </div>
                         )}
 
-                    </div>
+                    </div> */}
 
-                    <div className=' px-6'>
+                    <div className='mt-10 px-6'>
                         <p className='font-semibold text-lg'>{displayUser?.name}</p>
                     </div>
                     <div className=' px-6'>
@@ -99,10 +112,26 @@ function ProfileCard(props: ProfileCardProps) {
                             </CardContent>
                         </Card >
                     )} */}
+                    {/* Show the amount of followers and following */}
+                    <div className=' mx-8 py-2 mt-4 flex justify-evenly'>
+                        <div className='flex flex-col items-center'>
+                            <p className='font-semibold'>0</p>
+                            <p className='text-sm text-gray-500'>Followers</p>
+                        </div>
+                        <div className='flex flex-col items-center'>
+                            <p className='font-semibold'>0</p>
+                            <p className='text-sm text-gray-500'>Following</p>
+                        </div>
+                        <div className='flex flex-col items-center'>
+                            <p className='font-semibold'>0</p>
+                            <p className='text-sm text-gray-500'>Posts</p>
+                        </div>
+                    </div>
+
                 </CardContent>
             </Card >
             <Tabs className='mt-4' defaultValue='posts'>
-                <TabsList  className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-3">
                     <Link
                         href={{
                             pathname: `/users/${props.userId}`,
