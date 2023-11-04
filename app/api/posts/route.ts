@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
 
         if (!body.content || !body.author) {
-            return new NextResponse('Bad Request: Content and Author are required', { status: 400 });
+            return new NextResponse('Content and Author are required', { status: 400 });
         }
 
         // Create a new post using Prisma
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
             },
             orderBy: [
                 {
-                    createdAt: 'asc',
+                    createdAt: 'desc',
                 },
             ],
         });

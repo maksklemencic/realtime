@@ -46,13 +46,13 @@ export const Sidebar: React.FC = () => {
     const actions = [
         {
             icon: <MailPlus />,
-            link: "/home?new",
-            tooltip: "Post",
+            link: "/home/new",
+            tooltip: "New Post",
         },
         {
             icon: <BadgePlus />,
             link: "/groups/new",
-            tooltip: "Group",
+            tooltip: "New Group",
         },
     ];
 
@@ -80,8 +80,31 @@ export const Sidebar: React.FC = () => {
                             </TooltipProvider>
                         </>
                     );
-                }
-                )}
+                })}
+                <div className="flex md:hidden w-full">
+                    {actions
+                        .filter((item: any) => item.tooltip === 'New Post')
+                        .map((item: any) => {
+                            return (
+                                <TooltipProvider >
+                                    <Tooltip >
+                                        <TooltipTrigger asChild>
+                                            <Link href={item.link} key={item.link} className="w-full flex justify-center">
+                                                <div className={`flex items-center justify-center lg:justify-start gap-2 w-fit md:w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
+                                                    {item.icon}
+                                                    <p className='hidden lg:block'>{item.tooltip}</p>
+                                                </div>
+                                            </Link>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>{item.tooltip}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            );
+                        })}
+                </div>
+
                 <ScrollArea className={`hidden md:flex h-[calc(100vh-400px)] min-h-[48px] w-full `} >
                     {testGroups.map((group: any) => {
                         return (
@@ -104,7 +127,7 @@ export const Sidebar: React.FC = () => {
                         <TooltipProvider >
                             <Tooltip >
                                 <TooltipTrigger asChild>
-                                    <Link href={item.link} key={item.link} className="w-full ">
+                                    <Link href={item.link} key={item.link} className="w-full">
                                         <div className={`flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold ${pathname === item.link && 'rounded-lg bg-primary text-white'}`} >
                                             {item.icon}
                                             <p className='hidden lg:block'>{item.tooltip}</p>

@@ -6,11 +6,12 @@ import { redirect } from 'next/dist/client/components/navigation'
 import React from 'react'
 
 async function SearchPage() {
-    const session = await getServerSession(authOptions)
-
-    if (!session) {
-        redirect('/login')
-    }
+    const { data: session, status } = useSession({
+        required: true,
+        onUnauthenticated() {
+          redirect('/login')
+        }
+      })
 
     return (
         <div className='w-full h-full'>SearchPage</div>

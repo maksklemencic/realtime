@@ -15,8 +15,8 @@ export default function HomePage() {
 
   return (
     <div className={`w-full h-full `}>
-          <p>Home page</p>
-          <p className=" flex sm:hidden">sm:</p>
+      <p>Home page</p>
+      
     </div>
   )
 }
