@@ -44,14 +44,23 @@ function BreadCrumb() {
 
         if (tokens[0] === 'users' && tokens.length === 2) {
             newTokens = [
-                { name: 'Users', link: '/users' },
-                { name: "Profile", link: '/users/' + tokens[1] }
+                { name: "My profile", link: '/users/' + tokens[1] }
             ]
         }
         else if (tokens[0] === 'home' && tokens.length === 2) {
             newTokens = [
                 { name: 'Home', link: '/home' },
                 { name: "New post", link: '/home/new' }
+            ]
+        }
+        else if (tokens[0] === 'home' && tokens.length === 1) {
+            newTokens = [
+                { name: 'Home', link: '/home' },
+            ]
+        }
+        else if (tokens[0] === 'search' && tokens.length === 1) {
+            newTokens = [
+                { name: 'Search', link: '/search' },
             ]
         }
 

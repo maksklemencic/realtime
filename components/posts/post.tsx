@@ -3,6 +3,7 @@ import React from 'react'
 import { Card, CardContent } from '../ui/card'
 import { useSession } from 'next-auth/react'
 import { Heart, MessageSquare } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
 
 type PostProps = {
     key: string,
@@ -43,18 +44,21 @@ export default function Post(props: PostProps) {
                             </div>
                         </div>
                     </div>
-                    <div className='text-gray-400 text-sm'>{formatDateAndTime(props.post.createdAt)}</div>
+
                 </div>
-                <div className='flex w-full justify-center mt-2'>
+                <Separator className='my-2 mt-4' />
+                <div className='flex w-full justify-center'>
                     <div className='flex justify-evenly gap-4 w-4/5'>
-                        <div className='flex gap-2 items-center '>
-                            <div className='text-gray-400 text-sm'>4</div>
-                            <Heart className='h-4 w-4' />
-                        </div>
+                        <div className='text-gray-400 text-sm'>{formatDateAndTime(props.post.createdAt)}</div>
                         <div className='flex gap-2 items-center '>
                             <div className='text-gray-400 text-sm'>12</div>
                             <MessageSquare className='h-4 w-4' />
                         </div>
+                        <div className='flex gap-2 items-center '>
+                            <div className='text-gray-400 text-sm'>4</div>
+                            <Heart className='h-4 w-4' />
+                        </div>
+
                     </div>
                 </div>
 

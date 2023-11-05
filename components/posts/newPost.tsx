@@ -114,7 +114,7 @@ export default function NewPost() {
                 <div className='flex justify-between p-2'>
                     <div className='flex gap-2 h-8'>
                         {specialButtons.map((button, index) => (
-                            <button key={index} className={`${button.color} rounded-md px-2 py-1`}>
+                            <button key={index} className={`${button.color} rounded-md px-2 py-1 text-white`}>
                                 {button.icon}
                             </button>
                         ))}
