@@ -44,7 +44,7 @@ function BreadCrumb() {
 
         if (tokens[0] === 'users' && tokens.length === 2) {
             newTokens = [
-                { name: "My profile", link: '/users/' + tokens[1] }
+                { name: "Profile", link: '/users/' + tokens[1] }
             ]
         }
         else if (tokens[0] === 'home' && tokens.length === 2) {

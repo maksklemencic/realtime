@@ -130,38 +130,43 @@ function ProfileCard(props: ProfileCardProps) {
 
                 </CardContent>
             </Card >
-            <Tabs className='mt-4' defaultValue='posts'>
-                <TabsList className="grid w-full grid-cols-3">
-                    <Link
-                        href={{
-                            pathname: `/users/${props.userId}`,
-                            query: { show: 'posts' }
-                        }}
-                        className=' w-full flex justify-center'
-                    >
-                        <TabsTrigger value="posts" className='w-full'>Posts</TabsTrigger>
-                    </Link>
-                    <Link
-                        href={{
-                            pathname: `/users/${props.userId}`,
-                            query: { show: 'liked' }
-                        }}
-                        className=' w-full flex justify-center'
-                    >
-                        <TabsTrigger value="liked" className='w-full'>Liked</TabsTrigger>
-                    </Link>
-                    <Link
-                        href={{
-                            pathname: `/users/${props.userId}`,
-                            query: { show: 'comments' }
-                        }}
-                        className=' w-full flex justify-center'
-                    >
-                        <TabsTrigger value="comments" className='w-full'>Comments</TabsTrigger>
-                    </Link>
+            <Card className='mt-4'>
+                <CardContent className='p-0'>
+                    <Tabs className='' defaultValue='posts'>
+                        <TabsList className="grid w-full grid-cols-3">
+                            <Link
+                                href={{
+                                    pathname: `/users/${props.userId}`,
+                                    query: { show: 'posts' }
+                                }}
+                                className=' w-full flex justify-center'
+                            >
+                                <TabsTrigger value="posts" className='w-full'>Posts</TabsTrigger>
+                            </Link>
+                            <Link
+                                href={{
+                                    pathname: `/users/${props.userId}`,
+                                    query: { show: 'liked' }
+                                }}
+                                className=' w-full flex justify-center'
+                            >
+                                <TabsTrigger value="liked" className='w-full'>Liked</TabsTrigger>
+                            </Link>
+                            <Link
+                                href={{
+                                    pathname: `/users/${props.userId}`,
+                                    query: { show: 'comments' }
+                                }}
+                                className=' w-full flex justify-center'
+                            >
+                                <TabsTrigger value="comments" className='w-full'>Comments</TabsTrigger>
+                            </Link>
 
-                </TabsList>
-            </Tabs>
+                        </TabsList>
+                    </Tabs>
+                </CardContent>
+            </Card>
+
 
         </div>
 

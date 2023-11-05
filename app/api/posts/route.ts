@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
                 content: body.content,
                 author: { connect: { id: body.author } }, // Assuming 'author' is the ID of the user
             },
+            
         });
 
         return new NextResponse(JSON.stringify(newPost), { status: 201, headers: { 'Content-Type': 'application/json' } });
@@ -56,6 +57,15 @@ export async function GET(request: NextRequest) {
                     createdAt: 'desc',
                 },
             ],
+            include: {
+                author: {
+                    select: {
+                        name: true,
+                        image: true,
+                        email: true,
+                    },
+                },
+            },
         });
 
         return new NextResponse(JSON.stringify(posts), {
