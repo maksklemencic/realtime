@@ -1,7 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { useSearchParams } from 'next/navigation'
-
 
 const prisma = new PrismaClient();
 

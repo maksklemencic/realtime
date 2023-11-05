@@ -7,12 +7,14 @@ import { useSession } from 'next-auth/react'
 import { AspectRatio } from '@radix-ui/react-aspect-ratio'
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Edit, User, UserPlus } from 'lucide-react'
+import { Edit, User, UserMinus, UserPlus } from 'lucide-react'
 import { Button } from '../ui/button'
 import { ScrollArea } from '../ui/scroll-area'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import { get } from 'http'
 
 
 type ProfileCardProps = {
@@ -24,6 +26,9 @@ function ProfileCard(props: ProfileCardProps) {
     const { data: session } = useSession();
     const [displayUser, setDisplayUser] = React.useState<any>(null);
     const isMyUser = props.userId === session?.user?.id;
+
+    const [followers, setFollowers] = React.useState<any[]>([]);
+    const [following, setFollowing] = React.useState<any[]>([]);
 
     const router = useRouter();
 
@@ -43,7 +48,97 @@ function ProfileCard(props: ProfileCardProps) {
             .catch((error) => {
                 console.error('Error fetching user data:', error);
             });
+
+        getUserFollowers();
+        getUserFollowing();
     }, [])
+
+    function getUserFollowers() {
+        fetch(`/api/users/${props.userId}/followers`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                setFollowers(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching user data:', error);
+            });
+    }
+
+    function getUserFollowing() {
+        fetch(`/api/users/${props.userId}/following`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                setFollowing(data);
+
+            })
+            .catch((error) => {
+                console.error('Error fetching user data:', error);
+            });
+    }
+
+    function handleFollow() {
+        if (isMyUser) {
+            toast.error("You can't follow yourself");
+            return;
+        }
+        fetch(`/api/follow`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                followerId: session?.user?.id,
+                followingId: props.userId
+            }),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                setFollowers((followers) => [...followers, data]);
+            })
+            .catch((error) => {
+                console.error('Error following user:', error);
+            });
+    }
+
+    function handleUnfollow() {
+        if (isMyUser) {
+            toast.error("Not allowed");
+            return;
+        }
+        fetch(`/api/follow?followerId=${session?.user?.id}&followingId=${props.userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                setFollowers((followers) => followers.filter((item) => item.followerId !== session?.user?.id));
+            })
+            .catch((error) => {
+                console.error('Error following user:', error);
+            });
+    }
 
     function formatDate(date: string) {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
@@ -77,27 +172,22 @@ function ProfileCard(props: ProfileCardProps) {
                                     Edit profile
                                 </Button>
                             ) : (
-                                <Button className='h-8'>
-                                    <UserPlus className="mr-2 h-4 w-4" />
-                                    Follow
-                                </Button>
+                                <>
+                                    {followers.find((item) => item.followerId === session?.user?.id) ? (
+                                        <Button className='h-8' onClick={() => handleUnfollow()}>
+                                            <UserMinus className="mr-2 h-4 w-4" />
+                                            Unfollow
+                                        </Button>
+                                    ) : (
+                                        <Button className='h-8' onClick={() => handleFollow()}>
+                                            <UserPlus className="mr-2 h-4 w-4" />
+                                            Follow
+                                        </Button>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
-                    {/* <div className="flex justify-end items-center gap-2 px-6 py-2">
-                        {isMyUser ? (
-                            <Button className='h-8'>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Edit profile
-                            </Button>
-                        ) : (
-                            <div>
-                                Joined on {formatDate(displayUser?.createdAt)}
-                            </div>
-                        )}
-
-                    </div> */}
-
                     <div className='mt-10 px-6'>
                         <p className='font-semibold text-lg'>{displayUser?.name}</p>
                     </div>
@@ -113,18 +203,14 @@ function ProfileCard(props: ProfileCardProps) {
                         </Card >
                     )} */}
                     {/* Show the amount of followers and following */}
-                    <div className=' mx-8 py-2 mt-4 flex justify-evenly'>
+                    <div className='mx-0 md:mx-8 py-2 mt-4 flex justify-evenly'>
                         <div className='flex flex-col items-center'>
-                            <p className='font-semibold'>0</p>
-                            <p className='text-sm text-gray-500'>Followers</p>
+                            <p className='font-bold'>{followers.length}</p>
+                            <p className='text-sm font-semibold text-primary'>Followers</p>
                         </div>
                         <div className='flex flex-col items-center'>
-                            <p className='font-semibold'>0</p>
-                            <p className='text-sm text-gray-500'>Following</p>
-                        </div>
-                        <div className='flex flex-col items-center'>
-                            <p className='font-semibold'>0</p>
-                            <p className='text-sm text-gray-500'>Posts</p>
+                            <p className='font-bold'>{following.length}</p>
+                            <p className='text-sm font-semibold text-primary'>Following</p>
                         </div>
                     </div>
 

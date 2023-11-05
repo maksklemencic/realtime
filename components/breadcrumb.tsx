@@ -39,7 +39,7 @@ function BreadCrumb() {
     function getBreadcrumbs() {
         const path = pathname.split('/')
         const tokens = path.filter((item) => item != '')
-        console.log(tokens)
+        // console.log(tokens)
         let newTokens: BreadCrumbItem[] = []
 
         if (tokens[0] === 'users' && tokens.length === 2) {
