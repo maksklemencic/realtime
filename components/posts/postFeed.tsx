@@ -2,6 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import Post from './post';
 import { useSearchParams } from 'next/navigation'
+import { useSession } from 'next-auth/react';
+import { set } from 'react-hook-form';
+import SkeletonPost from './skeletonPost';
+import { Loader2 } from 'lucide-react';
 
 interface PostFeedProps {
     showUserId: string
@@ -14,7 +18,13 @@ export default function PostFeed(props: PostFeedProps) {
     const searchParams = useSearchParams()
     const search = searchParams.get('show')
 
+    const { data: session } = useSession()
+
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
+
+        setLoading(true);
         const apiUrl = '/api/posts';
 
         let params = "";
@@ -34,21 +44,29 @@ export default function PostFeed(props: PostFeedProps) {
             })
             .then((data) => {
                 setPosts(data);
+                setLoading(false);
 
             })
             .catch((error) => {
                 console.error('Error fetching posts:', error);
             });
-
-
     }, [search]);
 
 
     return (
         <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4'>
-            {posts.map((post: any) => (
-                <Post key={post.id} post={post}/>
+            {!loading && posts.map((post: any) => (
+                <Post key={post.id} post={post} />
             ))}
+            {loading && (
+                // <div className='space-y-4'>
+                //     <SkeletonPost />
+                //     <SkeletonPost />
+                // </div>
+                <div className='w-full flex justify-center mt-16'>
+                    <Loader2 className='h-8 w-8 animate-spin text-primary' />
+                </div>
+            )}
         </div>
 
     )

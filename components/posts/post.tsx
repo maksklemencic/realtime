@@ -6,6 +6,8 @@ import { Heart, MessageSquare, User } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Link from 'next/link'
+import { Skeleton } from '../ui/skeleton'
+import SkeletonPost from './skeletonPost'
 
 type PostProps = {
     key: string,
@@ -32,7 +34,7 @@ export default function Post(props: PostProps) {
     useEffect(() => {
 
         // fetch likes
-        fetch(`/api/like?postId=${props.post.id}`)
+        fetch(`/api/like?postId=${props.post?.id}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -49,7 +51,7 @@ export default function Post(props: PostProps) {
 
     function handleLike() {
 
-        if (!likes.find((item: any) => (item.userId === session?.user.id))) {
+        if (!likes.find((item: any) => (item.userId === session?.user?.id))) {
             fetch(`/api/like`, {
                 method: 'POST',
                 headers: {
@@ -97,52 +99,59 @@ export default function Post(props: PostProps) {
                     console.error('Error fetching user data:', error);
                 });
         }
-
+        // props.setRefetchLikedPosts(true);
     }
 
 
     return (
-        <Card>
-            <CardContent className='p-4 pb-2'>
-                <div className='flex justify-between'>
-                    <div className='mr-4'>
-                        <Avatar className=" h-10 w-10 rounded-lg">
-                            <Link href={props.post?.authorId + '?show=posts'}>
-                                <AvatarImage src={props.post?.author?.image} />
-                                <AvatarFallback className=' h-10 w-10 rounded-lg bg-background border'><User /></AvatarFallback>
-                            </Link>
-                        </Avatar>
-                    </div>
-                    <div className=' w-full'>
+        <>
+            {props.post ? (
+                <Card>
+                    <CardContent className='p-4 pb-2'>
+                        <Link href={'/post/' + props.post?.id}>
+                            <div className='flex justify-between'>
+                                <div className='mr-4'>
+                                    <Avatar className=" h-10 w-10 rounded-lg">
+                                        <Link href={props.post?.authorId + '?show=posts'}>
+                                            <AvatarImage src={props.post?.author?.image} />
+                                            <AvatarFallback className=' h-10 w-10 rounded-lg bg-background border'><User /></AvatarFallback>
+                                        </Link>
+                                    </Avatar>
+                                </div>
+                                <div className=' w-full'>
 
-                        <div className='font-bold'><Link href={props.post?.authorId + '?show=posts'}>{props.post.author.name}</Link></div>
-                        <div className='text-gray-400 text-sm'><Link href={props.post?.authorId + '?show=posts'}>{props.post.author.email}</Link></div>
-                        <div className='mt-4 '>
-                            {props.post.content}
+                                    <div className='font-bold'><Link href={props.post?.authorId + '?show=posts'}>{props.post?.author?.name}</Link></div>
+                                    <div className='text-gray-400 text-sm'><Link href={props.post?.authorId + '?show=posts'}>{props.post?.author?.email}</Link></div>
+                                    <div className='mt-4 '>
+                                        {props.post?.content}
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                        <Separator className='my-2 mt-4' />
+                        <div className='flex w-full justify-center'>
+                            <div className='flex justify-evenly gap-4 w-4/5'>
+                                <div className='text-gray-400 text-sm'>{formatDateAndTime(props.post?.createdAt)}</div>
+                                <div className='flex gap-2 items-center '>
+                                    <div className='text-gray-400 text-sm'>12</div>
+                                    <MessageSquare className='h-4 w-4' />
+                                </div>
+                                <div
+                                    className={`flex gap-2 items-center text-red-500 hover:text-red-700 hover:cursor-pointer`}
+                                    onClick={() => handleLike()}
+                                >
+                                    <div className='text-gray-400 text-sm'>{likes.length}</div>
+                                    <Heart className={`h-4 w-4 ${likes.find((item: any) => (item.userId === session?.user.id)) && 'fill-red-500'}`} />
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <Separator className='my-2 mt-4' />
-                <div className='flex w-full justify-center'>
-                    <div className='flex justify-evenly gap-4 w-4/5'>
-                        <div className='text-gray-400 text-sm'>{formatDateAndTime(props.post.createdAt)}</div>
-                        <div className='flex gap-2 items-center '>
-                            <div className='text-gray-400 text-sm'>12</div>
-                            <MessageSquare className='h-4 w-4' />
-                        </div>
-                        <div
-                            className={`flex gap-2 items-center text-red-500 hover:text-red-700 hover:cursor-pointer`}
-                            onClick={() => handleLike()}
-                        >
-                            <div className='text-gray-400 text-sm'>{likes.length}</div>
-                            <Heart className={`h-4 w-4 ${likes.find((item: any) => (item.userId === session?.user.id)) && 'fill-red-500'}`} />
-                        </div>
-
-                    </div>
-                </div>
-
-            </CardContent>
-        </Card >
+                    </CardContent>
+                </Card >
+            ) : (
+                <SkeletonPost />
+            )}
+        </>
     )
 }

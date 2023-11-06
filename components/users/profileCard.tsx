@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { get } from 'http'
+import { Skeleton } from '../ui/skeleton'
 
 
 type ProfileCardProps = {
@@ -30,10 +31,13 @@ function ProfileCard(props: ProfileCardProps) {
     const [followers, setFollowers] = React.useState<any[]>([]);
     const [following, setFollowing] = React.useState<any[]>([]);
 
+    const [loading, setLoading] = React.useState<boolean>(false);
+
     const router = useRouter();
 
 
     useEffect(() => {
+        setLoading(true);
         // fetch user data
         fetch(`/api/users/${props.userId}`)
             .then((response) => {
@@ -79,7 +83,7 @@ function ProfileCard(props: ProfileCardProps) {
             })
             .then((data) => {
                 setFollowing(data);
-
+                setLoading(false);
             })
             .catch((error) => {
                 console.error('Error fetching user data:', error);
@@ -160,10 +164,15 @@ function ProfileCard(props: ProfileCardProps) {
 
                         </AspectRatio>
                         <div className='absolute left-6 -bottom-6'>
-                            <Avatar className=" h-16 w-16 rounded-lg">
+                            {loading ? (
+                                <Skeleton className='h-16 w-16 rounded-lg' />
+                            ) : (
+                                <Avatar className=" h-16 w-16 rounded-lg">
                                 <AvatarImage src={displayUser?.image} />
                                 <AvatarFallback className=' h-16 w-16 rounded-lg bg-background border'><User /></AvatarFallback>
                             </Avatar>
+                            )}
+                           
                         </div>
                         <div className="absolute right-6 -bottom-4">
                             {isMyUser ? (
@@ -189,10 +198,18 @@ function ProfileCard(props: ProfileCardProps) {
                         </div>
                     </div>
                     <div className='mt-10 px-6'>
-                        <p className='font-semibold text-lg'>{displayUser?.name}</p>
+                        {loading ? (
+                            <Skeleton className='h-4 w-32 ' />
+                        ) : (
+                            <p className='font-semibold text-lg'>{displayUser?.name}</p>
+                        )}
                     </div>
                     <div className=' px-6'>
-                        <p className='text-sm text-gray-500'>{displayUser?.email}</p>
+                        {loading ? (
+                            <Skeleton className='h-4 w-48 mt-2' />
+                        ) : (
+                            <p className='text-sm text-gray-500'>{displayUser?.email}</p>
+                        )}
                     </div>
                     {/* {displayUser?.bio && (
                         <Card className='mx-6 my-2 bg-gray-50 dark:bg-muted overflow-auto'>
@@ -202,14 +219,20 @@ function ProfileCard(props: ProfileCardProps) {
                             </CardContent>
                         </Card >
                     )} */}
-                    {/* Show the amount of followers and following */}
                     <div className='mx-0 md:mx-8 py-2 mt-4 flex justify-evenly'>
-                        <div className='flex flex-col items-center'>
-                            <p className='font-bold'>{followers.length}</p>
+                        <div className='flex flex-col-reverse items-center gap-1'>
                             <p className='text-sm font-semibold text-primary'>Followers</p>
+                            {loading ? (
+                                <Skeleton className='h-4 w-8 ' />
+                            ) : (
+                                <p className='font-bold'>{followers.length}</p>
+                            )}
                         </div>
-                        <div className='flex flex-col items-center'>
-                            <p className='font-bold'>{following.length}</p>
+                        <div className='flex flex-col items-center gap-1'>
+                            {loading ? (
+                                <Skeleton className='h-4 w-8 ' />
+                            ) : (
+                                <p className='font-bold'>{following.length}</p>)}
                             <p className='text-sm font-semibold text-primary'>Following</p>
                         </div>
                     </div>
@@ -254,7 +277,7 @@ function ProfileCard(props: ProfileCardProps) {
             </Card>
 
 
-        </div>
+        </div >
 
     )
 }
