@@ -60,10 +60,10 @@ export const Sidebar: React.FC = () => {
     return (
         <div className="md:h-full h-16 md:w-20 lg:w-52 w-full md:pt-6 pt-2 pb-4 px-4 flex flex-col justify-between md:shadow-lg md:border-t-0 border-t">
             <div className='flex md:flex-col flex-row sm:gap-12 xs:gap-10 gap-8 md:gap-4 items-center md:items-start md:justify-start justify-center'>
-                {sidebarItems.map((item: any) => {
+                {sidebarItems.map((item, index) => {
                     return (
                         <>
-                            <TooltipProvider >
+                            <TooltipProvider key={index}>
                                 <Tooltip >
                                     <TooltipTrigger asChild>
                                         <Link href={item.link} key={item.link} className="w-full flex justify-center">
@@ -84,9 +84,9 @@ export const Sidebar: React.FC = () => {
                 <div className="flex md:hidden w-full">
                     {actions
                         .filter((item: any) => item.tooltip === 'New Post')
-                        .map((item: any) => {
+                        .map((item, index) => {
                             return (
-                                <TooltipProvider >
+                                <TooltipProvider key={index}>
                                     <Tooltip >
                                         <TooltipTrigger asChild>
                                             <Link href={item.link} key={item.link} className="w-full flex justify-center">
@@ -122,9 +122,9 @@ export const Sidebar: React.FC = () => {
             </div>
             <div className="hidden md:block">
                 <p className="w-full border-b text-sm p-2 mb-2">New</p>
-                {actions.map((item: any) => {
+                {actions.map((item, index) => {
                     return (
-                        <TooltipProvider >
+                        <TooltipProvider key={index}>
                             <Tooltip >
                                 <TooltipTrigger asChild>
                                     <Link href={item.link} key={item.link} className="w-full">

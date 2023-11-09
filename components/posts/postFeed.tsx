@@ -54,7 +54,7 @@ export default function PostFeed(props: PostFeedProps) {
 
 
     return (
-        <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4'>
+        <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4 mb-6'>
             {!loading && posts.map((post: any) => (
                 <Post key={post.id} post={post} />
             ))}

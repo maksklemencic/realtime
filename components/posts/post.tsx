@@ -112,7 +112,7 @@ export default function Post(props: PostProps) {
                             <div className='flex justify-between'>
                                 <div className='mr-4'>
                                     <Avatar className=" h-10 w-10 rounded-lg">
-                                        <Link href={props.post?.authorId + '?show=posts'}>
+                                        <Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>
                                             <AvatarImage src={props.post?.author?.image} />
                                             <AvatarFallback className=' h-10 w-10 rounded-lg bg-background border'><User /></AvatarFallback>
                                         </Link>
@@ -120,8 +120,8 @@ export default function Post(props: PostProps) {
                                 </div>
                                 <div className=' w-full'>
 
-                                    <div className='font-bold'><Link href={props.post?.authorId + '?show=posts'}>{props.post?.author?.name}</Link></div>
-                                    <div className='text-gray-400 text-sm'><Link href={props.post?.authorId + '?show=posts'}>{props.post?.author?.email}</Link></div>
+                                    <div className='font-bold'><Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>{props.post?.author?.name}</Link></div>
+                                    <div className='text-gray-400 text-sm'><Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>{props.post?.author?.email}</Link></div>
                                     <div className='mt-4 '>
                                         {props.post?.content}
                                     </div>

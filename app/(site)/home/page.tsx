@@ -3,6 +3,8 @@ import { signOut, useSession } from "next-auth/react"
 import { useTheme } from "next-themes"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import Post from "@/components/posts/post"
+import PostFeed from "@/components/posts/postFeed"
 
 export default function HomePage() {
   const { theme, setTheme } = useTheme()
@@ -14,8 +16,8 @@ export default function HomePage() {
   })
 
   return (
-    <div className={`w-full h-full `}>
-      <p>Home page</p>
+    <div >
+      <PostFeed showUserId={session?.user.id}/>
       
     </div>
   )

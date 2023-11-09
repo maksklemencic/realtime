@@ -112,7 +112,7 @@ function ProfileCard(props: ProfileCardProps) {
                 throw new Error('Network response was not ok');
             })
             .then((data) => {
-                setFollowers((followers) => [...followers, data]);
+                setFollowers((followers) => [...followers, { id: data.followerId }]);
             })
             .catch((error) => {
                 console.error('Error following user:', error);
@@ -137,7 +137,7 @@ function ProfileCard(props: ProfileCardProps) {
                 throw new Error('Network response was not ok');
             })
             .then((data) => {
-                setFollowers((followers) => followers.filter((item) => item.followerId !== session?.user?.id));
+                setFollowers((followers) => followers.filter((item) => item.id !== session?.user?.id));
             })
             .catch((error) => {
                 console.error('Error following user:', error);
@@ -182,7 +182,7 @@ function ProfileCard(props: ProfileCardProps) {
                                 </Button>
                             ) : (
                                 <>
-                                    {followers.find((item) => item.followerId === session?.user?.id) ? (
+                                    {followers.find((item) => item.id === session?.user?.id) ? (
                                         <Button className='h-8' onClick={() => handleUnfollow()}>
                                             <UserMinus className="mr-2 h-4 w-4" />
                                             Unfollow

@@ -22,12 +22,14 @@ function BreadCrumb() {
             <div className='w-full h-full flex justify-start items-center px-4'>
                 {tokens.map((item, index) => {
                     return (
-                        <Link href={item.link}>
-                        <div key={index} className={`pl-4 pb-1 text-md font-semibold flex items-center gap-4 ${index >= tokens.length - 1 ? 'text-foreground' : 'text-gray-500'} hover:text-foreground`}>
-                            {item.name}
-                            <ChevronRight className={`h-4 w-4 ${index >= tokens.length - 1 && 'hidden'}`} />
+                        <div key={index}>
+                            <Link href={item.link}>
+                                <div key={index} className={`pl-4 pb-1 text-md font-semibold flex items-center gap-4 ${index >= tokens.length - 1 ? 'text-foreground' : 'text-gray-500'} hover:text-foreground`}>
+                                    {item.name}
+                                    <ChevronRight className={`h-4 w-4 ${index >= tokens.length - 1 && 'hidden'}`} />
+                                </div>
+                            </Link>
                         </div>
-                        </Link>
                     )
                 })}
             </div>
@@ -72,12 +74,12 @@ function BreadCrumb() {
 
         return newTokens;
     }
-    
 
-    
+
+
     return (
         <div className='h-14'>
-            {displayBreadcrumbs()} 
+            {displayBreadcrumbs()}
         </div>
     )
 }
