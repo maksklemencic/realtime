@@ -6,6 +6,9 @@ import { useSession } from 'next-auth/react';
 import { set } from 'react-hook-form';
 import SkeletonPost from './skeletonPost';
 import { Loader2 } from 'lucide-react';
+import { usePathname } from 'next/navigation'
+import path from 'path';
+
 
 interface PostFeedProps {
     showUserId: string
@@ -17,6 +20,8 @@ export default function PostFeed(props: PostFeedProps) {
 
     const searchParams = useSearchParams()
     const search = searchParams.get('show')
+    const pathname = usePathname()
+
 
     const { data: session } = useSession()
 
@@ -35,6 +40,10 @@ export default function PostFeed(props: PostFeedProps) {
             params = '/liked?author=' + props.showUserId;
         }
 
+        if (pathname === '/home') {
+            params = '/' + session?.user?.id;
+        }
+        
         fetch(apiUrl + params)
             .then((response) => {
                 if (!response.ok) {
