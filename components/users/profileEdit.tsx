@@ -69,7 +69,7 @@ export default function ProfileEdit() {
                 .catch((error) => {
                     console.error('Error updating user:', error);
                 }), {
-            
+
             loading: 'Saving...',
             success: () => {
                 router.push('/users/' + session?.user?.id);
@@ -78,7 +78,7 @@ export default function ProfileEdit() {
             error: 'Error updating the user.',
         })
     }
-    
+
     return (
         <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56'>
             <Card >
@@ -92,23 +92,28 @@ export default function ProfileEdit() {
                                 fill
                             />
                         </AspectRatio>
-                        <div className='absolute left-6 -bottom-6'>
+
+                    </div>
+
+                    <div className='flex flex-row items-end mt-6 gap-4 px-6'>
+                        <div className=''>
                             {loading ? (
                                 <Skeleton className='h-16 w-16 rounded-lg' />
                             ) : (
-                                <Avatar className=" h-16 w-16 rounded-lg">
+                                <Avatar className=" h-16 w-16 rounded-lg hover: cursor-pointer">
                                     <AvatarImage src={editUser?.image} />
                                     <AvatarFallback className=' h-16 w-16 rounded-lg bg-background border'><User /></AvatarFallback>
                                 </Avatar>
                             )}
                         </div>
-                    </div>
-                    <div className='mt-10 px-6'>
-                        {loading ? (
-                            <Skeleton className='h-4 w-full ' />
-                        ) : (
-                            <Input className='mt-2' placeholder='Name' value={editUser?.name} onChange={(e: any) => setEditUser({ ...editUser, name: e.target.value })}/>
-                        )}
+                        <div className='w-full'>
+                            {loading ? (
+                                <Skeleton className='h-4 w-full ' />
+                            ) : (
+                                <Input className='mt-2' placeholder='Name' value={editUser?.name} onChange={(e: any) => setEditUser({ ...editUser, name: e.target.value })} />
+                            )}
+                        </div>
+
                     </div>
                     <div className=' px-6 mt-4'>
                         {loading ? (
@@ -128,7 +133,10 @@ export default function ProfileEdit() {
                             <p>{formatDateAndTime(editUser?.updatedAt)}</p>
                         )}
                     </div>
-                    <Button className='h-8' onClick={() => handleEdit()}>Save</Button>
+                    <div className='space-x-4'>
+                        <Button className='h-8' variant={'destructive'} onClick={() => router.push('/users/' + session?.user?.id)}>Cancel</Button>
+                        <Button className='h-8' onClick={() => handleEdit()}>Save</Button>
+                    </div>
                 </CardFooter>
             </Card>
         </div>
