@@ -176,10 +176,12 @@ function ProfileCard(props: ProfileCardProps) {
                         </div>
                         <div className="absolute right-6 -bottom-4">
                             {isMyUser ? (
+                                <Link href={'/users/' + session?.user.id + '/edit'}>
                                 <Button className='h-8'>
                                     <Edit className="mr-2 h-4 w-4" />
                                     Edit profile
                                 </Button>
+                                </Link>
                             ) : (
                                 <>
                                     {followers.find((item) => item.id === session?.user?.id) ? (

@@ -70,7 +70,7 @@ export default function NewPost() {
                         return response.json();
                     }
                     else if (response.status === 400) {
-                        throw new Error('Content and Author are required')
+                        throw new Error('Content should not be empty')
                     }
                     else if (response.status === 500) {
                         throw new Error('Something went wrong')
