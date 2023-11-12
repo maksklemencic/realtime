@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation'
 import PostFeed from '@/components/posts/postFeed'
 import Post from '@/components/posts/post'
 import NewComment from '@/components/comments/newComment'
+import DisplayComments from '@/components/comments/displayComments'
+import { Separator } from '@/components/ui/separator'
 
 export default function PostPostIdPage({ params }: { params: { postId: string } }) {
 
@@ -36,10 +38,12 @@ export default function PostPostIdPage({ params }: { params: { postId: string } 
     }, [])
 
     return (
-        <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4'>
-            <Post post={post[0]} key={post[0]?.id}/>
-            <NewComment postId={post[0]?.id}/>
-            <p>Comments...</p>
+        <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56'>
+            <Post post={post[0]} key={post[0]?.id} />
+            <NewComment postId={post[0]?.id} />
+            <Separator className='mt-6'/>
+            <DisplayComments postId={post[0]?.id} />
+
         </div >
     )
 }

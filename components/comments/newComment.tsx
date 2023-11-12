@@ -59,7 +59,7 @@ function NewComment(props: NewCommentProps) {
     }
 
     return (
-        <div className='flex gap-2 justify-between'>
+        <div className='flex gap-2 justify-between mt-4'>
             <Avatar className=" h-10 w-10 rounded-lg">
                 <Link href={'http://localhost:3000/users/' + session?.user?.id + '?show=posts'}>
                     <AvatarImage src={session?.user?.image} />

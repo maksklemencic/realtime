@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
             where: whereCondition,
             orderBy: [
                 {
-                    createdAt: 'desc',
+                    createdAt: 'asc',
                 },
             ],
             include: {
