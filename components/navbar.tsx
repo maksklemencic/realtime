@@ -24,7 +24,10 @@ function Navbar() {
                 </Link>
             </div>
             <div className="hidden lg:ml-48 ml-20 md:flex items-center px-4">
-                <Input placeholder="Search" />
+                
+                <Link href='/search'>
+                    <Input placeholder="Search" />
+                </Link>
             </div>
             <ul className='flex items-center justify-end gap-4 h-full px-4'>
                 {/* {session?.user?.name}  {session?.user?.email} */}
