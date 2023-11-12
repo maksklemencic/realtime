@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React, { use, useEffect } from 'react'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import { set } from 'react-hook-form'
 import { useSession } from 'next-auth/react'
@@ -34,7 +34,6 @@ function ProfileCard(props: ProfileCardProps) {
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const router = useRouter();
-
 
     useEffect(() => {
         setLoading(true);
@@ -112,7 +111,8 @@ function ProfileCard(props: ProfileCardProps) {
                 throw new Error('Network response was not ok');
             })
             .then((data) => {
-                setFollowers((followers) => [...followers, { id: data.followerId }]);
+                console.log("followed", data);
+                setFollowers((followers) => [...followers, { id: data.followerId, name: session?.user.name, image: session?.user.image, email: session?.user.email }]);
             })
             .catch((error) => {
                 console.error('Error following user:', error);
@@ -222,21 +222,23 @@ function ProfileCard(props: ProfileCardProps) {
                         </Card >
                     )} */}
                     <div className='mx-0 md:mx-8 py-2 mt-4 flex justify-evenly'>
-                        <div className='flex flex-col-reverse items-center gap-1'>
+                        <Link href={{ pathname: `/users/${props.userId}/friends`, query: { show: 'followers' } }}
+                        className='flex flex-col-reverse items-center gap-1 hover:bg-muted hover:rounded p-2 hover:cursor-pointer'>
                             <p className='text-sm font-semibold text-primary'>Followers</p>
                             {loading ? (
                                 <Skeleton className='h-4 w-8 ' />
                             ) : (
                                 <p className='font-bold'>{followers.length}</p>
                             )}
-                        </div>
-                        <div className='flex flex-col items-center gap-1'>
+                        </Link>
+                        <Link href={{ pathname: `/users/${props.userId}/friends`, query: { show: 'following' } }}
+                        className='flex flex-col items-center gap-1 hover:bg-muted hover:rounded p-2 hover:cursor-pointer'>
                             {loading ? (
                                 <Skeleton className='h-4 w-8 ' />
                             ) : (
                                 <p className='font-bold'>{following.length}</p>)}
                             <p className='text-sm font-semibold text-primary'>Following</p>
-                        </div>
+                        </Link>
                     </div>
 
                 </CardContent>

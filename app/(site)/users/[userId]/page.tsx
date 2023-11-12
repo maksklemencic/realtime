@@ -7,17 +7,17 @@ import PostFeed from '@/components/posts/postFeed'
 
 export default function UsersUserIdPage({ params }: { params: { userId: string } }) {
 
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-          redirect('/login')
-        }
-      })
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/login')
+    }
+  })  
 
-    return (
-        <div className=' space-y-4 mb-4'>
-            <ProfileCard userId={params.userId} />
-            <PostFeed showUserId={params.userId}/>
-        </div >
-    )
+  return (
+    <div className=' space-y-4 mb-4'>
+      <ProfileCard userId={params.userId} />
+      <PostFeed showUserId={params.userId} />
+    </div >
+  )
 }
