@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react'
 import Comment from './comment';
 import { Skeleton } from '../ui/skeleton';
+import { Loader2 } from 'lucide-react';
 
 interface DisplayCommentsProps {
     postId: string;
@@ -34,10 +35,9 @@ export default function DisplayComments(props: DisplayCommentsProps) {
     return (
         <div className='space-y-4 mt-6 mb-10'>
             {loading ? (
-                <>
-                    <Skeleton className='h-14 w-full' />
-                    <Skeleton className='h-14 w-full' />
-                </>
+                <div className='flex w-full justify-center'>
+                    <Loader2 className='mb-4 animate-spin' />
+                </div>
             ) : (
                 <>
                     {props.comments.length === 0 ? (

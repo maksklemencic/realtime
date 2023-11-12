@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react'
+import React, { use, useEffect } from 'react'
 import { Card, CardContent } from '../ui/card'
 import { useSession } from 'next-auth/react'
 import { Heart, MessageSquare, User } from 'lucide-react'
@@ -8,17 +8,22 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Link from 'next/link'
 import { Skeleton } from '../ui/skeleton'
 import SkeletonPost from './skeletonPost'
+import { useSearchParams } from 'next/navigation'
 
 type PostProps = {
     key: string,
     post: any,
     comments?: any,
+    unlikePost?: (id: string) => void
 }
 
 export default function Post(props: PostProps) {
 
     const { data: session } = useSession()
     const [likes, setLikes] = React.useState<any[]>([]);
+    const [comments, setComments] = React.useState<any[]>([]);
+    const searchParams = useSearchParams()
+    const search = searchParams.get('show')
 
     function formatDate(date: string) {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
@@ -46,6 +51,24 @@ export default function Post(props: PostProps) {
                 console.error('Error fetching likes:', error);
             });
     }, [props.post?.id])
+
+    useEffect(() => {
+        // get post comments
+        if (!props.post || props.comments) return;
+        fetch(`/api/posts/comments?post=${props.post?.id}`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                setComments(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching comments:', error);
+            });
+    }, [props.post])
 
     function handleLike() {
 
@@ -92,6 +115,9 @@ export default function Post(props: PostProps) {
                 })
                 .then((data) => {
                     setLikes((likes) => likes.filter((item) => item.userId !== session?.user?.id));
+                    if (props.unlikePost && search === 'liked') {
+                        props.unlikePost(props.post.id);
+                    }
                 })
                 .catch((error) => {
                     console.error('Error fetching user data:', error);
@@ -130,12 +156,18 @@ export default function Post(props: PostProps) {
                             <div className='flex justify-evenly gap-4 w-4/5'>
                                 <div className='text-gray-400 text-sm'>{formatDateAndTime(props.post?.createdAt)}</div>
                                 <div className='flex gap-2 items-center '>
-                                    {props.comments || props.comments?.length === 0 ? (
+                                    {props.comments ? (
                                         <div className='text-gray-400 text-sm'>{props.comments?.length}</div>
                                     ) : (
-                                        <Skeleton className='h-4 w-4' />
+                                        <>
+                                            {comments ? (
+                                                <div className='text-gray-400 text-sm'>{comments?.length}</div>
+                                            ) : (
+                                                <Skeleton className='h-4 w-4' />
+                                            )}
+                                        </>
                                     )}
-                                    
+
                                     <MessageSquare className={`h-4 w-4 text-blue-400`} />
                                 </div>
                                 <div

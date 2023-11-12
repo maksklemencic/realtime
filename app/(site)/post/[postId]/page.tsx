@@ -48,7 +48,6 @@ export default function PostPostIdPage({ params }: { params: { postId: string } 
             <NewComment postId={post[0]?.id} addComment={addComment}/>
             <Separator className='mt-6'/>
             <DisplayComments postId={post[0]?.id} comments={comments} setComments={setComments}/>
-
         </div >
     )
 }
