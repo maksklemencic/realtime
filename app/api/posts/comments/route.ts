@@ -26,6 +26,15 @@ export async function POST(request: NextRequest) {
                 author: { connect: { id: body.author } },
                 post: { connect: { id: body.post } },
             },
+            include: {
+                author: {
+                    select: {
+                        name: true,
+                        image: true,
+                        email: true,
+                    },
+                },
+            },
         });
 
         return new NextResponse(JSON.stringify(newComment), { status: 201, headers: { 'Content-Type': 'application/json' } });
@@ -66,7 +75,7 @@ export async function GET(request: NextRequest) {
             where: whereCondition,
             orderBy: [
                 {
-                    createdAt: 'asc',
+                    createdAt: 'desc',
                 },
             ],
             include: {

@@ -6,15 +6,16 @@ import { Skeleton } from '../ui/skeleton';
 
 interface DisplayCommentsProps {
     postId: string;
+    comments: any[];
+    setComments: (comments: any[]) => void;
 }
 
 export default function DisplayComments(props: DisplayCommentsProps) {
-    const [comments, setComments] = React.useState<any[]>([]);
-    const [loading, setLoading] = React.useState<boolean>(false);
+    const [loading, setLoading] = React.useState<boolean>(true);
 
     useEffect(() => {
-        setLoading(true);
-        fetch(`/api/posts/comments?postId=${props.postId}`)
+        if (!props.postId) return;
+        fetch(`/api/posts/comments?post=${props.postId}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -22,26 +23,35 @@ export default function DisplayComments(props: DisplayCommentsProps) {
                 throw new Error('Network response was not ok');
             })
             .then((data) => {
-                setComments(data);
+                props.setComments(data);
                 setLoading(false);
             })
             .catch((error) => {
                 console.error('Error fetching comments:', error);
             });
-    }, [])
+    }, [props.postId])
 
     return (
-        <div className='space-y-4 mt-6'>
+        <div className='space-y-4 mt-6 mb-10'>
             {loading ? (
                 <>
-                <Skeleton className='h-14 w-full'/>
-                <Skeleton className='h-14 w-full'/>
+                    <Skeleton className='h-14 w-full' />
+                    <Skeleton className='h-14 w-full' />
                 </>
             ) : (
                 <>
-                    {comments.map((comment) => (
-                        <Comment comment={comment} key={comment?.id} />
-                    ))}
+                    {props.comments.length === 0 ? (
+                        <p className='text-gray-500 text-center'>No comments yet</p>
+                    ) : (
+                        <>
+                            {props.comments
+                            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                            .map((comment) => (
+                                <Comment comment={comment} key={comment?.id} />
+                            ))}
+                        </>
+                    )}
+
                 </>
             )}
         </div>

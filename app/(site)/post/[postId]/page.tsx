@@ -19,9 +19,9 @@ export default function PostPostIdPage({ params }: { params: { postId: string } 
     })
 
     const [post, setPost] = React.useState<any[]>([]);
+    const [comments, setComments] = React.useState<any[]>([]);
 
     useEffect(() => {
-        // fetch the post
         fetch(`/api/posts?id=${params.postId}`)
             .then((response) => {
                 if (response.ok) {
@@ -37,12 +37,17 @@ export default function PostPostIdPage({ params }: { params: { postId: string } 
             });
     }, [])
 
+
+    function addComment(comment: any) {
+        setComments([...comments, comment]);
+    }
+
     return (
         <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56'>
-            <Post post={post[0]} key={post[0]?.id} />
-            <NewComment postId={post[0]?.id} />
+            <Post post={post[0]} key={post[0]?.id} comments={comments} />
+            <NewComment postId={post[0]?.id} addComment={addComment}/>
             <Separator className='mt-6'/>
-            <DisplayComments postId={post[0]?.id} />
+            <DisplayComments postId={post[0]?.id} comments={comments} setComments={setComments}/>
 
         </div >
     )

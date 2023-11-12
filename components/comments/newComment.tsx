@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 
 interface NewCommentProps {
     postId: number,
+    addComment: (comment: any) => void,
 }
 
 function NewComment(props: NewCommentProps) {
@@ -42,6 +43,8 @@ function NewComment(props: NewCommentProps) {
                     throw new Error('Network response was not ok');
                 })
                 .then((data) => {
+                    setContent('');
+                    props.addComment(data);
                 })
                 .catch((error) => {
                     console.error('Error fetching likes:', error);
@@ -49,7 +52,7 @@ function NewComment(props: NewCommentProps) {
          {
             loading: 'Posting comment ...',
             success: () => {
-                setContent('');
+                
                 return 'Comment posted!'
             },
             error: (err) => {

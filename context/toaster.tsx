@@ -15,6 +15,7 @@ function ToasterContext() {
                     background: theme === 'dark' ? '#1e283d' : "white",
                     border: theme === 'dark' ? '2px solid #18202e' : "black",
                     color: theme == "dark" ? '#fff' : "black",
+                    marginTop: '64px',
                 }
             }}
             

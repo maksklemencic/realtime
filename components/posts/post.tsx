@@ -12,9 +12,8 @@ import SkeletonPost from './skeletonPost'
 type PostProps = {
     key: string,
     post: any,
+    comments?: any,
 }
-
-
 
 export default function Post(props: PostProps) {
 
@@ -32,8 +31,7 @@ export default function Post(props: PostProps) {
     }
 
     useEffect(() => {
-
-        // fetch likes
+        if (!props.post) return;
         fetch(`/api/like?postId=${props.post?.id}`)
             .then((response) => {
                 if (response.ok) {
@@ -47,7 +45,7 @@ export default function Post(props: PostProps) {
             .catch((error) => {
                 console.error('Error fetching likes:', error);
             });
-    }, [])
+    }, [props.post?.id])
 
     function handleLike() {
 
@@ -99,7 +97,6 @@ export default function Post(props: PostProps) {
                     console.error('Error fetching user data:', error);
                 });
         }
-        // props.setRefetchLikedPosts(true);
     }
 
 
@@ -133,8 +130,13 @@ export default function Post(props: PostProps) {
                             <div className='flex justify-evenly gap-4 w-4/5'>
                                 <div className='text-gray-400 text-sm'>{formatDateAndTime(props.post?.createdAt)}</div>
                                 <div className='flex gap-2 items-center '>
-                                    <div className='text-gray-400 text-sm'>12</div>
-                                    <MessageSquare className='h-4 w-4' />
+                                    {props.comments || props.comments?.length === 0 ? (
+                                        <div className='text-gray-400 text-sm'>{props.comments?.length}</div>
+                                    ) : (
+                                        <Skeleton className='h-4 w-4' />
+                                    )}
+                                    
+                                    <MessageSquare className={`h-4 w-4 text-blue-400`} />
                                 </div>
                                 <div
                                     className={`flex gap-2 items-center text-red-500 hover:text-red-700 hover:cursor-pointer`}
