@@ -270,7 +270,7 @@ function ProfileCard(props: ProfileCardProps) {
                                 }}
                                 className=' w-full flex justify-center'
                             >
-                                <TabsTrigger value="comments" className='w-full'>Comments</TabsTrigger>
+                                <TabsTrigger value="comments" className='w-full'>Commented</TabsTrigger>
                             </Link>
 
                         </TabsList>

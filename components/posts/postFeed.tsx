@@ -43,7 +43,7 @@ export default function PostFeed(props: PostFeedProps) {
         else if (search === 'comments') {
             params = '/commented?author=' + props.showUserId;
         }
-        
+
         if (pathname === '/home') {
             params = '/' + session?.user?.id;
         }
@@ -72,7 +72,9 @@ export default function PostFeed(props: PostFeedProps) {
 
     return (
         <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4 mb-6'>
-            {!loading && posts.length > 0 && posts.map((post: any) => (
+            {!loading && posts.length > 0 && 
+                posts.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                .map((post: any) => (
                 <Post key={post.id} post={post} unlikePost={removePostFromLkedPosts} />
             ))}
             {!loading && posts.length == 0 && (
