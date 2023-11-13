@@ -111,7 +111,6 @@ function ProfileCard(props: ProfileCardProps) {
                 throw new Error('Network response was not ok');
             })
             .then((data) => {
-                console.log("followed", data);
                 setFollowers((followers) => [...followers, { id: data.followerId, name: session?.user.name, image: session?.user.image, email: session?.user.email }]);
             })
             .catch((error) => {
@@ -185,7 +184,7 @@ function ProfileCard(props: ProfileCardProps) {
                             ) : (
                                 <>
                                     {followers.find((item) => item.id === session?.user?.id) ? (
-                                        <Button className='h-8' onClick={() => handleUnfollow()}>
+                                        <Button className='h-8' variant={"destructive"} onClick={() => handleUnfollow()}>
                                             <UserMinus className="mr-2 h-4 w-4" />
                                             Unfollow
                                         </Button>
