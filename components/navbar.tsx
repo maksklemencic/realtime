@@ -25,8 +25,16 @@ function Navbar() {
             </div>
             <div className="hidden lg:ml-48 ml-20 md:flex items-center px-4">
                 
-                <Link href='/search'>
+                {/* <Link href='/search'>
                     <Input placeholder="Search" />
+                    
+                </Link> */}
+                <Link 
+                    href='/search'
+                    className='text-sm text-gray-400 rounded-md w-52 h-10 border flex items-center justify-between py-1 px-3 hover:cursor-pointer hover:bg-border'
+                >
+                    <p>Search</p>
+                    <Search className="ml-2 h-4 w-4" />
                 </Link>
             </div>
             <ul className='flex items-center justify-end gap-4 h-full px-4'>
