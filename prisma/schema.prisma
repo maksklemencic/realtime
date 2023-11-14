@@ -41,6 +41,10 @@ model User {
   following       Follower[] @relation("FollowersFollowing")
 
   likes           Like[]
+
+  groupsIds       String[] @db.ObjectId
+  groups          Group[] @relation(fields: [groupsIds], references: [id])
+  
 }
 
 model Account {
@@ -91,6 +95,16 @@ model Message {
   
   senderId String @db.ObjectId
   sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Group {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  image String?
+  createdAt DateTime @default(now())
+
+  userIds String[] @db.ObjectId
+  users User[] @relation(fields: [userIds], references: [id])
 }
 
 model Post {
