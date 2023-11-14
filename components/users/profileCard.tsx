@@ -55,6 +55,7 @@ function ProfileCard(props: ProfileCardProps) {
         getUserFollowers();
         getUserFollowing();
     }, [])
+    
 
     function getUserFollowers() {
         fetch(`/api/users/${props.userId}/followers`)
