@@ -1,6 +1,6 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import { Contact, Users, Search, Home, MessageCircle, PlusCircle, Heart, MailPlus, BadgePlus } from "lucide-react";
+import React, { use, useEffect, useState } from 'react'
+import { Contact, Users, Search, Home, MessageCircle, PlusCircle, Heart, MailPlus, BadgePlus, Loader2 } from "lucide-react";
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { usePathname } from 'next/navigation';
@@ -11,6 +11,21 @@ import { useSession } from 'next-auth/react';
 export const Sidebar: React.FC = () => {
 
     const pathname = usePathname()
+
+    const { data: session, status } = useSession()
+    const [groups, setGroups] = useState([])
+    const [groupsLoading, setGroupsLoading] = useState(true)
+
+    useEffect(() => {
+        setGroupsLoading(true)
+        fetch(`/api/groups/${session?.user?.id}`)
+            .then(res => res.json())
+            .then(data => {
+                setGroups(data)
+                setGroupsLoading(false)
+            })
+
+    }, [])
 
     const iconSize = "h-6 w-6";
     const sidebarItems = [
@@ -55,6 +70,16 @@ export const Sidebar: React.FC = () => {
             tooltip: "New Group",
         },
     ];
+
+    const colors = [
+        'bg-red-500',
+        'bg-yellow-500',
+        'bg-green-500',
+        'bg-blue-500',
+        'bg-indigo-500',
+        'bg-purple-500',
+        'bg-pink-500',
+    ]
 
 
     return (
@@ -106,17 +131,31 @@ export const Sidebar: React.FC = () => {
                 </div>
 
                 <ScrollArea className={`hidden md:flex h-[calc(100vh-400px)] min-h-[48px] w-full `} >
-                    {testGroups.map((group: any) => {
+                    {groupsLoading && (
+                        <div className='text-center text-white text-sm'>
+                            <Loader2 className='mx-auto h-16 animate-spin' size={24} />
+                        </div>
+                    )}
+                    {!groupsLoading && groups.map((group: any) => {
                         return (
-                            <Link href={`/groups/${group.name}`} key={group.name}>
-                                <div className="h-12 flex items-center justify-center lg:justify-start gap-2 w-full p-2 text-sm font-semibold hover:bg-primary hover:text-white rounded-lg" >
-                                    {/* <img src={group.image} className="h-6 w-6 rounded-full" /> */}
-                                    <div className="h-6 w-6 rounded-lg bg-blue-200"></div>
+                            <Link href={`/groups/${group?.id}`} key={group?.id}>
+                                <div className=" flex items-center justify-center lg:justify-start gap-2 w-full p-2 my-1 text-sm font-semibold hover:bg-muted hover:text-white rounded-md" >
+                                    {group?.image === null && (
+                                        <div className={`h-8 w-8 rounded-lg bg-muted border text-gray-white flex items-center justify-center`}><Users /></div>
+
+                                    )}
+                                    {group?.image !== null && colors.includes(group.image) && (
+                                        <div className={`h-8 w-8 rounded-lg ${group.image}`}></div>
+                                    )}
                                     <p className='hidden lg:block text-xs'>{group.name}</p>
                                 </div>
                             </Link>
                         );
-                    }
+                    })}
+                    {!groupsLoading && groups.length === 0 && (
+                        <div className='text-center text-white text-sm'>
+                            You are not in any groups
+                        </div>
                     )}
                 </ScrollArea>
             </div>

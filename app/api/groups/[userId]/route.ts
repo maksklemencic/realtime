@@ -20,6 +20,16 @@ export async function POST(request: NextRequest, context: { params: { userId: st
             return new NextResponse('Name of the group is required', { status: 400 });
         }
 
+        const colors = [
+            'bg-red-500',
+            'bg-yellow-500',
+            'bg-green-500',
+            'bg-blue-500',
+            'bg-indigo-500',
+            'bg-purple-500',
+            'bg-pink-500',
+        ];
+
         // Create a new group using Prisma
         const newGroup = await prisma.group.create({
             data: {
@@ -29,7 +39,7 @@ export async function POST(request: NextRequest, context: { params: { userId: st
                         id: userId,
                     },
                 },
-                image: body.image ?? undefined,
+                image: body.image ?? colors[Math.floor(Math.random() * colors.length)],
             },
         });
 
