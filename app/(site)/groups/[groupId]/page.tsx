@@ -1,5 +1,6 @@
 "use client"
 import GroupCard from "@/components/groups/groupCard"
+import GroupCardMenu from "@/components/groups/groupCardMenu"
 import { Loader2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
@@ -42,7 +43,13 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
                 </div>
 
             ) : (
-                <GroupCard group={group[0]} setGroup={setGroup} key={group[0]?.id} />
+                <>
+                    <GroupCard group={group[0]} setGroup={setGroup} key={group[0]?.id} />
+                    <div className="my-4">
+                        <GroupCardMenu />
+                    </div>
+                    
+                </>
             )}
         </div >
     )

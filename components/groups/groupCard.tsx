@@ -33,24 +33,24 @@ export default function GroupCard(props: GroupCardProps) {
     return (
         <>
             {props?.group && (
-                <Card key={props.key} className='col-span-1 m-2'>
+                <Card key={props.key} className='col-span-1'>
                     <CardContent className='p-4'>
                         <div className='flex justify-between '>
                             {props?.group?.image === null && (
-                                <div className={`h-24 w-24 rounded-lg bg-muted border text-gray-white flex items-center justify-center`}><Users /></div>
+                                <div className={`sm:h-24 sm:w-24 h-16 w-16 rounded-lg bg-muted border text-gray-white flex items-center justify-center`}><Users /></div>
 
                             )}
                             {props?.group?.image !== null && colors.includes(props?.group?.image) && (
-                                <div className={`h-24 w-24 rounded-lg ${props?.group?.image}`}></div>
+                                <div className={`sm:h-24 sm:w-24 h-16 w-16 rounded-lg ${props?.group?.image}`}></div>
                             )}
 
                             <div className='flex flex-col justify-between items-end gap-1'>
-                                <div className='flex flex-col items-end'>
+                                <div className='flex flex-row gap-2 items-end'>
                                     <p className='font-semibold text-sm'>Created:</p>
                                     <p className='text-gray-400 text-sm'>{formatDate(props?.group?.createdAt)}</p>
                                 </div>
                                 
-                                <div className='flex flex-col items-end gap-1'>
+                                <div className='flex flex-row items-center gap-2'>
                                     <p className='font-semibold text-sm'>Members:</p>
                                     <Badge className='h-6 w-fit'><Users className='h-4 w-4 mr-1' />{props?.group?.userIds?.length}</Badge>
                                 </div>
