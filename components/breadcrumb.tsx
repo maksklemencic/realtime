@@ -88,6 +88,17 @@ function BreadCrumb() {
                 { name: 'Groups', link: '/groups' },
             ]
         }
+        else if (tokens[0] === 'groups' && tokens.length === 1) {
+            newTokens = [
+                { name: 'My groups', link: '/groups' },
+            ]
+        }
+        else if (tokens[0] === 'groups' && tokens.length === 2) {
+            newTokens = [
+                { name: 'My groups', link: '/groups' },
+                { name: 'Group', link: '/groups/' + tokens[1] },
+            ]
+        }
 
         return newTokens;
     }

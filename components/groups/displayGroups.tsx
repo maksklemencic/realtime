@@ -1,7 +1,7 @@
 "use client"
 import { Info, Loader2, Users } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, CardContent } from '../ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
@@ -15,7 +15,7 @@ export default function DisplayGroups() {
     const [groups, setGroups] = React.useState([])
     const [loading, setLoading] = React.useState(true)
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetch(`/api/groups/${session?.user?.id}`)
             .then(res => res.json())
             .then(data => {
