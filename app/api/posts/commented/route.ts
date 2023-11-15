@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
                                 email: true,
                             },
                         },
+                        groupId: true,
                     },
                 },
             },
@@ -46,6 +47,7 @@ export async function GET(request: NextRequest) {
             updatedAt: post.post.updatedAt,
             authorId: post.post.authorId,
             author: post.post.author,
+            groupId: post.post.groupId,
         }));
 
         // filter out duplicate posts so posts with same id

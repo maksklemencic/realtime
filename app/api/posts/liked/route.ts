@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
                                 email: true,
                             },
                         },
+                        groupId: true,
                     },
                 },
             },
@@ -44,6 +45,7 @@ export async function GET(request: NextRequest) {
             updatedAt: like.likedPost.updatedAt,
             authorId: like.likedPost.authorId,
             author: like.likedPost.author,
+            groupId: like.likedPost.groupId,
         }));
 
         return new NextResponse(JSON.stringify(likedPosts), {

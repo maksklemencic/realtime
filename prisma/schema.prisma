@@ -123,8 +123,8 @@ model Post {
   comments        Comment[]
   likes           Like[]
 
-  group           Group @relation(fields: [groupId], references: [id])
-  groupId         String @db.ObjectId
+  group           Group? @relation(fields: [groupId], references: [id])
+  groupId         String? @db.ObjectId
 }
 
 model Comment {

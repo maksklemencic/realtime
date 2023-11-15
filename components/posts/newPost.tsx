@@ -33,6 +33,8 @@ export default function NewPost() {
     const searchParams = useSearchParams();
     const to = searchParams.get('to');
 
+    const [selectedGroup, setSelectedGroup] = useState("")
+
     useEffect(() => {
         fetch(`/api/groups/${session?.user?.id}`)
             .then(res => res.json())
@@ -81,16 +83,24 @@ export default function NewPost() {
     };
 
     function createNewPost() {
+
+        const body = {
+            content: textContent,
+            author: session?.user?.id
+        }
+        const body2 = {
+            content: textContent,
+            author: session?.user?.id,
+            group: selectedGroup
+        }
+        
         toast.promise(
             fetch(`/api/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    content: textContent,
-                    author: session?.user?.id
-                }),
+                body: JSON.stringify(selectedGroup === "" ? body : body2),
             })
                 .then((response) => {
                     if (response.ok) {
@@ -105,6 +115,9 @@ export default function NewPost() {
                     else {
                         throw new Error('Network response was not ok');
                     }
+                })
+                .then((data) => {
+                    console.log(data);
                 })
                 .catch((error) => {
                     console.error('Error fetching user data:', error);
@@ -130,7 +143,7 @@ export default function NewPost() {
         <div className='my-2'>
             <div className='h-10 my-2 flex justify-end items-center gap-4'>
                 <p className='font-semibold'>Post to: </p>
-                <Select defaultValue='followers'>
+                <Select defaultValue='followers' onValueChange={(e: string) => setSelectedGroup(e)}>
                     <SelectTrigger className="w-[300px]">
                         <SelectValue placeholder="Select where to post" />
                     </SelectTrigger>
