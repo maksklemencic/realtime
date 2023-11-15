@@ -105,6 +105,8 @@ model Group {
 
   userIds String[] @db.ObjectId
   users User[] @relation(fields: [userIds], references: [id])
+
+  posts Post[]
 }
 
 model Post {
@@ -120,6 +122,9 @@ model Post {
   // Post can have many comments
   comments        Comment[]
   likes           Like[]
+
+  group           Group @relation(fields: [groupId], references: [id])
+  groupId         String @db.ObjectId
 }
 
 model Comment {

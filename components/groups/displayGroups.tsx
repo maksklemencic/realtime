@@ -49,7 +49,7 @@ export default function DisplayGroups() {
                     You are not in any groups
                 </div>
             )}
-            <div className='grid grid-cols-1 sm:grid-cols-2'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 mb-6'>
                 {!loading && groups.length > 0 && groups.map((group: any, i) => {
                     return (
 
@@ -72,7 +72,7 @@ export default function DisplayGroups() {
                                 </div>
                                 <p className='font-semibold mt-2 mx-1'>{group?.name}</p>
                                 <div className='flex gap-1 w-full mt-4 justify-around'>
-                                    <Link className='w-1/3' href={'/groups/' + group?.id} >
+                                    <Link className='w-1/3' href={'/groups/' + group?.id + '?show=posts'} >
                                         <Button className='h-8 w-full' >View</Button>
                                     </Link>
                                     <Link className='w-1/3' href={'/groups/' + group?.id + '/edit'} >
