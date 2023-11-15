@@ -138,7 +138,7 @@ export const Sidebar: React.FC = () => {
                     )}
                     {!groupsLoading && groups.map((group: any) => {
                         return (
-                            <Link href={`/groups/${group?.id}?show=posts`} key={group?.id}>
+                            <Link href={`/groups/${group?.id}?show=groupPosts`} key={group?.id}>
                                 <div className=" flex items-center justify-center lg:justify-start gap-2 w-full p-2 my-1 text-sm font-semibold hover:bg-muted hover:text-white rounded-md" >
                                     {group?.image === null && (
                                         <div className={`h-8 w-8 rounded-lg bg-muted border text-gray-white flex items-center justify-center`}><Users /></div>

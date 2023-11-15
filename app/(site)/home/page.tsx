@@ -16,9 +16,8 @@ export default function HomePage() {
   })
 
   return (
-    <div >
+    <div className="mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4 mb-6">
       <PostFeed showUserId={session?.user.id}/>
-      
     </div>
   )
 }

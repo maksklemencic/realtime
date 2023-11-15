@@ -33,6 +33,12 @@ export async function GET(request: NextRequest) {
                             },
                         },
                         groupId: true,
+                        group: {
+                            select: {
+                                name: true,
+                                image: true,
+                            },
+                        },
                     },
                 },
             },
@@ -46,6 +52,7 @@ export async function GET(request: NextRequest) {
             authorId: like.likedPost.authorId,
             author: like.likedPost.author,
             groupId: like.likedPost.groupId,
+            group: like.likedPost.group,
         }));
 
         return new NextResponse(JSON.stringify(likedPosts), {

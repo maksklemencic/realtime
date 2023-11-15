@@ -35,6 +35,12 @@ export async function GET(request: NextRequest) {
                             },
                         },
                         groupId: true,
+                        group: {
+                            select: {
+                                name: true,
+                                image: true,
+                            },
+                        },
                     },
                 },
             },
@@ -48,6 +54,7 @@ export async function GET(request: NextRequest) {
             authorId: post.post.authorId,
             author: post.post.author,
             groupId: post.post.groupId,
+            group: post.post.group,
         }));
 
         // filter out duplicate posts so posts with same id

@@ -64,7 +64,6 @@ export async function GET(request: NextRequest, context: { params: { userId: str
                     email: true,
                 },
             },
-            
         },
     });
             

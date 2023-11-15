@@ -1,9 +1,11 @@
 "use client"
 import GroupCard from "@/components/groups/groupCard"
 import GroupCardMenu from "@/components/groups/groupCardMenu"
+import Post from "@/components/posts/post"
+import PostFeed from "@/components/posts/postFeed"
 import { Loader2 } from "lucide-react"
 import { useSession } from "next-auth/react"
-import { redirect } from "next/navigation"
+import { redirect, useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
 export default function GroupsGroupPage({ params }: { params: { groupId: string } }) {
@@ -17,6 +19,9 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
 
     const [group, setGroup] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    
+    const searchParams = useSearchParams();
+    const show = searchParams.get('show');
 
     useEffect(() => {
         fetch(`/api/groups/${session?.user?.id}`)
@@ -48,6 +53,9 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
                     <div className="my-4">
                         <GroupCardMenu />
                     </div>
+                    {show === 'groupPosts' && (
+                        <PostFeed showUserId={session?.user.id} groupId={params.groupId} />
+                    )}
                     
                 </>
             )}

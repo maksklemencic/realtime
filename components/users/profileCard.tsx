@@ -150,7 +150,7 @@ function ProfileCard(props: ProfileCardProps) {
     }
 
     return (
-        <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56'>
+        <div className=''>
             <Card >
                 <CardContent className='px-0 '>
                     <div className='relative'>

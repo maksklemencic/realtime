@@ -9,6 +9,7 @@ import { Button } from '../ui/button';
 
 interface PostFeedProps {
     showUserId: string
+    groupId?: string
 }
 
 export default function PostFeed(props: PostFeedProps) {
@@ -43,6 +44,9 @@ export default function PostFeed(props: PostFeedProps) {
         else if (search === 'comments') {
             params = '/commented?author=' + props.showUserId;
         }
+        else if (search === 'groupPosts') {
+            params = '?userId=' + props.showUserId + '&groupId=' + props?.groupId;
+        }
 
         if (pathname === '/home') {
             params = '/' + session?.user?.id;
@@ -71,18 +75,20 @@ export default function PostFeed(props: PostFeedProps) {
 
 
     return (
-        <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4 mb-6'>
-            {!loading && posts.length > 0 && 
+        <div className=''>
+            {!loading && posts.length > 0 &&
                 posts.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                .map((post: any) => (
-                <Post key={post.id} post={post} unlikePost={removePostFromLkedPosts} />
-            ))}
+                    .map((post: any) => (
+                        <div className='my-4'>
+                            <Post key={post.id} post={post} unlikePost={removePostFromLkedPosts} />
+                        </div>
+                    ))}
             {!loading && posts.length == 0 && (
                 <div className='w-full flex justify-center mt-16'>
                     {search === 'liked' && (
                         <p className='text-gray-500 text-center'>No liked posts yet</p>
                     )}
-                    {search === 'posts' && (
+                    {search === 'posts' || search === 'groupPosts' && (
                         <p className='text-gray-500 text-center'>No posts yet</p>
                     )}
                     {search === 'comments' && (

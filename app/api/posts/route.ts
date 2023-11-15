@@ -83,7 +83,13 @@ export async function GET(request: NextRequest) {
                         image: true,
                         email: true,
                     },
-                }
+                },
+                group: {
+                    select: {
+                        name: true,
+                        image: true,
+                    },
+                },
             },
         });
 
