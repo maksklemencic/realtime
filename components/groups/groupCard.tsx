@@ -33,7 +33,7 @@ export default function GroupCard(props: GroupCardProps) {
     return (
         <>
             {props?.group && (
-                <Card key={props.key} className='col-span-1'>
+                <Card className='col-span-1'>
                     <CardContent className='p-4'>
                         <div className='flex justify-between '>
                             {props?.group?.image === null && (

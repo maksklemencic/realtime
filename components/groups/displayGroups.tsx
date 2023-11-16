@@ -73,7 +73,7 @@ export default function DisplayGroups() {
                                 <p className='font-semibold mt-2 mx-1'>{group?.name}</p>
                                 <div className='flex gap-1 w-full mt-4 justify-around'>
                                     <Link className='w-1/3' href={'/groups/' + group?.id + '?show=groupPosts'} >
-                                        <Button className='h-8 w-full' >View</Button>
+                                        <Button className='h-8 w-full' variant='secondary'>View</Button>
                                     </Link>
                                     <Link className='w-1/3' href={'/groups/' + group?.id + '/edit'} >
                                         <Button className='h-8 w-full' variant='secondary'>Edit</Button>

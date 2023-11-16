@@ -42,8 +42,10 @@ model User {
 
   likes           Like[]
 
-  groupsIds       String[] @db.ObjectId
-  groups          Group[] @relation(fields: [groupsIds], references: [id])
+   // Groups
+  groupMembersIds String[]    @db.ObjectId
+  groupMembers   Group[]      @relation("groupMembers", fields: [groupMembersIds], references: [id])
+
   
 }
 
@@ -103,8 +105,10 @@ model Group {
   image String?
   createdAt DateTime @default(now())
 
-  userIds String[] @db.ObjectId
-  users User[] @relation(fields: [userIds], references: [id])
+  userIds   String[]  @db.ObjectId
+  users     User[]    @relation("groupMembers", fields: [userIds], references: [id])
+
+  adminId String? @db.ObjectId
 
   posts Post[]
 }

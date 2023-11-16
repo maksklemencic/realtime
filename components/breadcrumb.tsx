@@ -96,7 +96,9 @@ function BreadCrumb() {
         else if (tokens[0] === 'groups' && tokens.length === 2) {
             newTokens = [
                 { name: 'My groups', link: '/groups' },
-                { name: 'Group', link: '/groups/' + tokens[1] },
+                tokens[1] === 'new' ? 
+                    { name: 'New', link: '/groups/new' } :
+                    { name: 'Group', link: '/groups/' + tokens[1] + '?show=groupPosts' },
             ]
         }
 

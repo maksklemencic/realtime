@@ -20,6 +20,10 @@ export async function POST(request: NextRequest, context: { params: { userId: st
             return new NextResponse('Name of the group is required', { status: 400 });
         }
 
+        if (!body.userIds) {
+            return new NextResponse('UserIds array is required', { status: 400 });
+        }
+
         const colors = [
             'bg-red-500',
             'bg-yellow-500',
@@ -31,17 +35,18 @@ export async function POST(request: NextRequest, context: { params: { userId: st
         ];
 
         // Create a new group using Prisma
+        
         const newGroup = await prisma.group.create({
             data: {
                 name: body.name,
-                users: {
-                    connect: {
-                        id: userId,
-                    },
-                },
                 image: body.image ?? colors[Math.floor(Math.random() * colors.length)],
+                userIds: {
+                    set: body.userIds,
+                },
+                adminId: userId,
             },
         });
+ 
 
         return new NextResponse(JSON.stringify(newGroup), { status: 201, headers: { 'Content-Type': 'application/json' } });
 
@@ -59,6 +64,12 @@ export async function GET(request: NextRequest, context: { params: { userId: str
             return new NextResponse('User ID is required', { status: 400 });
         }
 
+        const includeUserData = request.nextUrl.searchParams.get('includeUserData');
+        let includeUsers = false;
+        if (includeUserData === 'true') {
+            includeUsers = true;
+        }
+
         const groups = await prisma.group.findMany({
             where: {
                 userIds: {
@@ -70,6 +81,9 @@ export async function GET(request: NextRequest, context: { params: { userId: str
                     createdAt: 'desc',
                 },
             ],
+            include: {
+                users: includeUsers,
+            },
         });
 
         return new NextResponse(JSON.stringify(groups), { status: 200, headers: { 'Content-Type': 'application/json' } });
