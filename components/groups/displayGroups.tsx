@@ -45,7 +45,7 @@ export default function DisplayGroups() {
                 <Loader2 className='mx-auto h-24 animate-spin' size={24} />
             )}
             {!loading && groups.length === 0 && (
-                <div className='text-center text-white text-2xl font-bold'>
+                <div className='text-center  text-md font-bold'>
                     You are not in any groups
                 </div>
             )}
@@ -72,7 +72,7 @@ export default function DisplayGroups() {
                                 </div>
                                 <p className='font-semibold mt-2 mx-1'>{group?.name}</p>
                                 <div className='flex gap-1 w-full mt-4 justify-around'>
-                                    <Link className='w-1/3' href={'/groups/' + group?.id + '?show=posts'} >
+                                    <Link className='w-1/3' href={'/groups/' + group?.id + '?show=groupPosts'} >
                                         <Button className='h-8 w-full' >View</Button>
                                     </Link>
                                     <Link className='w-1/3' href={'/groups/' + group?.id + '/edit'} >

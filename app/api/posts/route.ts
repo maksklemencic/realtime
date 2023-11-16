@@ -51,11 +51,13 @@ export async function GET(request: NextRequest) {
 
         let authorId = request.nextUrl.searchParams.get('userId');
         let groupId = request.nextUrl.searchParams.get('groupId');
+        let id = request.nextUrl.searchParams.get('id');
 
         // build where condition
         let whereCondition = {
             authorId: {},
             groupId: {},
+            id: {},
         };
 
         if (authorId) {
@@ -67,6 +69,11 @@ export async function GET(request: NextRequest) {
             whereCondition.groupId = {
                 equals: groupId,
             };
+        }
+        if (id) {
+            whereCondition.id = {
+                equals: id,
+            }
         }
 
         const posts = await prisma.post.findMany({

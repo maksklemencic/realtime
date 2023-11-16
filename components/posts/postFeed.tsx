@@ -36,7 +36,7 @@ export default function PostFeed(props: PostFeedProps) {
 
         let params = "";
         if (search === 'posts') {
-            params = '?author=' + props.showUserId;
+            params = '?userId=' + props.showUserId;
         }
         else if (search === 'liked') {
             params = '/liked?author=' + props.showUserId;
@@ -45,7 +45,7 @@ export default function PostFeed(props: PostFeedProps) {
             params = '/commented?author=' + props.showUserId;
         }
         else if (search === 'groupPosts') {
-            params = '?userId=' + props.showUserId + '&groupId=' + props?.groupId;
+            params = '?groupId=' + props?.groupId;
         }
 
         if (pathname === '/home') {

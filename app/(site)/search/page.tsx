@@ -73,7 +73,6 @@ export default function SearchPage() {
 			fetch(`/api/posts?content=${queryText}`)
 				.then((res) => res.json())
 				.then((data) => {
-					console.log("posts", data)
 					setQueryPosts(data)
 				})
 				.catch((err) => {
@@ -98,7 +97,6 @@ export default function SearchPage() {
 			fetch(`/api/users?query=${queryText}`)
 				.then((res) => res.json())
 				.then((data) => {
-					console.log("users", data)
 					setQueryUsers(data)
 				})
 				.catch((err) => {
