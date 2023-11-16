@@ -153,7 +153,7 @@ export default function Post(props: PostProps) {
                                                         <Avatar className=" h-7 w-7 rounded-lg absolute right-0">
                                                             <Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>
                                                                 <AvatarImage src={props.post?.author?.image} />
-                                                                <AvatarFallback className=' h-7 w-7 rounded-lg bg-background border'><User /></AvatarFallback>
+                                                                <AvatarFallback className=' h-7 w-7 rounded-lg bg-background border'><User className='h-4 w-4'/></AvatarFallback>
                                                             </Link>
                                                         </Avatar>
                                                     </div>
@@ -164,7 +164,7 @@ export default function Post(props: PostProps) {
                                                         <Avatar className=" h-7 w-7 rounded-lg absolute -right-2 -bottom-2">
                                                             <Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>
                                                                 <AvatarImage src={props.post?.author?.image} />
-                                                                <AvatarFallback className=' h-7 w-7 rounded-lg bg-background border'><User /></AvatarFallback>
+                                                                <AvatarFallback className=' h-7 w-7 rounded-lg bg-background border'><User className='h-4 w-4' /></AvatarFallback>
                                                             </Link>
                                                         </Avatar>
                                                     </div>

@@ -17,10 +17,10 @@ export default function GroupCardMenu() {
                     <p className=' text-sm font-semibold'>Posts</p>
                 </Link>
                 <Link
-                    href={{ query: { show: 'users' } }}
-                    className={`w-full flex justify-center items-center m-1 rounded ${show == 'users' && 'bg-primary text-white'}`}
+                    href={{ query: { show: 'members' } }}
+                    className={`w-full flex justify-center items-center m-1 rounded ${show == 'members' && 'bg-primary text-white'}`}
                 >
-                    <p className=' text-sm font-semibold'>Users</p>
+                    <p className=' text-sm font-semibold'>Members</p>
                 </Link>
             </div>
         </div>

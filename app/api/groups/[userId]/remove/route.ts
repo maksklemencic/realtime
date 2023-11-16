@@ -31,6 +31,9 @@ export async function PUT(request: NextRequest, context: { params: { userId: str
                     },
                 },
             },
+            include: {
+                users: true,
+            },
         });
 
         return new NextResponse(JSON.stringify(newGroup), { status: 201, headers: { 'Content-Type': 'application/json' } });

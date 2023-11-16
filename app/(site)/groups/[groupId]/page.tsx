@@ -1,6 +1,7 @@
 "use client"
 import GroupCard from "@/components/groups/groupCard"
 import GroupCardMenu from "@/components/groups/groupCardMenu"
+import GroupUsers from "@/components/groups/groupUsers"
 import Post from "@/components/posts/post"
 import PostFeed from "@/components/posts/postFeed"
 import { Loader2 } from "lucide-react"
@@ -17,14 +18,14 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
         }
     })
 
-    const [group, setGroup] = useState<any[]>([]);
+    const [group, setGroup] = useState<any>({});
     const [loading, setLoading] = useState(true);
     
     const searchParams = useSearchParams();
     const show = searchParams.get('show');
 
     useEffect(() => {
-        fetch(`/api/groups/${session?.user?.id}`)
+        fetch(`/api/groups/${session?.user?.id}?includeUserData=true`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -32,7 +33,7 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
                 throw new Error('Network response was not ok');
             })
             .then((data) => {
-                setGroup(data.filter((group: any) => group.id === params.groupId));
+                setGroup(data.filter((group: any) => group.id === params.groupId)?.[0]);
                 setLoading(false);
             })
             .catch((error) => {
@@ -49,12 +50,15 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
 
             ) : (
                 <>
-                    <GroupCard group={group[0]} setGroup={setGroup} key={group[0]?.id} />
+                    <GroupCard group={group} setGroup={setGroup} key={group.id} />
                     <div className="my-4">
                         <GroupCardMenu />
                     </div>
                     {show === 'groupPosts' && (
                         <PostFeed showUserId={session?.user.id} groupId={params.groupId} />
+                    )}
+                    {show === 'members' && (
+                        <GroupUsers group={group} setGroup={setGroup} sessionUserId={session?.user?.id}/>
                     )}
                     
                 </>
