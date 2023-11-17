@@ -57,6 +57,67 @@ export async function POST(request: NextRequest, context: { params: { userId: st
     }
 }
 
+export async function PUT(request: NextRequest, context: { params: { userId: string } }) {  
+    try {
+        if (request.method !== 'PUT') {
+            return new NextResponse('Method Not Allowed', { status: 405 });
+        }
+
+        const userId = context.params.userId;
+        if (!userId) {
+            return new NextResponse('User ID is required', { status: 400 });
+        }
+
+
+        const body = await request.json();
+
+        if (!body.groupId) {
+            return new NextResponse('Group ID is required', { status: 400 });
+        }
+
+        // if (!body.name) {
+        //     return new NextResponse('Name of the group is required', { status: 400 });
+        // }
+
+        // if (!body.userIds) {
+        //     return new NextResponse('UserIds array is required', { status: 400 });
+        // }
+
+        const group = await prisma.group.findFirst({
+            where: {
+                id: body.groupId,
+            },
+        });
+
+        if (!group) {
+            return new NextResponse('Group not found', { status: 404 });
+        }
+
+        if (group.adminId != null && group.adminId !== userId) {
+            return new NextResponse('You are not the admin of this group', { status: 401 });
+        }
+
+        const updatedGroup = await prisma.group.update({
+            where: {
+                id: body.groupId,
+            },
+            data: {
+                name: body.name ?? group.name,
+                image: body.image ?? group.image,
+                userIds: {
+                    set: body.userIds ?? group.userIds,
+                },
+            },
+        });
+
+        return new NextResponse(JSON.stringify(updatedGroup), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    catch (error) {
+        console.error(error);
+        return new NextResponse('Internal Server Error', { status: 500 });
+    }
+}
+
 export async function GET(request: NextRequest, context: { params: { userId: string } }) {
     try {
         const userId = context.params.userId;
