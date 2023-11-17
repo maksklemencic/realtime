@@ -1,8 +1,11 @@
 "use client"
-import React, { useEffect } from 'react'
+import React, { use, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import { get } from 'http'
+import { useUserData } from '@/context/userData'
+import { group } from 'console'
 
 type BreadCrumbItem = {
     name: string,
@@ -12,12 +15,14 @@ type BreadCrumbItem = {
 function BreadCrumb() {
 
     const pathname = usePathname()
+    const [userName, setUserName] = React.useState<string>('')
+    const [groupName, setGroupName] = React.useState<string>('')
+    const { groups } = useUserData()
+
 
     function displayBreadcrumbs() {
 
-
         const tokens = getBreadcrumbs();
-
         return (
             <div className='w-full h-full flex justify-start items-center px-4'>
                 {tokens.map((item, index) => {
@@ -34,43 +39,51 @@ function BreadCrumb() {
                 })}
             </div>
         )
-
     }
 
+    useEffect(() => {
+        if (groups) {
+            setGroupName(groups.find(group => group.id === pathname.split('/')[2])?.name)
+        }
+    }, [groups, pathname])
+
+    function getUserName(userId: string) {
+        fetch('/api/users?query=&id=' + userId)
+            .then(res => res.json())
+            .then(data => {
+                setUserName(data[0].name)
+            })
+            .catch(err => console.log(err))
+    }
 
     function getBreadcrumbs() {
         const path = pathname.split('/')
         const tokens = path.filter((item) => item != '')
-        // console.log(tokens)
+
         let newTokens: BreadCrumbItem[] = []
 
-        if (tokens[0] === 'users' && tokens.length === 2) {
+
+        if (tokens[0] === 'users') {
+
+            getUserName(tokens[1])
             newTokens = [
-                { name: "Profile", link: '/users/' + tokens[1] }
+                { name: userName !== '' ? userName : "Profile", link: '/users/' + tokens[1] + '?show=posts' },
             ]
+            if (tokens.length === 3 && tokens[2] === 'edit') {
+                newTokens.push({ name: "Edit profile", link: '/users/' + tokens[1] + '/edit' })
+            }
+            else if (tokens.length === 3 && tokens[2] === 'friends') {
+                newTokens.push({ name: "Friends", link: '/users/' + tokens[1] + '/friends' })
+            }
         }
-        else if (tokens[0] === 'users' && tokens.length === 3 && tokens[2] === 'edit') {
-            newTokens = [
-                { name: "Profile", link: '/users/' + tokens[1] },
-                { name: "Edit profile", link: '/users/' + tokens[1] + '/edit' }
-            ]
-        }
-        else if (tokens[0] === 'users' && tokens.length === 3 && tokens[2] === 'friends') {
-            newTokens = [
-                { name: "Profile", link: '/users/' + tokens[1] },
-                { name: "Friends", link: '/users/' + tokens[1] + '/friends' }
-            ]
-        }
-        else if (tokens[0] === 'home' && tokens.length === 2) {
-            newTokens = [
-                { name: 'Home', link: '/home' },
-                { name: "New post", link: '/home/new' }
-            ]
-        }
-        else if (tokens[0] === 'home' && tokens.length === 1) {
+        else if (tokens[0] === 'home') {
             newTokens = [
                 { name: 'Home', link: '/home' },
             ]
+            
+            if (tokens.length === 2 && tokens[1] === 'new') {
+                newTokens.push({ name: 'New', link: '/home/new' })
+            }
         }
         else if (tokens[0] === 'search' && tokens.length === 1) {
             newTokens = [
@@ -83,23 +96,18 @@ function BreadCrumb() {
                 { name: 'Post', link: '/post/' + tokens[1] },
             ]
         }
-        else if (tokens[0] === 'groups' && tokens.length === 1) {
-            newTokens = [
-                { name: 'Groups', link: '/groups' },
-            ]
-        }
-        else if (tokens[0] === 'groups' && tokens.length === 1) {
+        else if (tokens[0] === 'groups') {
+            
             newTokens = [
                 { name: 'My groups', link: '/groups' },
             ]
-        }
-        else if (tokens[0] === 'groups' && tokens.length === 2) {
-            newTokens = [
-                { name: 'My groups', link: '/groups' },
-                tokens[1] === 'new' ? 
-                    { name: 'New', link: '/groups/new' } :
-                    { name: 'Group', link: '/groups/' + tokens[1] + '?show=groupPosts' },
-            ]
+
+            if (tokens.length >= 2) {
+                newTokens.push({ name: groupName !== '' ? groupName : 'Group', link: '/groups/' + tokens[1] + '?show=groupPosts' })
+            }
+            if (tokens.length == 3) {
+                newTokens.push({ name: 'Edit', link: '/groups/' + tokens[1] + '/edit' })
+            }
         }
 
         return newTokens;

@@ -11,6 +11,8 @@ const UserContext = createContext<{
     setFollowing: (following: any[]) => void,
     groups: any[],
     setGroups: (groups: any[]) => void,
+    addNewGroup: (newGroup: any) => void,
+    removeGroup: (groupId: string) => void,
 }>({
     followers: [],
     setFollowers: () => { },
@@ -18,6 +20,8 @@ const UserContext = createContext<{
     setFollowing: () => { },
     groups: [],
     setGroups: () => { },
+    addNewGroup: () => { },
+    removeGroup: () => { },
 });
 
 export const UserDataProvider = ({ children }: any) => {
@@ -32,7 +36,6 @@ export const UserDataProvider = ({ children }: any) => {
         getUserGroups()
     }, [status])
 
-
     function getUserGroups() {
         if (session?.user?.id === undefined) return
         fetch(`/api/groups/${session?.user?.id}`)
@@ -40,6 +43,14 @@ export const UserDataProvider = ({ children }: any) => {
         .then(data => {
             setGroups(data)
         })
+    }
+
+    function addNewGroup(newGroup: any) {
+        setGroups([...groups, newGroup])
+    }
+
+    function removeGroup(groupId: string) {
+        setGroups(groups.filter(group => group.id !== groupId))
     }
     
     const value = {
@@ -49,6 +60,8 @@ export const UserDataProvider = ({ children }: any) => {
         setFollowing,
         groups,
         setGroups,
+        addNewGroup,
+        removeGroup,
     };
 
     return (

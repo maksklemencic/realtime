@@ -93,3 +93,42 @@ export async function GET(request: NextRequest, context: { params: { userId: str
         return new NextResponse('Internal Server Error', { status: 500 });
     }
 }
+
+export async function DELETE(request: NextRequest, context: { params: { userId: string } }) {
+    try {
+
+        const userId = context.params.userId;
+        if (!userId) {
+            return new NextResponse('User ID is required', { status: 400 });
+        }
+
+        const groupId = request.nextUrl.searchParams.get('groupId');
+        if (!groupId) {
+            return new NextResponse('Group ID is required', { status: 400 });
+        }
+
+        const group = await prisma.group.findFirst({
+            where: {
+                id: groupId,
+                adminId: userId,
+            },
+        });
+
+        if (!group) {
+            return new NextResponse('Group not found', { status: 404 });
+        }
+
+        await prisma.group.delete({
+            where: {
+                id: groupId,
+            },
+        });
+
+        return new NextResponse(null, { status: 204 });
+
+    }
+    catch (error) {
+        console.error(error);
+        return new NextResponse('Internal Server Error', { status: 500 });
+    }
+}

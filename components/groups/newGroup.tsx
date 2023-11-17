@@ -8,6 +8,7 @@ import { Badge } from '../ui/badge'
 import { PlusIcon, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { useUserData } from '@/context/userData'
 
 export default function NewGroup() {
 
@@ -17,6 +18,8 @@ export default function NewGroup() {
     const [users, setUsers] = useState<any[]>([])
     const [queryText, setQueryText] = useState('')
     const [groupName, setGroupName] = useState('')
+
+    const { addNewGroup } = useUserData()
 
     const router = useRouter();
 
@@ -51,6 +54,7 @@ export default function NewGroup() {
             .then(res => res.json())
             .then(data => {
                 setGroupMembers([])
+                addNewGroup(data)
                 return { success: true }
             }), {
             loading: 'Creating group...',

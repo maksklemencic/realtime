@@ -44,7 +44,7 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
 
             ) : (
                 <>
-                    <GroupCard group={group} setGroup={setGroup} key={group.id} />
+                    <GroupCard group={group} setGroup={setGroup} key={group?.id} sessionUserId={session?.user?.id} />
                     <div className="my-4">
                         <TabSelector param='show' defaultTab='groupPosts' tabs={['groupPosts', 'members']} tabNames={['Posts', 'Members']} />
                     </div>

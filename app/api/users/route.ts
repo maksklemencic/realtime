@@ -7,10 +7,12 @@ export async function GET(request: NextRequest ) {
 	try {
 		
         const query = request.nextUrl.searchParams.get('query');
+        const id = request.nextUrl.searchParams.get('id');
 
-        // return users that math the query in name or email
+        // return users that math the query in name or email, if there is id only return the user with that id
         const users = await prisma.user.findMany({
             where: {
+                id: id ? id : undefined,
                 OR: [
                     {
                         name: {
@@ -25,6 +27,7 @@ export async function GET(request: NextRequest ) {
                 ],
             },
         });
+       
         
 
         return new NextResponse(JSON.stringify(users), {

@@ -1,18 +1,55 @@
 import React from 'react'
 import { Card, CardContent } from '../ui/card'
-import { Users } from 'lucide-react'
+import { User, Users } from 'lucide-react'
 import { Button } from '../ui/button'
 import Link from 'next/link'
 import { Badge } from '../ui/badge'
 import { formatDate, colors } from '@/lib/consts'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { useRouter } from 'next/navigation'
+import { useUserData } from '@/context/userData'
 
 interface GroupCardProps {
     group: any
     setGroup: (group: any) => void
     key: string
+    sessionUserId: string
 }
 
 export default function GroupCard(props: GroupCardProps) {
+
+    const router = useRouter()
+    const { removeGroup } = useUserData()
+
+    function getAdmin() {
+        return props?.group?.users?.find((user: { id: any }) => user.id === props?.group?.adminId)
+    }
+
+    function handleDeleteGroup() {
+        fetch('/api/groups/' + props?.sessionUserId + '?groupId=' + props.group?.id, {
+            method: 'DELETE',
+        })
+            .then((res) => {
+                if (res.ok) {
+                    // Check if the response has content before trying to parse it as JSON
+                    const contentType = res.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return res.json();
+                    } else {
+                        // If the response is not JSON, return an empty object or whatever is appropriate
+                        return {};
+                    }
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                removeGroup(props.group?.id)
+                props.setGroup(data);
+                router.push('/groups');
+                
+            })
+            .catch((err) => console.log(err));
+    }
 
     return (
         <>
@@ -27,25 +64,44 @@ export default function GroupCard(props: GroupCardProps) {
                             {props?.group?.image !== null && colors.includes(props?.group?.image) && (
                                 <div className={`sm:h-24 sm:w-24 h-16 w-16 rounded-lg ${props?.group?.image}`}></div>
                             )}
-                            <div className='flex flex-col justify-between items-end gap-1'>
+                            <div className='flex flex-col justify-start items-end gap-3'>
                                 <div className='flex flex-row gap-2 items-end'>
                                     <p className='font-semibold text-sm'>Created:</p>
                                     <p className='text-gray-400 text-sm'>{formatDate(props?.group?.createdAt)}</p>
                                 </div>
-                                
+
                                 <div className='flex flex-row items-center gap-2'>
                                     <p className='font-semibold text-sm'>Members:</p>
                                     <Badge className='h-6 w-fit'><Users className='h-4 w-4 mr-1' />{props?.group?.userIds?.length}</Badge>
                                 </div>
+                                {getAdmin() && (
+                                    <div className='flex gap-4 items-center'>
+                                        <p className='font-semibold text-sm'>Admin:</p>
+                                        <div className='flex gap-2 items-center'>
+                                            <Avatar className=" h-8 w-8 rounded-lg">
+                                                <AvatarImage src={getAdmin()?.image} />
+                                                <AvatarFallback className=' h-8 w-8 rounded-lg bg-background border'><User /></AvatarFallback>
+                                            </Avatar>
+                                            <p>{getAdmin()?.name}</p>
+                                        </div>
+                                    </div>
+                                )}
+
                             </div>
                         </div>
                         <p className='font-semibold mt-2 mx-1'>{props?.group?.name}</p>
                         <div className='flex gap-2 w-full mt-4 justify-end'>
+                            {props?.group?.adminId === props?.sessionUserId && (
+                                <Link className='w-fit' href={'/groups/' + props?.group?.id + '/edit'} >
+                                    <Button className='h-8 w-fit' variant='secondary'>Edit</Button>
+                                </Link>
+                            )}
+                            {props?.group?.adminId === props?.sessionUserId ? (
+                                <Button className='h-8 w-fit' variant='destructive' onClick={() => handleDeleteGroup()}>Delete</Button>
+                            ) : (
+                                <Button className='h-8 w-fit' variant='destructive'>Leave</Button>
+                            )}
 
-                            <Link className='w-fit' href={'/groups/' + props?.group?.id + '/edit'} >
-                                <Button className='h-8 w-fit' variant='secondary'>Edit</Button>
-                            </Link>
-                            <Button className='h-8 w-fit' variant='destructive'>Leave</Button>
                         </div>
                     </CardContent>
                 </Card>

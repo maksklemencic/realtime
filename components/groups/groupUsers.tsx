@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Dot, Minus, User } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { useUserData } from '@/context/userData';
+import { set } from 'zod';
 
 interface GroupUsersProps {
     group: any,
@@ -14,6 +16,7 @@ interface GroupUsersProps {
 
 export default function GroupUsers(props: GroupUsersProps) {
 
+    const { groups, setGroups } = useUserData()
 
     function removeUserFromGroup(userId: string) {
         fetch(`/api/groups/${userId}/remove`, {
@@ -28,6 +31,13 @@ export default function GroupUsers(props: GroupUsersProps) {
             .then(res => res.json())
             .then(data => {
                 props.setGroup(data)
+                setGroups(groups.map((group: any) => {
+                    if (group.id === data.id) {
+                        return data
+                    }
+                    return group
+                }))
+                console.log(data)
             })
     }
 
