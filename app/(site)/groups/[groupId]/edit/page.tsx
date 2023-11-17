@@ -18,12 +18,13 @@ export default function GroupsGroupEditPage({ params }: { params: { groupId: str
 
     useEffect(() => {
         if (session?.user?.id === undefined || !groups) return
+        
         const group = groups?.find(group => group.id === params.groupId)
         if (session?.user?.id !== group?.adminId) {
             router.push('/groups/' + params.groupId + '?show=groupPosts')
         }
 
-    }, [session, params])
+    }, [session])
 
     useEffect(() => {
         fetch(`/api/groups/${session?.user?.id}?includeUserData=true`)

@@ -13,6 +13,7 @@ const UserContext = createContext<{
     setGroups: (groups: any[]) => void,
     addNewGroup: (newGroup: any) => void,
     removeGroup: (groupId: string) => void,
+    updateGroup: (groupId: string, updatedGroup: any) => void,
 }>({
     followers: [],
     setFollowers: () => { },
@@ -22,6 +23,7 @@ const UserContext = createContext<{
     setGroups: () => { },
     addNewGroup: () => { },
     removeGroup: () => { },
+    updateGroup: () => { },
 });
 
 export const UserDataProvider = ({ children }: any) => {
@@ -52,6 +54,16 @@ export const UserDataProvider = ({ children }: any) => {
     function removeGroup(groupId: string) {
         setGroups(groups.filter(group => group.id !== groupId))
     }
+
+    function updateGroup(groupId: string, updatedGroup: any) {
+        setGroups(groups.map(group => {
+            if (group.id === groupId) {
+                return updatedGroup
+            } else {
+                return group
+            }
+        }))
+    }
     
     const value = {
         followers,
@@ -62,6 +74,7 @@ export const UserDataProvider = ({ children }: any) => {
         setGroups,
         addNewGroup,
         removeGroup,
+        updateGroup,
     };
 
     return (

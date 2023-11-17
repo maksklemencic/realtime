@@ -7,6 +7,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { useUserData } from '@/context/userData';
 import { set } from 'zod';
+import toast from 'react-hot-toast';
 
 interface GroupUsersProps {
     group: any,
@@ -37,15 +38,21 @@ export default function GroupUsers(props: GroupUsersProps) {
                     }
                     return group
                 }))
-                console.log(data)
+                toast.success(`User removed from group`)
             })
+    }
+
+    function displayAdminOnTop() {
+        const admin = props.group?.users?.find((user: any) => user.id === props.group?.adminId)
+        const users = props.group?.users?.filter((user: any) => user.id !== props.group?.adminId)
+        return [admin, ...users]
     }
 
     return (
         <div>
             <Card className=''>
                 <CardContent className='p-0'>
-                    {props.group?.users?.map((user: any, index: any) => (
+                    {displayAdminOnTop()?.map((user: any, index: any) => (
                         <div key={user.id} className={`flex items-center justify-between p-2 ${index < props.group?.users?.length - 1 && ' border-b-2'}`}>
                             <div className='flex items-center gap-2'>
                                 <Avatar className=" h-9 w-9 rounded-lg">

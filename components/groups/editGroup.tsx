@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '../ui/card'
 import { colors, formatDate } from '@/lib/consts'
 import { Badge } from '../ui/badge'
-import { PlusIcon, Users, X } from 'lucide-react'
+import { Loader2, PlusIcon, Users, X } from 'lucide-react'
 import { Input } from '../ui/input'
 import { useSession } from 'next-auth/react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useUserData } from '@/context/userData';
 
 interface EditGroupProps {
     group: any
@@ -23,13 +24,13 @@ export default function EditGroup(props: EditGroupProps) {
     const [queryText, setQueryText] = useState('')
     const [users, setUsers] = useState<any[]>([])
 
+    const { updateGroup } = useUserData()
     const { data: session } = useSession()
 
     function filterNotSelectedUsers(users: any[]) {
         return users.filter((user) => {
             return !groupMembers?.some((member) => member.id === user.id) && user.id !== session?.user?.id
         })
-
     }
 
     function handleUpdateGroup() {
@@ -50,6 +51,7 @@ export default function EditGroup(props: EditGroupProps) {
         })
             .then(res => res.json())
             .then(data => {
+                updateGroup(props?.group?.id ,data)
                 router.push('/groups/' + props?.group?.id + '?show=groupPosts')
                 toast.success('Group updated')
             })
@@ -70,7 +72,12 @@ export default function EditGroup(props: EditGroupProps) {
 
     return (
         <div>
-            {props?.group && (
+            {!props?.group?.id && (
+                <div className='w-full h-32 flex justify-center items-center'>
+                    <Loader2 className='animate-spin w-8 h-8' />
+                </div>
+            )}
+            {props?.group?.id && (
                 <Card className='col-span-1'>
                     <CardContent className='p-4'>
                         <div className='flex justify-between '>
