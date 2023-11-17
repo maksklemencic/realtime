@@ -1,22 +1,11 @@
 "use client"
-import React, { use, useEffect } from 'react'
-import ProfileCard from '@/components/users/profileCard'
-import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
-import PostFeed from '@/components/posts/postFeed'
+import React, { useEffect } from 'react'
 import Post from '@/components/posts/post'
 import NewComment from '@/components/comments/newComment'
 import DisplayComments from '@/components/comments/displayComments'
 import { Separator } from '@/components/ui/separator'
 
 export default function PostPostIdPage({ params }: { params: { postId: string } }) {
-
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/login')
-        }
-    })
 
     const [post, setPost] = React.useState<any[]>([]);
     const [comments, setComments] = React.useState<any[]>([]);

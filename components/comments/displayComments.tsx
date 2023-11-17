@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react'
 import Comment from './comment';
-import { Skeleton } from '../ui/skeleton';
 import { Loader2 } from 'lucide-react';
 
 interface DisplayCommentsProps {

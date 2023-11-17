@@ -11,13 +11,15 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
-
+import { formatDateAndTime } from '@/lib/consts'
 
 export default function ProfileEdit() {
 
     const { data: session } = useSession()
+    
     const [editUser, setEditUser] = React.useState<any>(null);
     const [loading, setLoading] = React.useState(false);
+    
     const router = useRouter();
 
     React.useEffect(() => {
@@ -37,11 +39,6 @@ export default function ProfileEdit() {
                 console.error('Error fetching user:', error);
             });
     }, [])
-
-    function formatDateAndTime(date: string) {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' } as const;
-        return new Date(date).toLocaleDateString('de-DE', options);
-    }
 
     function handleEdit() {
         toast.promise(
@@ -92,7 +89,6 @@ export default function ProfileEdit() {
                                 fill
                             />
                         </AspectRatio>
-
                     </div>
 
                     <div className='flex flex-row items-end mt-6 gap-4 px-6'>

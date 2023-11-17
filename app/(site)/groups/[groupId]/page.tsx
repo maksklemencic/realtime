@@ -1,9 +1,8 @@
 "use client"
 import GroupCard from "@/components/groups/groupCard"
-import GroupCardMenu from "@/components/groups/groupCardMenu"
 import GroupUsers from "@/components/groups/groupUsers"
-import Post from "@/components/posts/post"
 import PostFeed from "@/components/posts/postFeed"
+import TabSelector from "@/components/tabs"
 import { Loader2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { redirect, useSearchParams } from "next/navigation"
@@ -11,12 +10,7 @@ import React, { useEffect, useState } from "react"
 
 export default function GroupsGroupPage({ params }: { params: { groupId: string } }) {
 
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/login')
-        }
-    })
+    const { data: session } = useSession();
 
     const [group, setGroup] = useState<any>({});
     const [loading, setLoading] = useState(true);
@@ -52,7 +46,7 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
                 <>
                     <GroupCard group={group} setGroup={setGroup} key={group.id} />
                     <div className="my-4">
-                        <GroupCardMenu />
+                        <TabSelector param='show' defaultTab='groupPosts' tabs={['groupPosts', 'members']} tabNames={['Posts', 'Members']} />
                     </div>
                     {show === 'groupPosts' && (
                         <PostFeed showUserId={session?.user.id} groupId={params.groupId} />
@@ -60,7 +54,6 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
                     {show === 'members' && (
                         <GroupUsers group={group} setGroup={setGroup} sessionUserId={session?.user?.id}/>
                     )}
-                    
                 </>
             )}
         </div >

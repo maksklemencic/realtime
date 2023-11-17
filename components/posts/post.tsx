@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { Skeleton } from '../ui/skeleton'
 import SkeletonPost from './skeletonPost'
 import { useSearchParams } from 'next/navigation'
+import { colors, formatDateAndTime } from '@/lib/consts'
 
 type PostProps = {
     key: string,
@@ -24,16 +25,6 @@ export default function Post(props: PostProps) {
     const [comments, setComments] = React.useState<any[]>([]);
     const searchParams = useSearchParams()
     const search = searchParams.get('show')
-
-    function formatDate(date: string) {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
-        return new Date(date).toLocaleDateString('de-DE', options);
-    }
-
-    function formatDateAndTime(date: string) {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' } as const;
-        return new Date(date).toLocaleDateString('de-DE', options);
-    }
 
     useEffect(() => {
         if (!props.post) return;
@@ -53,7 +44,6 @@ export default function Post(props: PostProps) {
     }, [props.post?.id])
 
     useEffect(() => {
-        // get post comments
         if (!props.post || props.comments) return;
         fetch(`/api/posts/comments?post=${props.post?.id}`)
             .then((response) => {
@@ -71,7 +61,6 @@ export default function Post(props: PostProps) {
     }, [props.post])
 
     function handleLike() {
-
         if (!likes.find((item: any) => (item.userId === session?.user?.id))) {
             fetch(`/api/like`, {
                 method: 'POST',
@@ -125,17 +114,6 @@ export default function Post(props: PostProps) {
         }
     }
 
-    const colors = [
-        'bg-red-500',
-        'bg-yellow-500',
-        'bg-green-500',
-        'bg-blue-500',
-        'bg-indigo-500',
-        'bg-purple-500',
-        'bg-pink-500',
-    ]
-
-
     return (
         <>
             {props.post ? (
@@ -157,7 +135,6 @@ export default function Post(props: PostProps) {
                                                             </Link>
                                                         </Avatar>
                                                     </div>
-
                                                 )}
                                                 {props?.post?.group?.image !== null && colors.includes(props.post?.group?.image) && (
                                                     <div className={`h-10 w-10 rounded-lg relative ${props?.post?.group?.image}`}>
@@ -172,17 +149,13 @@ export default function Post(props: PostProps) {
 
                                             </>
                                         ) : (
-
                                             <Avatar className=" h-10 w-10 rounded-lg">
                                                 <Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>
                                                     <AvatarImage src={props.post?.author?.image} />
                                                     <AvatarFallback className=' h-10 w-10 rounded-lg bg-background border'><User /></AvatarFallback>
                                                 </Link>
                                             </Avatar>
-
                                         )}
-
-
                                     </div>
                                     <div className=' w-full '>
                                         {props.post?.group ? (
@@ -196,7 +169,6 @@ export default function Post(props: PostProps) {
                                                 <div className='text-gray-400 text-sm'><Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>{props.post?.author?.email}</Link></div>
                                             </>
                                         )}
-
                                         <div className='mt-4 '>
                                             {props.post?.content}
                                         </div>
@@ -219,7 +191,6 @@ export default function Post(props: PostProps) {
                                                 )}
                                             </>
                                         )}
-
                                         <MessageSquare className={`h-4 w-4 text-blue-400`} />
                                     </div>
                                     <div

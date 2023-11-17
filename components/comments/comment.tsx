@@ -3,14 +3,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Link from 'next/link'
 import { User } from 'lucide-react'
 import { Card, CardContent } from '../ui/card'
+import { formatDateAndTime } from '@/lib/consts'
 
 interface CommentProps {
     comment: any
-}
-
-function formatDateAndTime(date: string) {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' } as const;
-    return new Date(date).toLocaleDateString('de-DE', options);
 }
 
 export default function Comment(props: CommentProps) {

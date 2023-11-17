@@ -1,22 +1,17 @@
 "use client"
-
-import React, { use, useEffect } from 'react'
-import { Card, CardContent, CardHeader } from '../ui/card'
-import { set } from 'react-hook-form'
+import React, { useEffect } from 'react'
+import { Card, CardContent } from '../ui/card'
 import { useSession } from 'next-auth/react'
 import { AspectRatio } from '@radix-ui/react-aspect-ratio'
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Edit, User, UserMinus, UserPlus } from 'lucide-react'
 import { Button } from '../ui/button'
-import { ScrollArea } from '../ui/scroll-area'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { get } from 'http'
 import { Skeleton } from '../ui/skeleton'
-
 
 type ProfileCardProps = {
     userId: string
@@ -37,7 +32,6 @@ function ProfileCard(props: ProfileCardProps) {
 
     useEffect(() => {
         setLoading(true);
-        // fetch user data
         fetch(`/api/users/${props.userId}`)
             .then((response) => {
                 if (response.ok) {
@@ -144,11 +138,6 @@ function ProfileCard(props: ProfileCardProps) {
             });
     }
 
-    function formatDate(date: string) {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
-        return new Date(date).toLocaleDateString('de-DE', options);
-    }
-
     return (
         <div className=''>
             <Card >
@@ -213,14 +202,6 @@ function ProfileCard(props: ProfileCardProps) {
                             <p className='text-sm text-gray-500'>{displayUser?.email}</p>
                         )}
                     </div>
-                    {/* {displayUser?.bio && (
-                        <Card className='mx-6 my-2 bg-gray-50 dark:bg-muted overflow-auto'>
-                            <CardContent className='py-2 max-h-32 '>
-                                <p className='font-semibold'>Bio</p>
-                                <p className='text-sm '>{displayUser?.bio} </p>
-                            </CardContent>
-                        </Card >
-                    )} */}
                     <div className='mx-0 md:mx-8 py-2 mt-4 flex justify-evenly'>
                         <Link href={{ pathname: `/users/${props.userId}/friends`, query: { show: 'followers' } }}
                         className='flex flex-col-reverse items-center gap-1 hover:bg-muted hover:rounded p-2 hover:cursor-pointer'>
@@ -279,8 +260,6 @@ function ProfileCard(props: ProfileCardProps) {
                     </Tabs>
                 </CardContent>
             </Card>
-
-
         </div >
 
     )

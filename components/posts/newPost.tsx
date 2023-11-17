@@ -1,9 +1,7 @@
 "use client"
-import React, { use, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '../ui/card'
-import { Textarea } from '../ui/textarea'
 import useAutosizeTextArea from '@/hooks/useAutoSizeTextArea';
-import { ScrollArea } from '../ui/scroll-area';
 import { AtSign, Image, LocateFixedIcon, Smile, Users } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
@@ -12,8 +10,11 @@ import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 import Link from 'next/link';
+import { colors } from '@/lib/consts';
 
 export default function NewPost() {
+
+    const router = useRouter()
 
     const [textContent, setTextContent] = useState("");
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -21,14 +22,7 @@ export default function NewPost() {
 
     const [groups, setGroups] = useState([])
 
-    const router = useRouter()
-
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/login')
-        }
-    })
+    const { data: session } = useSession();
 
     const searchParams = useSearchParams();
     const to = searchParams.get('to');
@@ -64,17 +58,6 @@ export default function NewPost() {
             icon: <AtSign />,
             color: "bg-red-400",
         }
-    ]
-
-
-    const colors = [
-        'bg-red-500',
-        'bg-yellow-500',
-        'bg-green-500',
-        'bg-blue-500',
-        'bg-indigo-500',
-        'bg-purple-500',
-        'bg-pink-500',
     ]
 
     const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -178,7 +161,6 @@ export default function NewPost() {
             </div>
             <Card>
                 <CardContent className='p-2'>
-
                     <textarea
                         id="review-text"
                         onChange={handleChange}
@@ -201,7 +183,6 @@ export default function NewPost() {
                             <Button className='h-8' onClick={() => createNewPost()}>Post</Button>
                         </div>
                     </div>
-
                 </CardContent>
             </Card>
         </div>

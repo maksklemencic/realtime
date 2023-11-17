@@ -1,15 +1,10 @@
-"use client"
-import React, { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import React from 'react'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Moon, Sun, Bell, User, Settings, LogOut, LucideUserCog, UserCog, SunMoon, Search } from 'lucide-react'
+import { Moon, Sun, User, LogOut, UserCog, SunMoon, Search } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { Input } from './ui/input'
 
 function Navbar() {
     const { theme, setTheme } = useTheme()
@@ -24,11 +19,6 @@ function Navbar() {
                 </Link>
             </div>
             <div className="hidden lg:ml-48 ml-20 md:flex items-center px-4">
-                
-                {/* <Link href='/search'>
-                    <Input placeholder="Search" />
-                    
-                </Link> */}
                 <Link 
                     href='/search'
                     className='text-sm text-gray-400 rounded-md w-52 h-10 border flex items-center justify-between py-1 px-3 hover:cursor-pointer hover:bg-border'
@@ -38,7 +28,6 @@ function Navbar() {
                 </Link>
             </div>
             <ul className='flex items-center justify-end gap-4 h-full px-4'>
-                {/* {session?.user?.name}  {session?.user?.email} */}
                 <li>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

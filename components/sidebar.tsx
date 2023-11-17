@@ -1,33 +1,18 @@
-"use client"
-import React, { use, useEffect, useState } from 'react'
-import { Contact, Users, Search, Home, MessageCircle, PlusCircle, Heart, MailPlus, BadgePlus, Loader2 } from "lucide-react";
+import React from 'react'
+import { Users, Home, MessageCircle, MailPlus, BadgePlus, Loader2 } from "lucide-react";
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { usePathname } from 'next/navigation';
-import { Separator } from '@radix-ui/react-dropdown-menu';
 import { ScrollArea } from './ui/scroll-area';
-import { useSession } from 'next-auth/react';
+import { useUserData } from '@/context/userData';
+import { colors } from '@/lib/consts';
 
 export const Sidebar: React.FC = () => {
 
     const pathname = usePathname()
 
-    const { data: session, status } = useSession()
-    const [groups, setGroups] = useState([])
-    const [groupsLoading, setGroupsLoading] = useState(true)
+    const { groups } = useUserData()
 
-    useEffect(() => {
-        setGroupsLoading(true)
-        fetch(`/api/groups/${session?.user?.id}`)
-            .then(res => res.json())
-            .then(data => {
-                setGroups(data)
-                setGroupsLoading(false)
-            })
-
-    }, [])
-
-    const iconSize = "h-6 w-6";
     const sidebarItems = [
         {
             icon: <Home />,
@@ -46,18 +31,6 @@ export const Sidebar: React.FC = () => {
         },
     ];
 
-    const testGroups = [
-        {
-            name: "test group 1",
-            image: "https://unsplash.com/photos/a-scuba-diver-swims-over-a-colorful-coral-reef-_tDdlCJIwOA",
-        },
-        {
-            name: "test group 2",
-            image: "https://unsplash.com/photos/a-red-house-sitting-on-top-of-a-rock-next-to-the-ocean-6w9qArq4DT4",
-        }
-    ];
-
-
     const actions = [
         {
             icon: <MailPlus />,
@@ -70,16 +43,6 @@ export const Sidebar: React.FC = () => {
             tooltip: "New Group",
         },
     ];
-
-    const colors = [
-        'bg-red-500',
-        'bg-yellow-500',
-        'bg-green-500',
-        'bg-blue-500',
-        'bg-indigo-500',
-        'bg-purple-500',
-        'bg-pink-500',
-    ]
 
 
     return (
@@ -131,12 +94,12 @@ export const Sidebar: React.FC = () => {
                 </div>
 
                 <ScrollArea className={`hidden md:flex h-[calc(100vh-400px)] min-h-[48px] w-full `} >
-                    {groupsLoading && (
+                    {!groups && (
                         <div className='text-center text-white text-sm'>
                             <Loader2 className='mx-auto h-16 animate-spin' size={24} />
                         </div>
                     )}
-                    {!groupsLoading && groups.map((group: any) => {
+                    {groups && groups.map((group: any) => {
                         return (
                             <Link href={`/groups/${group?.id}?show=groupPosts`} key={group?.id}>
                                 <div className=" flex items-center justify-center lg:justify-start gap-2 w-full p-2 my-1 text-sm font-semibold hover:bg-muted  rounded-md" >
@@ -152,7 +115,7 @@ export const Sidebar: React.FC = () => {
                             </Link>
                         );
                     })}
-                    {!groupsLoading && groups.length === 0 && (
+                    {groups && groups.length === 0 && (
                         <div className='text-center text-white text-sm'>
                             You are not in any groups
                         </div>
@@ -178,11 +141,9 @@ export const Sidebar: React.FC = () => {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                    );
-                }
+                    )}
                 )}
             </div>
-
         </div>
     );
 };

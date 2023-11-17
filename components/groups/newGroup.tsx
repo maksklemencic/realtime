@@ -1,21 +1,18 @@
 "use client"
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '../ui/card'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { useSession } from 'next-auth/react'
 import { Badge } from '../ui/badge'
-import { Separator } from '../ui/separator'
-import { Check, PlusIcon, X } from 'lucide-react'
+import { PlusIcon, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
-
-
-
 
 export default function NewGroup() {
 
     const { data: session } = useSession()
+   
     const [groupMembers, setGroupMembers] = useState<any[]>([])
     const [users, setUsers] = useState<any[]>([])
     const [queryText, setQueryText] = useState('')
@@ -27,13 +24,11 @@ export default function NewGroup() {
         fetch(`/api/users?query=${queryText}`)
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 setUsers(data)
             })
     }, [queryText])
 
     function filterNotSelectedUsers(users: any[]) {
-
         return users.filter((user) => {
             return !groupMembers.some((member) => member.id === user.id) && user.id !== session?.user?.id
         })
@@ -64,10 +59,8 @@ export default function NewGroup() {
                 return `Group created`
             },
             error: 'Error creating group'
-        }
-        )
+        })
     }
-
 
     return (
         <Card className='col-span-1'>
@@ -122,7 +115,6 @@ export default function NewGroup() {
                                 <p className='font-semibold'>Add members</p>
                                 <Input className='mt-2' placeholder='Search for users' onChange={(e: any) => setQueryText(e.target.value)} />
                             </div>
-
                             <div className='flex flex-col gap-2 mt-4'>
                                 {filterNotSelectedUsers(users)?.map((user, i) => {
                                     return (
@@ -152,10 +144,8 @@ export default function NewGroup() {
 
                                 )}
                             </div>
-
                         </CardContent>
                     </Card>
-
                 </div>
             </CardContent>
         </Card>

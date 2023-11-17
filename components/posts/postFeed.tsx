@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react';
 import { Loader2 } from 'lucide-react';
 import { usePathname } from 'next/navigation'
-import { Button } from '../ui/button';
 
 interface PostFeedProps {
     showUserId: string
@@ -15,18 +14,15 @@ interface PostFeedProps {
 export default function PostFeed(props: PostFeedProps) {
 
     const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const searchParams = useSearchParams()
     const search = searchParams.get('show')
     const pathname = usePathname()
 
-
     const { data: session } = useSession()
 
-    const [loading, setLoading] = useState(false);
-
     useEffect(() => {
-
         getPosts();
     }, [search]);
 
@@ -72,7 +68,6 @@ export default function PostFeed(props: PostFeedProps) {
     function removePostFromLkedPosts(postId: string) {
         setPosts(posts.filter((post: any) => post.id !== postId))
     }
-
 
     return (
         <div className=''>

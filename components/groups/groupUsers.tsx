@@ -1,6 +1,4 @@
-"use client"
-
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Card, CardContent } from '../ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';

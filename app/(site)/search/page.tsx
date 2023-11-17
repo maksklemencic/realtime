@@ -7,10 +7,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { User } from 'lucide-react'
-import { useSession } from 'next-auth/react'
-import { redirect, useSearchParams } from 'next/dist/client/components/navigation'
+import { useSearchParams } from 'next/dist/client/components/navigation'
 import Link from 'next/link'
-import React, { use, useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 interface HighlightedSubstringProps {
 	text: string;
@@ -18,18 +17,14 @@ interface HighlightedSubstringProps {
 }
 
 export default function SearchPage() {
-	const { data: session, status } = useSession({
-		required: true,
-		onUnauthenticated() {
-			redirect('/login')
-		}
-	})
+
 	const [selectedFilters, setSelectedFilters] = React.useState<any[]>(['posts', 'groups', 'users'])
 	const [queryText, setQueryText] = React.useState<string>('')
 	
 	const [queryPosts, setQueryPosts] = React.useState<any[]>([])
 	const [postsDisplayCount, setPostsDisplayCount] = React.useState<number>(5)
 
+	// not done yet
 	const [queryGroups, setQueryGroups] = React.useState<any[]>([])
 
 	const [queryUsers, setQueryUsers] = React.useState<any[]>([])

@@ -5,13 +5,19 @@ import { Sidebar } from "@/components/sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function SiteLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
-    const { status } = useSession();
+    const { data: session, status } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect('/login')
+        }
+    })
     return (
         <>
             {status === 'authenticated' && (
@@ -43,7 +49,7 @@ export default function SiteLayout({
                     <Loader2 className="h-12 w-12 text-primary animate-spin" />
                 </div>
             )}
-            {status === 'unauthenticated' && (
+            {status !== 'authenticated' && status !== "loading" && (
                 <>
                     {children}
                 </>

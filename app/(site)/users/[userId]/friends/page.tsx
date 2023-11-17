@@ -7,18 +7,12 @@ import { redirect, useSearchParams } from 'next/navigation'
 import React, { use, useEffect } from 'react'
 
 export default function UserFriendsPage({ params }: { params: { userId: string } }) {
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/login')
-        }
-    })
+    const { data: session } = useSession();
 
     const searchParams = useSearchParams();
     const show = searchParams.get('show');
 
     const [users, setUsers] = React.useState<any[]>([])
-    const [myFollowing, setMyFollowing] = React.useState<any[]>([])
     const [loading, setLoading] = React.useState(false)
 
     useEffect(() => {
@@ -26,7 +20,7 @@ export default function UserFriendsPage({ params }: { params: { userId: string }
         fetch(`/api/users/${session?.user?.id}/following`)
             .then((res) => res.json())
             .then((data) => {
-                setMyFollowing(data)
+                
                 let foll = data;
                 
                 fetch(`/api/users/${params.userId}/${show}`)
@@ -74,10 +68,7 @@ export default function UserFriendsPage({ params }: { params: { userId: string }
                     <p className=' text-sm font-semibold'>Following</p>
                 </Link>
             </div>
-
             <UsersList users={users} setUsers={setUsers} loading={loading} displayType={show === "followers" ? "followers" : "following"} displayUserId={params.userId}/>
-
-
         </div>
     )
 }

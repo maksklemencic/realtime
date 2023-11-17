@@ -1,7 +1,5 @@
 "use client"
 import React from 'react'
-import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
 import DisplayGroups from '@/components/groups/displayGroups'
 import { PlusCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -9,13 +7,6 @@ import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 
 export default function GroupsPage() {
-
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      redirect('/login')
-    }
-  })
 
   return (
     <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56'>
