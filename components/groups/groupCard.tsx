@@ -8,6 +8,7 @@ import { formatDate, colors } from '@/lib/consts'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { useRouter } from 'next/navigation'
 import { useUserData } from '@/context/userData'
+import toast from 'react-hot-toast'
 
 interface GroupCardProps {
     group: any
@@ -46,7 +47,7 @@ export default function GroupCard(props: GroupCardProps) {
                 removeGroup(props.group?.id)
                 props.setGroup(data);
                 router.push('/groups');
-                
+                toast.success('Group deleted')
             })
             .catch((err) => console.log(err));
     }

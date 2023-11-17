@@ -7,11 +7,39 @@ import { Button } from '../ui/button'
 import Link from 'next/link'
 import { useUserData } from '@/context/userData'
 import { colors, formatDate } from '@/lib/consts'
+import toast from 'react-hot-toast'
 
 export default function DisplayGroups() {
 
     const { data: session } = useSession()
     const { groups } = useUserData()
+
+    const { removeGroup } = useUserData()   
+
+    
+    function handleDeleteGroup(groupId: string) {
+        fetch('/api/groups/' + session?.user?.id + '?groupId=' + groupId, {
+            method: 'DELETE',
+        })
+            .then((res) => {
+                if (res.ok) {
+                    // Check if the response has content before trying to parse it as JSON
+                    const contentType = res.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return res.json();
+                    } else {
+                        // If the response is not JSON, return an empty object or whatever is appropriate
+                        return {};
+                    }
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                removeGroup(groupId)
+                toast.success('Group deleted')
+            })
+            .catch((err) => console.log(err));
+    }
 
     return (
         <div className=''>
@@ -48,15 +76,26 @@ export default function DisplayGroups() {
                                     <Link className='w-1/3' href={'/groups/' + group?.id + '?show=groupPosts'} >
                                         <Button className='h-8 w-full' variant='secondary'>View</Button>
                                     </Link>
-                                    
-                                    <Link className='w-1/3' href={'/groups/' + group?.id + '/edit'} >
-                                        <Button disabled={session?.user?.id !== group?.adminId} className='h-8 w-full' variant='secondary'>Edit</Button>
-                                    </Link>
-                                    <Button className='h-8 w-1/3' variant='destructive'>Leave</Button>
+                                    {session?.user?.id === group?.adminId ? (
+                                        <Link className='w-1/3' href={'/groups/' + group?.id + '/edit'} >
+                                            <Button disabled={session?.user?.id !== group?.adminId} className='h-8 w-full' variant='secondary'>Edit</Button>
+                                        </Link>
+                                    ) : (
+                                        <Button disabled={session?.user?.id !== group?.adminId} className='w-1/3 h-8' variant='secondary'>Edit</Button>
+                                    )}
+
+                                    <div className='w-1/3 flex flex-col'>
+                                        {session?.user?.id !== group?.adminId ? (
+                                            <Button className='h-8 w-full' disabled={session?.user?.id === group?.adminId} variant='destructive'>Leave</Button>
+                                        ) : (
+                                            <Button className='h-8 w-full' disabled={session?.user?.id !== group?.adminId} variant='destructive' onClick={() => handleDeleteGroup(group?.id)}>Delete</Button>
+                                        )}
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
-                    )}
+                    )
+                }
                 )}
             </div>
         </div>
