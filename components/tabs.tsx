@@ -13,10 +13,6 @@ export default function TabSelector(props: TabSelectorProps) {
 
     const searchParams = useSearchParams();
     const param = searchParams.get(props.param);
-
-    function capilaize(string: string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
     
     return (
         <div>

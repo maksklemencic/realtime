@@ -7,9 +7,7 @@ import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Edit, User, UserMinus, UserPlus } from 'lucide-react'
 import { Button } from '../ui/button'
-import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Skeleton } from '../ui/skeleton'
 
@@ -17,7 +15,7 @@ type ProfileCardProps = {
     userId: string
 }
 
-function ProfileCard(props: ProfileCardProps) {
+export default function ProfileCard(props: ProfileCardProps) {
 
     const { data: session } = useSession();
     const [displayUser, setDisplayUser] = React.useState<any>(null);
@@ -27,8 +25,6 @@ function ProfileCard(props: ProfileCardProps) {
     const [following, setFollowing] = React.useState<any[]>([]);
 
     const [loading, setLoading] = React.useState<boolean>(false);
-
-    const router = useRouter();
 
     useEffect(() => {
         setLoading(true);
@@ -224,45 +220,7 @@ function ProfileCard(props: ProfileCardProps) {
 
                 </CardContent>
             </Card >
-            <Card className='mt-4'>
-                <CardContent className='p-0'>
-                    <Tabs className='' defaultValue='posts'>
-                        <TabsList className="grid w-full grid-cols-3">
-                            <Link
-                                href={{
-                                    pathname: `/users/${props.userId}`,
-                                    query: { show: 'posts' }
-                                }}
-                                className=' w-full flex justify-center'
-                            >
-                                <TabsTrigger value="posts" className='w-full'>Posts</TabsTrigger>
-                            </Link>
-                            <Link
-                                href={{
-                                    pathname: `/users/${props.userId}`,
-                                    query: { show: 'liked' }
-                                }}
-                                className=' w-full flex justify-center'
-                            >
-                                <TabsTrigger value="liked" className='w-full'>Liked</TabsTrigger>
-                            </Link>
-                            <Link
-                                href={{
-                                    pathname: `/users/${props.userId}`,
-                                    query: { show: 'comments' }
-                                }}
-                                className=' w-full flex justify-center'
-                            >
-                                <TabsTrigger value="comments" className='w-full'>Commented</TabsTrigger>
-                            </Link>
-
-                        </TabsList>
-                    </Tabs>
-                </CardContent>
-            </Card>
         </div >
 
     )
 }
-
-export default ProfileCard

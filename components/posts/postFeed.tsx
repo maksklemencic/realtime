@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation'
 interface PostFeedProps {
     showUserId: string
     groupId?: string
+    filterHomeFeed?: string
 }
 
 export default function PostFeed(props: PostFeedProps) {
@@ -24,7 +25,7 @@ export default function PostFeed(props: PostFeedProps) {
 
     useEffect(() => {
         getPosts();
-    }, [search]);
+    }, [search, props.filterHomeFeed]);
 
     function getPosts() {
         setLoading(true);
@@ -37,7 +38,7 @@ export default function PostFeed(props: PostFeedProps) {
         else if (search === 'liked') {
             params = '/liked?author=' + props.showUserId;
         }
-        else if (search === 'comments') {
+        else if (search === 'commented') {
             params = '/commented?author=' + props.showUserId;
         }
         else if (search === 'groupPosts') {
@@ -45,7 +46,7 @@ export default function PostFeed(props: PostFeedProps) {
         }
 
         if (pathname === '/home') {
-            params = '/' + session?.user?.id;
+            params = `/${session?.user?.id}?select=${props.filterHomeFeed}`;
         }
 
         fetch(apiUrl + params)

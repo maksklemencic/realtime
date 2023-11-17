@@ -100,7 +100,6 @@ export default function NewPost() {
                     }
                 })
                 .then((data) => {
-                    console.log(data);
                 })
                 .catch((error) => {
                     console.error('Error fetching user data:', error);
