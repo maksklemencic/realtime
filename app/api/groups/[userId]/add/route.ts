@@ -31,6 +31,9 @@ export async function PUT(request: NextRequest, context: { params: { userId: str
                     },
                 },
             },
+            include: {
+                users: true,
+            },
         });
 
 

@@ -9,7 +9,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { useRouter } from 'next/navigation'
 import { useUserData } from '@/context/userData'
 import toast from 'react-hot-toast'
-import { group } from 'console'
 
 interface GroupCardProps {
     group: any
@@ -21,7 +20,7 @@ interface GroupCardProps {
 export default function GroupCard(props: GroupCardProps) {
 
     const router = useRouter()
-    const { removeGroup } = useUserData()
+    const { removeGroup, addNewGroup } = useUserData()
 
     function getAdmin() {
         return props?.group?.users?.find((user: { id: any }) => user.id === props?.group?.adminId)
@@ -49,6 +48,64 @@ export default function GroupCard(props: GroupCardProps) {
                 props.setGroup(data);
                 router.push('/groups');
                 toast.success('Group deleted')
+            })
+            .catch((err) => console.log(err));
+    }
+
+    function handleGroupJoin() {
+        fetch('/api/groups/' + props?.sessionUserId + '/add', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                groupId: props?.group?.id,
+            })
+        })
+            .then((res) => {
+                if (res.ok) {
+                    const contentType = res.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return res.json();
+                    } else {
+                        return {};
+                    }
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                addNewGroup(data)
+                props.setGroup(data);
+                toast.success('Joined ' + props.group?.name)
+            })
+            .catch((err) => console.log(err));
+    }
+
+    function handleGroupLeave() {
+        fetch('/api/groups/' + props?.sessionUserId + '/remove', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                groupId: props?.group?.id,
+            })
+        })
+            .then((res) => {
+                if (res.ok) {
+                    const contentType = res.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return res.json();
+                    } else {
+                        return {};
+                    }
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                removeGroup(props.group?.id)
+                props.setGroup(data);
+                toast.success('Left ' + props.group?.name)
             })
             .catch((err) => console.log(err));
     }
@@ -103,11 +160,11 @@ export default function GroupCard(props: GroupCardProps) {
                                     {(props?.group?.adminId === props?.sessionUserId) ? (
                                         <Button className='h-8 w-fit' variant='destructive' onClick={() => handleDeleteGroup()}>Delete</Button>
                                     ) : (
-                                        <Button className='h-8 w-fit' variant='destructive'>Leave</Button>
+                                        <Button className='h-8 w-fit' variant='destructive' onClick={() => handleGroupLeave()}>Leave</Button>
                                     )}
                                 </>
                             ) : (
-                                <Button className='h-8 w-fit'>Join</Button>
+                                <Button className='h-8 w-fit' onClick={() => handleGroupJoin()}>Join</Button>
                             )}
 
 

@@ -41,6 +41,34 @@ export default function DisplayGroups() {
             .catch((err) => console.log(err));
     }
 
+    function handleGroupLeave(group: any) {
+        fetch('/api/groups/' + session?.user?.id + '/remove', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                groupId: group?.id,
+            })
+        })
+            .then((res) => {
+                if (res.ok) {
+                    const contentType = res.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return res.json();
+                    } else {
+                        return {};
+                    }
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then((data) => {
+                removeGroup(group?.id)
+                toast.success('Left ' + group?.name)
+            })
+            .catch((err) => console.log(err));
+    }
+
     return (
         <div className=''>
             {!groups && (
@@ -49,7 +77,7 @@ export default function DisplayGroups() {
             {groups && groups.length === 0 && (
                 <div className='flex flex-col gap-4 justify-center items-center h-48 text-gray-500 text-md font-bold'>
                     You are not a member of any group ...
-                    <Link href='/search'>
+                    <Link href='/search?filter=groups&query='>
                         <Button className='h-8'>
                             Find groups
                             <Search className='h-4 w-4 ml-1' />
@@ -92,7 +120,7 @@ export default function DisplayGroups() {
 
                                     <div className='w-1/3 flex flex-col'>
                                         {session?.user?.id !== group?.adminId ? (
-                                            <Button className='h-8 w-full' disabled={session?.user?.id === group?.adminId} variant='destructive'>Leave</Button>
+                                            <Button className='h-8 w-full' disabled={session?.user?.id === group?.adminId} variant='destructive' onClick={() => handleGroupLeave(group)}>Leave</Button>
                                         ) : (
                                             <Button className='h-8 w-full' disabled={session?.user?.id !== group?.adminId} variant='destructive' onClick={() => handleDeleteGroup(group?.id)}>Delete</Button>
                                         )}
