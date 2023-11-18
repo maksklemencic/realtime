@@ -1,15 +1,18 @@
-
 "use client"
+import FilterCard from '@/components/filter'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { User } from 'lucide-react'
+import { colors } from '@/lib/consts'
+import { User, Users } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/dist/client/components/navigation'
 import Link from 'next/link'
-import React, { useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import React, { useCallback, useEffect } from 'react'
 
 interface HighlightedSubstringProps {
 	text: string;
@@ -18,54 +21,64 @@ interface HighlightedSubstringProps {
 
 export default function SearchPage() {
 
-	const [selectedFilters, setSelectedFilters] = React.useState<any[]>(['posts', 'groups', 'users'])
+	const { data: session } = useSession()
+
+	const [selectedFilters, setSelectedFilters] = React.useState<any[]>(['POSTS', 'GROUPS', 'USERS'])
 	const [queryText, setQueryText] = React.useState<string>('')
-	
+
 	const [queryPosts, setQueryPosts] = React.useState<any[]>([])
 	const [postsDisplayCount, setPostsDisplayCount] = React.useState<number>(5)
 
 	// not done yet
 	const [queryGroups, setQueryGroups] = React.useState<any[]>([])
+	const [groupDisplayCount, setGroupDisplayCount] = React.useState<number>(5)
 
 	const [queryUsers, setQueryUsers] = React.useState<any[]>([])
 	const [usersDisplayCount, setUsersDisplayCount] = React.useState<number>(5)
 
 	const [loading, setLoading] = React.useState(false)
 
-	const searchParams = useSearchParams();
+	const searchParams = useSearchParams()!
 	const query = searchParams.get('query');
+	const filter = searchParams.get('filter');
 
-	useEffect(() => {
-		if (selectedFilters.length === 0) {
-			setSelectedFilters(['everything'])
-		}
-		if (selectedFilters.includes('everything')) {
-			setSelectedFilters(['posts', 'groups', 'users'])
-		}
+	const router = useRouter()
+	const pathname = usePathname()
 
-	}, [selectedFilters])
 
 	useEffect(() => {
 		if (query != undefined) {
 			setQueryText(query)
 			handleSearch()
 		}
+
 	}, [query])
 
-	function handleFilterSelection(filter: string) {
-		if (selectedFilters.includes(filter)) {
-			setSelectedFilters(selectedFilters.filter((item: string) => item !== filter))
-		} else {
-			setSelectedFilters([...selectedFilters, filter])
+	useEffect(() => {
+		if (filter != undefined) {
+
+			if (filter === 'all') {
+				setSelectedFilters(['POSTS', 'GROUPS', 'USERS'])
+			}
+			else {
+				setSelectedFilters(filter.split('-').map((item) => item.toUpperCase()))
+			}
 		}
-	}
+	}, [filter])
+
 
 	function handleSearch() {
+
+		router.push(pathname + '?' + createQueryString('query', queryText))
+
 		setLoading(true);
 		setPostsDisplayCount(5);
 		setUsersDisplayCount(5);
-		if (selectedFilters.includes('posts')) {
-			fetch(`/api/posts?content=${queryText}`)
+		setGroupDisplayCount(5);
+
+
+		if (selectedFilters.includes('POSTS')) {
+			fetch(`/api/posts?content=${(query) ? query : queryText}`)
 				.then((res) => res.json())
 				.then((data) => {
 					setQueryPosts(data)
@@ -76,19 +89,20 @@ export default function SearchPage() {
 					return;
 				})
 		}
-		// if (selectedFilters.includes('groups')) {
-		// 	fetch(`/api/groups?name=${queryText}`)
-		// 		.then((res) => res.json())
-		// 		.then((data) => {
-		// 			setQueryGroups(data)
-		// 		})
-		// 		.catch((err) => {
-		// 			console.log(err)
-		// 			setLoading(false)
-		// 			return;
-		// 		})
-		// }
-		if (selectedFilters.includes('users')) {
+		if (selectedFilters.includes('GROUPS')) {
+			fetch(`/api/groups?name=${queryText}`)
+				.then((res) => res.json())
+				.then((data) => {
+					setQueryGroups(data)
+				})
+				.catch((err) => {
+					console.log(err)
+					setLoading(false)
+					return;
+				})
+		}
+
+		if (selectedFilters.includes('USERS')) {
 			fetch(`/api/users?query=${queryText}`)
 				.then((res) => res.json())
 				.then((data) => {
@@ -100,6 +114,10 @@ export default function SearchPage() {
 					return;
 				})
 		}
+	}
+
+	function getAdminName(adminId: string, users: any[]) {
+		return users.find((user: any) => user.id === adminId)?.name
 	}
 
 	const HighlightedSubstring: React.FC<HighlightedSubstringProps> = ({ text, queryText }) => {
@@ -122,26 +140,30 @@ export default function SearchPage() {
 		);
 	};
 
+	const createQueryString = useCallback(
+		(name: string, value: string) => {
+			const params = new URLSearchParams(searchParams)
+			params.set(name, value)
+
+			return params.toString()
+		},
+		[searchParams]
+	)
+
 	return (
 
 		<div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56'>
-			<div className='my-2 flex md:gap-4 gap-2 items-center'>
-				<p className='hidden md:block text-sm'>Filter by:</p>
-				<div className='flex md:gap-4 gap-2'>
-					<Badge className={`${selectedFilters.includes('posts') ? 'bg-primary' : 'bg-gray-400'} h-7 text-white hover:cursor-pointer hover:border-muted`} onClick={() => handleFilterSelection('posts')}>POSTS</Badge>
-					<Badge className={`${selectedFilters.includes('groups') ? 'bg-primary' : 'bg-gray-400'} h-7 text-white hover:cursor-pointer hover:border-muted`} onClick={() => handleFilterSelection('groups')}>GROUPS</Badge>
-				</div>
-				<div className='flex md:gap-4 gap-2'>
-					<Badge className={`${selectedFilters.includes('users') ? 'bg-primary' : 'bg-gray-400'} h-7 text-white hover:cursor-pointer hover:border-muted`} onClick={() => handleFilterSelection('users')}>USERS</Badge>
-					<Badge className={`${selectedFilters.includes('everything') ? 'bg-primary' : 'bg-gray-400'} h-7 text-white hover:cursor-pointer hover:border-muted`} onClick={() => handleFilterSelection('everything')}>EVERYTHING</Badge>
-				</div>
-			</div>
+			<FilterCard
+				badges={['POSTS', 'GROUPS', 'USERS', 'EVERYTHING']}
+				allBadge='EVERYTHING'
+				selectedFilters={selectedFilters}
+				setSelectedFilters={setSelectedFilters}
+			/>
 			<div className=' mt-6 flex gap-2'>
 
-				<Input placeholder="Search" autoFocus onChange={(e: any) => setQueryText(e.target.value)} />
-				<Link href={{ query: { query: queryText } }}>
-					<Button className='' onClick={() => handleSearch()}>Search</Button>
-				</Link>
+				<Input placeholder="Search" value={queryText} autoFocus onChange={(e: any) => setQueryText(e.target.value)} />
+				<Button className='' onClick={() => handleSearch()}>Search</Button>
+
 			</div>
 			{query == undefined ? (
 				<div className='w-full h-48 flex justify-center items-center'>
@@ -150,11 +172,15 @@ export default function SearchPage() {
 			) : (
 				<div className='my-6'>
 					<div className='flex gap-2'>
-						<p className='text-primary'>Results for: </p>
-						<p className='font-bold'>{query}</p>
+						{query != undefined && query !== '' && (
+							<>
+								<p className='text-primary'>Results for: </p>
+								<p className='font-bold'>{query}</p>
+							</>
+						)}
 					</div>
 					{/* Posts */}
-					{selectedFilters.includes('posts') && (
+					{selectedFilters.includes('POSTS') && (
 						<div className='mt-6'>
 							<div className='flex items-center justify-between'>
 								<p className='font-semibold'>Posts</p>
@@ -190,8 +216,70 @@ export default function SearchPage() {
 						</div>
 
 					)}
+
+
+					{/* Groups */}
+					{selectedFilters.includes('GROUPS') && (
+						<div className='mt-6'>
+							<div className='flex items-center justify-between'>
+								<p className='font-semibold'>Groups</p>
+								<p className='text-sm text-gray-400 ml-2'>{queryGroups.length} results</p>
+							</div>
+							<Separator className='my-2' />
+							{queryGroups.length === 0 && (
+								<div className='w-full flex justify-center items-center'>
+									<p className='text-md text-gray-400 mt-2'>No groups found</p>
+								</div>
+							)}
+							{queryGroups.map((group: any, index: any) => (
+								<>
+									{index < groupDisplayCount && (
+										<Card key={group.id} className='mb-2'>
+											<CardContent className='flex items-center justify-between p-3'>
+												<Link href={'/groups/' + group?.id + '?show=groupPosts'}
+													// target="_blank"
+													// style={{
+													// 	pointerEvents: (!group?.userIds.includes(session?.user?.in)) ? "none" : "auto",
+													// }}
+													className='flex justify-between w-full '>
+
+													<div className='mr-4'>
+														{group?.image === null && (
+															<div className={`h-10 w-10 rounded-lg bg-muted border text-gray-white flex items-center justify-center`}><Users /></div>
+
+														)}
+														{group?.image !== null && colors.includes(group.image) && (
+															<div className={`h-10 w-10 rounded-lg ${group.image}`}></div>
+														)}
+
+													</div>
+													<div className=' w-full '>
+														<div className='font-bold  text-sm'>{group?.name}</div>
+														<div className='text-gray-400 text-sm'>{group?.userIds.length} {(group?.userIds.length === 1) ? 'member' : 'members'}</div>
+													</div>
+													<div className='flex flex-col w-32'>
+														<p className='text-xs'>Admin</p>
+														<Link href={'/users/' + group?.adminId + '?show=posts'}>
+															<Badge className='w-32'>{getAdminName(group?.adminId, group?.users)}</Badge>
+														</Link>
+													</div>
+
+												</Link>
+
+											</CardContent>
+										</Card>)}
+								</>
+							))}
+							{queryGroups.length > groupDisplayCount && (
+								<div>
+									<Button className='w-full' onClick={() => setGroupDisplayCount(queryGroups?.length)}>View all {queryGroups?.length} groups</Button>
+								</div>
+							)}
+						</div>
+					)}
+
 					{/* Users */}
-					{selectedFilters.includes('users') && (
+					{selectedFilters.includes('USERS') && (
 						<div className='mt-6'>
 							<div className='flex items-center justify-between'>
 								<p className='font-semibold'>Users</p>
@@ -205,26 +293,26 @@ export default function SearchPage() {
 							)}
 							{queryUsers.map((user: any, index: any) => (
 								<>
-								{index < usersDisplayCount && (
-								<Card key={user.id} className='mb-2'>
-									<CardContent className='flex items-center justify-between p-3'>
-										<Link href={'http://localhost:3000/users/' + user?.id + '?show=posts'}
-											className='flex justify-between w-full'>
-											<div className='mr-4'>
-												<Avatar className=" h-10 w-10 rounded-lg">
-													<AvatarImage src={user?.image} />
-													<AvatarFallback className=' h-10 w-10 rounded-lg bg-background border'><User /></AvatarFallback>
-												</Avatar>
-											</div>
-											<div className=' w-full '>
-												<div className='font-bold  text-sm'>{user?.name}</div>
-												<div className='text-gray-400 text-sm'>{user?.email}</div>
-											</div>
+									{index < usersDisplayCount && (
+										<Card key={user.id} className='mb-2'>
+											<CardContent className='flex items-center justify-between p-3'>
+												<Link href={'http://localhost:3000/users/' + user?.id + '?show=posts'}
+													className='flex justify-between w-full'>
+													<div className='mr-4'>
+														<Avatar className=" h-10 w-10 rounded-lg">
+															<AvatarImage src={user?.image} />
+															<AvatarFallback className=' h-10 w-10 rounded-lg bg-background border'><User /></AvatarFallback>
+														</Avatar>
+													</div>
+													<div className=' w-full '>
+														<div className='font-bold  text-sm'>{user?.name}</div>
+														<div className='text-gray-400 text-sm'>{user?.email}</div>
+													</div>
 
-										</Link>
-										
-									</CardContent>
-								</Card>)}
+												</Link>
+
+											</CardContent>
+										</Card>)}
 								</>
 							))}
 							{queryUsers.length > usersDisplayCount && (

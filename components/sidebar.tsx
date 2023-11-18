@@ -1,5 +1,5 @@
 import React from 'react'
-import { Users, Home, MessageCircle, MailPlus, BadgePlus, Loader2 } from "lucide-react";
+import { Users, Home, MessageCircle, MailPlus, BadgePlus, Loader2, CircleOff } from "lucide-react";
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { usePathname } from 'next/navigation';
@@ -116,9 +116,15 @@ export const Sidebar: React.FC = () => {
                         );
                     })}
                     {groups && groups.length === 0 && (
-                        <div className='text-center text-white text-sm'>
-                            You are not in any groups
-                        </div>
+                        <>
+                            <div className='text-center text-foreground text-sm hidden lg:block'>
+                                You are not in any groups
+                            </div>
+                            <div className='text-center text-foreground text-sm lg:hidden block'>
+                                <CircleOff className='h-4 w-4 mx-auto' />
+                            </div>
+                        </>
+
                     )}
                 </ScrollArea>
             </div>
@@ -141,7 +147,8 @@ export const Sidebar: React.FC = () => {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                    )}
+                    )
+                }
                 )}
             </div>
         </div>

@@ -52,12 +52,14 @@ export async function GET(request: NextRequest) {
         let authorId = request.nextUrl.searchParams.get('userId');
         let groupId = request.nextUrl.searchParams.get('groupId');
         let id = request.nextUrl.searchParams.get('id');
+        let content = request.nextUrl.searchParams.get('content');
 
         // build where condition
         let whereCondition = {
             authorId: {},
             groupId: {},
             id: {},
+            content: {},
         };
 
         if (authorId) {
@@ -73,6 +75,12 @@ export async function GET(request: NextRequest) {
         if (id) {
             whereCondition.id = {
                 equals: id,
+            }
+        }
+
+        if (content) {
+            whereCondition.content = {
+                contains: content,
             }
         }
 

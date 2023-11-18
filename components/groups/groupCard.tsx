@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { useRouter } from 'next/navigation'
 import { useUserData } from '@/context/userData'
 import toast from 'react-hot-toast'
+import { group } from 'console'
 
 interface GroupCardProps {
     group: any
@@ -97,11 +98,18 @@ export default function GroupCard(props: GroupCardProps) {
                                     <Button className='h-8 w-fit' variant='secondary'>Edit</Button>
                                 </Link>
                             )}
-                            {props?.group?.adminId === props?.sessionUserId ? (
-                                <Button className='h-8 w-fit' variant='destructive' onClick={() => handleDeleteGroup()}>Delete</Button>
+                            {props.group?.users?.find((user: any) => user.id == props?.sessionUserId) ? (
+                                <>
+                                    {(props?.group?.adminId === props?.sessionUserId) ? (
+                                        <Button className='h-8 w-fit' variant='destructive' onClick={() => handleDeleteGroup()}>Delete</Button>
+                                    ) : (
+                                        <Button className='h-8 w-fit' variant='destructive'>Leave</Button>
+                                    )}
+                                </>
                             ) : (
-                                <Button className='h-8 w-fit' variant='destructive'>Leave</Button>
+                                <Button className='h-8 w-fit'>Join</Button>
                             )}
+
 
                         </div>
                     </CardContent>

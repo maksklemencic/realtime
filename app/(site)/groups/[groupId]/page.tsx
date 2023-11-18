@@ -19,7 +19,7 @@ export default function GroupsGroupPage({ params }: { params: { groupId: string 
     const show = searchParams.get('show');
 
     useEffect(() => {
-        fetch(`/api/groups/${session?.user?.id}?includeUserData=true`)
+        fetch(`/api/groups`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();

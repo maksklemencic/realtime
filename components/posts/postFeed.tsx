@@ -84,11 +84,14 @@ export default function PostFeed(props: PostFeedProps) {
                     {search === 'liked' && (
                         <p className='text-gray-500 text-center'>No liked posts yet</p>
                     )}
-                    {search === 'posts' || search === 'groupPosts' && (
+                    {(search === 'posts' || search === 'groupPosts') && (
                         <p className='text-gray-500 text-center'>No posts yet</p>
                     )}
-                    {search === 'comments' && (
+                    {search === 'commented' && (
                         <p className='text-gray-500 text-center'>No comments yet</p>
+                    )}
+                    {pathname === '/home' && (
+                        <p className='text-gray-500 text-center'>No posts found</p>
                     )}
                 </div>
 

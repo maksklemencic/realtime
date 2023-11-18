@@ -1,4 +1,4 @@
-import { Loader2, Users } from 'lucide-react'
+import { Loader2, Search, Users } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 import { Card, CardContent } from '../ui/card'
@@ -14,9 +14,9 @@ export default function DisplayGroups() {
     const { data: session } = useSession()
     const { groups } = useUserData()
 
-    const { removeGroup } = useUserData()   
+    const { removeGroup } = useUserData()
 
-    
+
     function handleDeleteGroup(groupId: string) {
         fetch('/api/groups/' + session?.user?.id + '?groupId=' + groupId, {
             method: 'DELETE',
@@ -47,8 +47,14 @@ export default function DisplayGroups() {
                 <Loader2 className='mx-auto h-24 animate-spin' size={24} />
             )}
             {groups && groups.length === 0 && (
-                <div className='text-center  text-md font-bold'>
-                    You are not in any groups
+                <div className='flex flex-col gap-4 justify-center items-center h-48 text-gray-500 text-md font-bold'>
+                    You are not a member of any group ...
+                    <Link href='/search'>
+                        <Button className='h-8'>
+                            Find groups
+                            <Search className='h-4 w-4 ml-1' />
+                        </Button>
+                    </Link>
                 </div>
             )}
             <div className='grid grid-cols-1 sm:grid-cols-2 mb-6'>

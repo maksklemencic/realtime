@@ -1,11 +1,9 @@
 "use client"
-import React, { use, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { get } from 'http'
 import { useUserData } from '@/context/userData'
-import { group } from 'console'
 
 type BreadCrumbItem = {
     name: string,
@@ -103,9 +101,14 @@ function BreadCrumb() {
             ]
 
             if (tokens.length >= 2) {
-                newTokens.push({ name: groupName !== '' ? groupName : 'Group', link: '/groups/' + tokens[1] + '?show=groupPosts' })
+                if (tokens[1] === 'new') {
+                    newTokens.push({ name: 'New group', link: '/groups/new' })
+                }
+                else {
+                    newTokens.push({ name: groupName !== '' ? groupName : 'Group', link: '/groups/' + tokens[1] + '?show=groupPosts' })
+                }
             }
-            if (tokens.length == 3) {
+            if (tokens.length == 3 && tokens[2] === 'edit') {
                 newTokens.push({ name: 'Edit', link: '/groups/' + tokens[1] + '/edit' })
             }
         }
