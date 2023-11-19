@@ -75,14 +75,6 @@ export async function PUT(request: NextRequest, context: { params: { userId: str
             return new NextResponse('Group ID is required', { status: 400 });
         }
 
-        // if (!body.name) {
-        //     return new NextResponse('Name of the group is required', { status: 400 });
-        // }
-
-        // if (!body.userIds) {
-        //     return new NextResponse('UserIds array is required', { status: 400 });
-        // }
-
         const group = await prisma.group.findFirst({
             where: {
                 id: body.groupId,
@@ -107,6 +99,7 @@ export async function PUT(request: NextRequest, context: { params: { userId: str
                 userIds: {
                     set: body.userIds ?? group.userIds,
                 },
+                adminId: body.adminId ?? group.adminId,
             },
         });
 

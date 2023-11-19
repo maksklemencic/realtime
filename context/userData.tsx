@@ -1,8 +1,6 @@
 "use client"
-import { stat } from 'fs';
 import { useSession } from 'next-auth/react';
 import { useContext, useState, useEffect, createContext, use } from 'react';
-import { set } from 'zod';
 
 const UserContext = createContext<{
     followers: any[],

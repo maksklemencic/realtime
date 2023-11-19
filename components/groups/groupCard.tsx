@@ -139,7 +139,7 @@ export default function GroupCard(props: GroupCardProps) {
                                         <div className='flex gap-2 items-center'>
                                             <Avatar className=" h-8 w-8 rounded-lg">
                                                 <AvatarImage src={getAdmin()?.image} />
-                                                <AvatarFallback className=' h-8 w-8 rounded-lg bg-background border'><User /></AvatarFallback>
+                                                <AvatarFallback className=' h-8 w-8 rounded-lg bg-background border'><User className='h-5 w-5' /></AvatarFallback>
                                             </Avatar>
                                             <p>{getAdmin()?.name}</p>
                                         </div>

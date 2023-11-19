@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '../ui/card'
 import { colors, formatDate } from '@/lib/consts'
 import { Badge } from '../ui/badge'
-import { Loader2, PlusIcon, Users, X } from 'lucide-react'
+import { Loader2, PlusIcon, User, Users, X } from 'lucide-react'
 import { Input } from '../ui/input'
 import { useSession } from 'next-auth/react';
 import { Button } from '../ui/button';
@@ -11,6 +11,8 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useUserData } from '@/context/userData';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 
 interface EditGroupProps {
     group: any
@@ -23,6 +25,7 @@ export default function EditGroup(props: EditGroupProps) {
     const [groupMembers, setGroupMembers] = useState<any[]>(props?.group?.users)
     const [queryText, setQueryText] = useState('')
     const [users, setUsers] = useState<any[]>([])
+    const [newAdmin, setNewAdmin] = useState<any>(null)
 
     const { updateGroup } = useUserData()
     const { data: session } = useSession()
@@ -47,11 +50,12 @@ export default function EditGroup(props: EditGroupProps) {
                 name: groupName,
                 groupId: props?.group?.id,
                 userIds: newMemebers,
+                adminId: (newAdmin) ? newAdmin?.id : props?.group?.adminId,   
             })
         })
             .then(res => res.json())
             .then(data => {
-                updateGroup(props?.group?.id ,data)
+                updateGroup(props?.group?.id, data)
                 router.push('/groups/' + props?.group?.id + '?show=groupPosts')
                 toast.success('Group updated')
             })
@@ -101,7 +105,69 @@ export default function EditGroup(props: EditGroupProps) {
 
                             </div>
                         </div>
-                        <Input className='w-full mt-4' value={groupName} defaultValue={props?.group?.name} onChange={(e:any) => setGroupName(e.target.value)}/>
+                        <Input className='w-full mt-4' value={groupName} defaultValue={props?.group?.name} onChange={(e: any) => setGroupName(e.target.value)} />
+
+                        <div className='my-4 mx-1'>
+                            <p className='text-sm font-semibold mb-2'>Transfer admin rights to</p>
+                            <div className='flex gap-4 items-center'>
+                                <Select onValueChange={(e) => setNewAdmin(groupMembers?.find((user) => user?.id === e))}>
+                                    <SelectTrigger className="w-full md:w-1/2">
+                                        <SelectValue placeholder="Select a new admin">
+                                            {newAdmin ? (
+                                                <div className='flex gap-4 items-center'>
+                                                    <Avatar className=" h-6 w-6 rounded-lg">
+                                                        <AvatarImage src={newAdmin?.image} />
+                                                        <AvatarFallback className=' h-6 w-6 rounded-lg bg-background border'><User /></AvatarFallback>
+                                                    </Avatar>
+                                                    <p className='text-sm overflow-hidden font-semibold'>{newAdmin?.name}</p>
+                                                </div>
+                                            ) : (
+                                                <p>Select a new admin</p>
+                                            )}
+                                        </SelectValue>
+
+                                    </SelectTrigger>
+                                    <SelectContent className='w-fit'>
+                                        <SelectGroup className='w-full'>
+                                            {groupMembers?.map((member, i) => (
+                                                <SelectItem key={member.id} value={member.id} className='hover:cursor-pointer w-full'>
+                                                    <div className='flex justify-between items-center w-full gap-4'>
+                                                        <div>
+                                                            <Avatar className=" h-8 w-8 rounded-lg">
+                                                                <AvatarImage src={member?.image} />
+                                                                <AvatarFallback className=' h-8 w-8 rounded-lg bg-background border'><User /></AvatarFallback>
+                                                            </Avatar>
+                                                        </div>
+                                                        <div className='flex flex-col'>
+                                                            <p className='text-sm overflow-hidden font-semibold'>{member.name}</p>
+                                                            <p className='text-sm overflow-hidden hidden sm:flex'>{member.email}</p>
+                                                        </div>
+
+                                                    </div>
+                                                </SelectItem>
+                                            )
+                                            )}
+                                            {groupMembers?.length === 0 && (
+                                                <div className='text-center text-gray-400 my-3'>
+                                                    No members found
+                                                </div>
+                                            
+                                            )}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                {newAdmin && (
+                                    <Button
+                                        size={"icon"}
+                                        variant={"destructive"}
+                                        className='h-8 w-8'
+                                        onClick={() => setNewAdmin(null)}
+                                    >
+                                        <X />
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
 
                         <div className='my-4'>
                             <div className='flex justify-between my-2 mx-1 items-end'>
@@ -110,7 +176,7 @@ export default function EditGroup(props: EditGroupProps) {
                             </div>
                             <Card className='bg-background'>
                                 <CardContent className='p-0 '>
-                                    <div key={session?.user?.id} className={`flex items-center justify-between p-2 border-b-2 border-dashed ${groupMembers?.length == 0 && 'border-b-0'}`}>
+                                    <div key={session?.user?.id} className={`flex items-center justify-between p-2 border-b-2 border-dashed ${groupMembers?.length === 0 && 'border-b-0 border-none'}`}>
                                         <div className='grid grid-cols-1 sm:grid-cols-2 w-full'>
                                             <p className='text-sm col-span-1 overflow-hidden w-full'>{session?.user?.name}</p>
                                             <p className='text-sm col-span-1 overflow-hidden w-full hidden sm:block'>{session?.user?.email}</p>
@@ -119,7 +185,7 @@ export default function EditGroup(props: EditGroupProps) {
                                     </div>
                                     {groupMembers?.map((member, i) => {
                                         return (
-                                            <div key={member.id} className={`flex items-center justify-between p-2 ${i < groupMembers?.length - 1 && 'border-b'} `}>
+                                            <div key={member.id} className={`flex items-center justify-between p-2 ${i < (groupMembers?.length - 1) ? 'border-b' : 'border-b-0'} `}>
                                                 <div className='grid grid-cols-1 sm:grid-cols-2 w-full'>
                                                     <p className='text-sm col-span-1 overflow-hidden w-full'>{member.name}</p>
                                                     <p className='text-sm col-span-1 overflow-hidden w-full hidden sm:block'>{member.email}</p>
@@ -129,7 +195,12 @@ export default function EditGroup(props: EditGroupProps) {
                                                         size={"icon"}
                                                         variant={"destructive"}
                                                         className='h-6 w-fit'
-                                                        onClick={() => setGroupMembers((prev) => prev.filter((user) => user.id !== member.id))}
+                                                        onClick={() => {
+                                                            setGroupMembers((prev) => prev.filter((user) => user.id !== member.id));
+                                                            if (newAdmin?.id === member.id) {
+                                                                setNewAdmin(null)
+                                                            }
+                                                        }}
                                                     >
                                                         <X />
                                                     </Button>
@@ -149,7 +220,7 @@ export default function EditGroup(props: EditGroupProps) {
                                     <div className='flex flex-col gap-2 mt-4'>
                                         {filterNotSelectedUsers(users)?.map((user, i) => {
                                             return (
-                                                <div key={user.id} className={`flex items-center justify-between p-2 ${i < filterNotSelectedUsers(users).length - 1 && 'border-b'}`}>
+                                                <div key={user.id} className={`flex items-center justify-between p-2 ${i < ((filterNotSelectedUsers(users)).length - 1) && 'border-b'}`}>
                                                     <div className='grid grid-cols-1 sm:grid-cols-2 w-full'>
                                                         <p className='text-sm col-span-1 overflow-hidden w-full'>{user.name}</p>
                                                         <p className='text-sm col-span-1 overflow-hidden w-full hidden sm:block'>{user.email}</p>
@@ -161,7 +232,7 @@ export default function EditGroup(props: EditGroupProps) {
                                                             className='h-6 w-6 rounded-md bg-green-500 hover:bg-green-600'
                                                             onClick={() => setGroupMembers((prev) => [...prev, user])}
                                                         >
-                                                            <PlusIcon className=' w-5 h-5' />
+                                                            <PlusIcon className=' w-5 h-5 text-white' />
                                                         </Button>
                                                     </div>
 
@@ -179,7 +250,7 @@ export default function EditGroup(props: EditGroupProps) {
                             </Card>
                         </div>
                         <div className='flex gap-4 items-center justify-end'>
-                            
+
                             <Link href={'/groups/' + props?.group?.id + '?show=groupPosts'} >
                                 <Button className='h-8 w-fit' variant='destructive'>Cancel</Button>
                             </Link>
