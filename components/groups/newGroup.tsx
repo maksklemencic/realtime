@@ -134,7 +134,7 @@ export default function NewGroup() {
                                                     className='h-6 w-6 rounded-md bg-green-500 hover:bg-green-600'
                                                     onClick={() => setGroupMembers((prev) => [...prev, user])}
                                                 >
-                                                    <PlusIcon className=' w-5 h-5' />
+                                                    <PlusIcon className=' w-5 h-5 text-white' />
                                                 </Button>
                                             </div>
 

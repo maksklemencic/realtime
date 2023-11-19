@@ -1,5 +1,5 @@
 "use client"
-import { Loader2, User } from 'lucide-react'
+import { Loader2, Search, User } from 'lucide-react'
 import React from 'react'
 import { Card, CardContent } from '../ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -108,6 +108,18 @@ export default function UsersList(props: UsersListProps) {
             {props.loading && (
                 <div className='flex justify-center items-center mt-12'>
                     <Loader2 className='h-8 w-8 text-primary animate-spin' />
+                </div>
+            )}
+            {props.users.length === 0 && !props.loading && (
+                <div className='flex justify-center items-center mt-12'>
+                    <p className='text-gray-400 text-sm'>{(props.displayType == "followers" ? "No one follows you!" : (
+                        <div className='flex flex-col gap-4 justify-center items-center'>
+                            <p>You are not following anybody!</p>
+                            <Link href={"/search?filter=users&query="}>
+                                <Button className='h-8 flex w-fit gap-2'>Find people <Search/></Button>
+                            </Link>
+                        </div>
+                    ))}</p>
                 </div>
             )}
         </>

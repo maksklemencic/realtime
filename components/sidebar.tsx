@@ -110,7 +110,7 @@ export const Sidebar: React.FC = () => {
                                     {group?.image !== null && colors.includes(group.image) && (
                                         <div className={`h-8 w-8 rounded-lg ${group.image}`}></div>
                                     )}
-                                    <p className='hidden lg:block text-xs'>{group.name}</p>
+                                    <p className='hidden lg:block text-xs over w-24'>{group.name}</p>
                                 </div>
                             </Link>
                         );

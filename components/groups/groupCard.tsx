@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, CardContent } from '../ui/card'
-import { User, Users } from 'lucide-react'
+import { MailPlus, User, Users } from 'lucide-react'
 import { Button } from '../ui/button'
 import Link from 'next/link'
 import { Badge } from '../ui/badge'
@@ -149,24 +149,33 @@ export default function GroupCard(props: GroupCardProps) {
                             </div>
                         </div>
                         <p className='font-semibold mt-2 mx-1'>{props?.group?.name}</p>
-                        <div className='flex gap-2 w-full mt-4 justify-end'>
-                            {props?.group?.adminId === props?.sessionUserId && (
-                                <Link className='w-fit' href={'/groups/' + props?.group?.id + '/edit'} >
-                                    <Button className='h-8 w-fit' variant='secondary'>Edit</Button>
-                                </Link>
-                            )}
-                            {props.group?.users?.find((user: any) => user.id == props?.sessionUserId) ? (
-                                <>
-                                    {(props?.group?.adminId === props?.sessionUserId) ? (
-                                        <Button className='h-8 w-fit' variant='destructive' onClick={() => handleDeleteGroup()}>Delete</Button>
-                                    ) : (
-                                        <Button className='h-8 w-fit' variant='destructive' onClick={() => handleGroupLeave()}>Leave</Button>
-                                    )}
-                                </>
-                            ) : (
-                                <Button className='h-8 w-fit' onClick={() => handleGroupJoin()}>Join</Button>
-                            )}
-
+                        <div className='flex gap-2 w-full mt-4 justify-end items-end'>
+                            <div>
+                                <Link href={'/home/new?to=' + props?.group?.id}>
+                                    <Button className='h-8 flex items-center gap-2'>
+                                        <MailPlus className='w-4 h-4' />
+                                        New post
+                                    </Button>
+                                </ Link>
+                            </div>
+                            <div className='flex gap-2 w-full mt-4 justify-end'>
+                                {props?.group?.adminId === props?.sessionUserId && (
+                                    <Link className='w-fit' href={'/groups/' + props?.group?.id + '/edit'} >
+                                        <Button className='h-8 w-fit' variant='secondary'>Edit</Button>
+                                    </Link>
+                                )}
+                                {props.group?.users?.find((user: any) => user.id == props?.sessionUserId) ? (
+                                    <>
+                                        {(props?.group?.adminId === props?.sessionUserId) ? (
+                                            <Button className='h-8 w-fit' variant='destructive' onClick={() => handleDeleteGroup()}>Delete</Button>
+                                        ) : (
+                                            <Button className='h-8 w-fit' variant='destructive' onClick={() => handleGroupLeave()}>Leave</Button>
+                                        )}
+                                    </>
+                                ) : (
+                                    <Button className='h-8 w-fit' onClick={() => handleGroupJoin()}>Join</Button>
+                                )}
+                            </div>
 
                         </div>
                     </CardContent>

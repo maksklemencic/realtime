@@ -10,6 +10,7 @@ interface FilterCardProps {
     allBadge: string,
     selectedFilters: any[],
     setSelectedFilters: (filters: any[]) => void,
+    customFilterText?: string
 }
 
 export default function FilterCard(props: FilterCardProps) {
@@ -36,8 +37,7 @@ export default function FilterCard(props: FilterCardProps) {
         if (props.selectedFilters.includes(props.allBadge)) {
             props.setSelectedFilters(props.badges?.filter((item: string) => item !== props.allBadge))
         }
-
-        if (props.selectedFilters.length === 3) {
+        if (props.selectedFilters.length === props.badges.length - 1) {
             router.push(pathname + '?' + createQueryString('filter', 'all'));
         }
         else {
@@ -60,9 +60,9 @@ export default function FilterCard(props: FilterCardProps) {
             <Card className='w-full p-0'>
                 <CardContent className='h-fit p-0'>
                     <div className='p-2  flex flex-col xs:flex-row items-start md:gap-4 gap-2 xs:items-center flex-wrap'>
-                        <p className='flex gap-2 items-center text-sm'>
+                        <p className='flex gap-2 px-2 items-center text-sm'>
                             <Filter className='h-4 w-4' />
-                            Filter by:
+                            {props.customFilterText ? props.customFilterText : 'Filter by:'}
                         </p>
                         <div className='flex flex-wrap justify-start gap-2 md:gap-4 lg:gap-6 m-2'>
 
