@@ -15,7 +15,7 @@ export default function HomePage() {
 
   useEffect(() => {
     if (filter) {
-      
+
       if (filter === 'all') {
         setSelectedFilters(['GROUPS', 'FOLLOWING'])
       }
@@ -23,12 +23,12 @@ export default function HomePage() {
         setSelectedFilters(filter.split('-').map((item) => item.toUpperCase()))
       }
     }
-  }, [filter])  
+  }, [filter])
 
   return (
     <div className="mx-6 md:mx-16 xl:mx-32 2xl:mx-56 space-y-4 mb-6">
       <div>
-        <FilterCard 
+        <FilterCard
           badges={['FOLLOWING', 'GROUPS', 'ALL']}
           allBadge="ALL"
           selectedFilters={selectedFilters}
@@ -36,7 +36,7 @@ export default function HomePage() {
           customFilterText="Filter posts:"
         />
       </div>
-      <PostFeed showUserId={session?.user.id} filterHomeFeed={filter || "all"}/>
+      <PostFeed showUserId={session?.user.id} filterHomeFeed={filter || "all"} />
     </div>
   )
 }

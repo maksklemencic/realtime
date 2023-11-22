@@ -83,7 +83,7 @@ export default function NewGroup() {
                     </div>
                     <Card className='bg-background'>
                         <CardContent className='p-0 '>
-                            <div key={session?.user?.id} className={`flex items-center justify-between p-2 border-b-2 border-dashed ${groupMembers.length == 0 && 'border-b-0'}`}>
+                            <div key={session?.user?.id} className={`flex items-center justify-between p-2 border-b-2 border-dashed ${groupMembers.length == 0 && 'border-b-0 border-none'}`}>
                                 <div className='grid grid-cols-1 sm:grid-cols-2 w-full'>
                                     <p className='text-sm col-span-1 overflow-hidden w-full'>{session?.user?.name}</p>
                                     <p className='text-sm col-span-1 overflow-hidden w-full hidden sm:block'>{session?.user?.email}</p>

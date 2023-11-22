@@ -1,10 +1,10 @@
 "use client"
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Card, CardContent, CardFooter } from '../ui/card'
 import { AspectRatio } from '../ui/aspect-ratio'
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { User } from 'lucide-react'
+import { File, FileImage, FileX, User } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { Skeleton } from '../ui/skeleton'
 import { Input } from '../ui/input'
@@ -12,14 +12,21 @@ import { Button } from '../ui/button'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { formatDateAndTime } from '@/lib/consts'
+import { Badge } from '../ui/badge'
+import { Label } from '@radix-ui/react-label'
+import { uploadProfilePicture } from '@/lib/imagekitApis'
 
 export default function ProfileEdit() {
 
     const { data: session } = useSession()
-    
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const [editUser, setEditUser] = React.useState<any>(null);
     const [loading, setLoading] = React.useState(false);
-    
+
+    const [file, setFile] = React.useState<File | null>(null);
+
     const router = useRouter();
 
     React.useEffect(() => {
@@ -40,7 +47,19 @@ export default function ProfileEdit() {
             });
     }, [])
 
-    function handleEdit() {
+    async function handleEdit() {
+        let url = editUser?.image;
+        if (file) {
+            const response = await uploadProfilePicture(session?.user?.id, file!);
+        
+            const content = await response.json();
+            if (!response?.ok) {
+                toast.error('Error uploading the image.');
+                return;
+            }
+
+            url = content.url;
+        }
         toast.promise(
             fetch(`/api/users/${session?.user?.id}`, {
                 method: 'PUT',
@@ -49,7 +68,7 @@ export default function ProfileEdit() {
                 },
                 body: JSON.stringify({
                     name: editUser?.name,
-                    image: editUser?.image,
+                    image: url,
                 }),
             })
                 .then((response) => {
@@ -76,6 +95,19 @@ export default function ProfileEdit() {
         })
     }
 
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleButtonClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
     return (
         <div className='mx-6 md:mx-16 xl:mx-32 2xl:mx-56'>
             <Card >
@@ -92,21 +124,67 @@ export default function ProfileEdit() {
                     </div>
 
                     <div className='flex flex-row items-end mt-6 gap-4 px-6'>
-                        <div className=''>
-                            {loading ? (
-                                <Skeleton className='h-16 w-16 rounded-lg' />
-                            ) : (
-                                <Avatar className=" h-16 w-16 rounded-lg hover: cursor-pointer">
-                                    <AvatarImage src={editUser?.image} />
-                                    <AvatarFallback className=' h-16 w-16 rounded-lg bg-background border'><User /></AvatarFallback>
-                                </Avatar>
-                            )}
-                        </div>
+                        {loading ? (
+                            <Skeleton className='h-20 w-20 rounded-lg' />
+                        ) : (
+                            <div className='flex gap-4 items-end'>
+                                {file ? (
+                                    <Avatar className=" h-20 w-20 rounded-lg">
+                                        <AvatarImage src={URL.createObjectURL(file)} />
+                                        <AvatarFallback className=' h-20 w-20 rounded-lg bg-background border'><User /></AvatarFallback>
+                                    </Avatar>
+                                ) : (
+                                    <Avatar className=" h-20 w-20 rounded-lg">
+                                        <AvatarImage src={editUser?.image} />
+                                        <AvatarFallback className=' h-20 w-20 rounded-lg bg-background border'><User /></AvatarFallback>
+                                    </Avatar>
+                                )}
+
+                                <div className="relative">
+                                    <div className={`flex h-20 justify-between ${file ? 'flex-col' : 'flex-col-reverse'}`}>
+
+                                        {file && (
+                                            <Badge className=''>
+                                                {file.name}
+                                            </Badge>
+                                        )}
+                                        <div className='flex gap-4'>
+                                            <Button onClick={handleButtonClick} variant={"outline"} className='h-8 flex gap-2 w-fit'>
+                                                <FileImage className='h-4 w-4' />
+                                                {file ? 'Change' : 'Upload'}
+                                            </Button>
+                                            {file && (
+                                                <Button variant={"destructive"} className='h-8 flex gap-2 w-fit' onClick={() => setFile(null)}>
+                                                    <FileX className='h-4 w-4' />
+                                                    Remove
+                                                </Button>
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                    <Input
+                                        ref={fileInputRef}
+                                        type='file'
+                                        className='hidden'
+                                        onChange={handleFileChange}
+                                    />
+
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className='flex flex-row items-end mt-6 gap-4 px-6'>
                         <div className='w-full'>
                             {loading ? (
                                 <Skeleton className='h-4 w-full ' />
                             ) : (
-                                <Input className='mt-2' placeholder='Name' value={editUser?.name} onChange={(e: any) => setEditUser({ ...editUser, name: e.target.value })} />
+                                <>
+                                    <Label className='text-sm text-gray-500'>Name</Label>
+                                    <Input className='mt-2' placeholder='Name' value={editUser?.name} onChange={(e: any) => {setEditUser({ ...editUser, name: e.target.value })}} />
+                                </>
                             )}
                         </div>
 
