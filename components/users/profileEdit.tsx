@@ -15,6 +15,7 @@ import { formatDateAndTime } from '@/lib/consts'
 import { Badge } from '../ui/badge'
 import { Label } from '@radix-ui/react-label'
 import { uploadPicture } from '@/lib/imagekitApis'
+import { useUserData } from '@/context/userData'
 
 export default function ProfileEdit() {
 
@@ -26,6 +27,7 @@ export default function ProfileEdit() {
     const [loading, setLoading] = React.useState(false);
 
     const [file, setFile] = React.useState<File | null>(null);
+    const { setAvatar } = useUserData();
 
     const router = useRouter();
 
@@ -48,6 +50,7 @@ export default function ProfileEdit() {
     }, [])
 
     async function handleEdit() {
+        let changedAvatar = false;
         let url = editUser?.image;
         if (file) {
             const response = await uploadPicture('/users/' + session?.user?.id  + '/profile-pictures', file!);
@@ -58,6 +61,7 @@ export default function ProfileEdit() {
                 return;
             }
 
+            changedAvatar = true;
             url = content.url;
         }
         toast.promise(
@@ -88,7 +92,10 @@ export default function ProfileEdit() {
 
             loading: 'Saving...',
             success: () => {
-                router.push('/users/' + session?.user?.id);
+                if (changedAvatar) {
+                    setAvatar(url);
+                }
+                router.push('/users/' + session?.user?.id + '?show=posts');
                 return 'User updated!'
             },
             error: 'Error updating the user.',
@@ -144,7 +151,7 @@ export default function ProfileEdit() {
                                     <div className={`flex h-20 justify-between ${file ? 'flex-col' : 'flex-col-reverse'}`}>
 
                                         {file && (
-                                            <Badge className=''>
+                                            <Badge className='w-fit'>
                                                 {file.name}
                                             </Badge>
                                         )}
@@ -208,7 +215,7 @@ export default function ProfileEdit() {
                         )}
                     </div>
                     <div className='space-x-4'>
-                        <Button className='h-8' variant={'destructive'} onClick={() => router.push('/users/' + session?.user?.id)}>Cancel</Button>
+                        <Button className='h-8' variant={'destructive'} onClick={() => router.push('/users/' + session?.user?.id + '?show=posts')}>Cancel</Button>
                         <Button className='h-8' onClick={() => handleEdit()}>Save</Button>
                     </div>
                 </CardFooter>

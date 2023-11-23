@@ -12,6 +12,8 @@ const UserContext = createContext<{
     addNewGroup: (newGroup: any) => void,
     removeGroup: (groupId: string) => void,
     updateGroup: (groupId: string, updatedGroup: any) => void,
+    avatar: string,
+    setAvatar: (avatar: string) => void,
 }>({
     followers: [],
     setFollowers: () => { },
@@ -22,14 +24,18 @@ const UserContext = createContext<{
     addNewGroup: () => { },
     removeGroup: () => { },
     updateGroup: () => { },
+    avatar: "",
+    setAvatar: () => { }
 });
 
 export const UserDataProvider = ({ children }: any) => {
     const [followers, setFollowers] = useState<any[]>([]);
     const [following, setFollowing] = useState<any[]>([]);
     const [groups, setGroups] = useState<any[]>([]);
+   
 
     const { data: session, status } = useSession();
+    const [avatar, setAvatar] = useState<string>(session?.user?.image);
 
     useEffect(() => {
         if (status !== "authenticated" || !session?.user?.id) return
@@ -73,6 +79,8 @@ export const UserDataProvider = ({ children }: any) => {
         addNewGroup,
         removeGroup,
         updateGroup,
+        avatar: avatar,
+        setAvatar: setAvatar
     };
 
     return (

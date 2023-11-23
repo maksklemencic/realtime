@@ -5,10 +5,13 @@ import { Moon, Sun, User, LogOut, UserCog, SunMoon, Search } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { useUserData } from '@/context/userData'
 
 function Navbar() {
     const { theme, setTheme } = useTheme()
     const { data: session } = useSession()
+
+    const { avatar } = useUserData()
 
     return (
         <nav className='h-16 border-b flex justify-between'>
@@ -32,7 +35,7 @@ function Navbar() {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Avatar className="hover:cursor-pointer h-10 w-10 rounded-lg">
-                                <AvatarImage src={session?.user!.image!} />
+                                <AvatarImage src={(avatar && avatar != "") ? avatar : session?.user?.image} />
                                 <AvatarFallback className='hover:cursor-pointer h-10 w-10 rounded-lg bg-background border hover:bg-accent'><User /></AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
