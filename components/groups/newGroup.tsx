@@ -130,7 +130,7 @@ export default function NewGroup() {
     }
 
     async function addGroupImage(groupId: string) {
-        const response = await uploadPicture('/groups/' + groupId + '/profile-pictures', file!);
+        const response = await uploadPicture('/groups/' + groupId, file!);
 
         const content = await response.json();
         if (!response?.ok) {

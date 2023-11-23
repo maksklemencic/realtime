@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '../ui/card'
 import { colors, formatDate } from '@/lib/consts'
 import { Badge } from '../ui/badge'
-import { Loader2, PlusIcon, User, Users, X } from 'lucide-react'
+import { FileImage, FileX, Loader2, PlusIcon, User, Users, X } from 'lucide-react'
 import { Input } from '../ui/input'
 import { useSession } from 'next-auth/react';
 import { Button } from '../ui/button';
@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 import { useUserData } from '@/context/userData';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
+import { Label } from '../ui/label';
+import { uploadPicture } from '@/lib/imagekitApis';
 
 interface EditGroupProps {
     group: any
@@ -27,6 +29,9 @@ export default function EditGroup(props: EditGroupProps) {
     const [users, setUsers] = useState<any[]>([])
     const [newAdmin, setNewAdmin] = useState<any>(null)
 
+    const [file, setFile] = React.useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const { updateGroup } = useUserData()
     const { data: session } = useSession()
 
@@ -36,7 +41,22 @@ export default function EditGroup(props: EditGroupProps) {
         })
     }
 
-    function handleUpdateGroup() {
+    async function handleUpdateGroup() {
+
+
+        let url = props.group?.image;
+        if (file) {
+            const response = await uploadPicture('/groups/' + props.group?.id, file!);
+        
+            const content = await response.json();
+            if (!response?.ok) {
+                setFile(null);
+                toast.error('Error uploading the image.');
+                return;
+            }
+            url = content.url;
+        }
+
         let newMemebers = groupMembers.map((member) => member.id)
         if (!newMemebers.includes(session?.user?.id)) {
             newMemebers.push(session?.user?.id)
@@ -50,7 +70,8 @@ export default function EditGroup(props: EditGroupProps) {
                 name: groupName,
                 groupId: props?.group?.id,
                 userIds: newMemebers,
-                adminId: (newAdmin) ? newAdmin?.id : props?.group?.adminId,   
+                adminId: (newAdmin) ? newAdmin?.id : props?.group?.adminId,
+                image: url
             })
         })
             .then(res => res.json())
@@ -74,6 +95,18 @@ export default function EditGroup(props: EditGroupProps) {
     }, [queryText])
 
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleButtonClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
     return (
         <div>
             {!props?.group?.id && (
@@ -84,18 +117,62 @@ export default function EditGroup(props: EditGroupProps) {
             {props?.group?.id && (
                 <Card className='col-span-1'>
                     <CardContent className='p-4'>
-                        <div className='flex justify-between '>
-                            {props?.group?.image === null && (
-                                <div className={`sm:h-20 sm:w-20 h-16 w-16 rounded-lg bg-muted border text-gray-white flex items-center justify-center`}><Users /></div>
+                        <div className='flex justify-start gap-4 '>
+                            {file ? (
+                                <>
+                                    <img className='sm:h-20 sm:w-20 h-16 w-16 rounded-lg' src={URL.createObjectURL(file)} alt={props?.group?.name} />
+                                </>
+                            ) : (
+                                <>
+                                    {props?.group?.image === null && (
+                                        <div className={`sm:h-20 sm:w-20 h-16 w-16 rounded-lg bg-muted border text-gray-white flex items-center justify-center`}><Users /></div>
 
+                                    )}
+                                    {props?.group?.image !== null && colors.includes(props?.group?.image) && (
+                                        <div className={`sm:h-20 sm:w-20 h-16 w-16 rounded-lg ${props?.group?.image}`}></div>
+                                    )}
+                                    {props?.group?.image !== null && !colors.includes(props?.group?.image) && (
+                                        <img className='sm:h-20 sm:w-20 h-16 w-16 rounded-lg' src={props?.group?.image} alt={props?.group?.name} />
+                                    )}
+                                </>
                             )}
-                            {props?.group?.image !== null && colors.includes(props?.group?.image) && (
-                                <div className={`sm:h-20 sm:w-20 h-16 w-16 rounded-lg ${props?.group?.image}`}></div>
-                            )}
-                            {props?.group?.image !== null && !colors.includes(props?.group?.image) && (
-                                <img className='sm:h-20 sm:w-20 h-16 w-16 rounded-lg' src={props?.group?.image} alt={props?.group?.name} />
-                            )}
-                            <div className='flex flex-col justify-start items-end gap-3'>
+
+                            <div className="relative">
+                                <div className={`flex h-20 justify-between ${file ? 'flex-col' : 'flex-col-reverse'}`}>
+
+                                    {file && (
+                                        <Badge className='w-fit h-8 border border-gray-300 dark:border-gray-600' variant="secondary">
+                                            {file.name}
+                                        </Badge>
+                                    )}
+                                    <div className='flex gap-4'>
+                                        <Button onClick={handleButtonClick} variant={"outline"} className='h-8 flex gap-2 w-fit'>
+                                            <FileImage className='h-4 w-4' />
+                                            {file ? 'Change' : 'Upload'}
+                                        </Button>
+                                        {file && (
+                                            <Button variant={"destructive"} className='h-8 flex gap-2 w-fit' onClick={() => setFile(null)}>
+                                                <FileX className='h-4 w-4' />
+                                                Remove
+                                            </Button>
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+                                <Input
+                                    ref={fileInputRef}
+                                    type='file'
+                                    className='hidden'
+                                    onChange={handleFileChange}
+                                />
+
+                            </div>
+
+                        </div>
+                        <div>
+                            <div className='flex justify-end items-center w-full gap-4 my-2'>
                                 <div className='flex flex-row gap-2 items-end'>
                                     <p className='font-semibold text-sm'>Created:</p>
                                     <p className='text-gray-400 text-sm'>{formatDate(props?.group?.createdAt)}</p>
@@ -108,7 +185,10 @@ export default function EditGroup(props: EditGroupProps) {
 
                             </div>
                         </div>
-                        <Input className='w-full mt-4' value={groupName} defaultValue={props?.group?.name} onChange={(e: any) => setGroupName(e.target.value)} />
+                        <div>
+                            <Label className='mt-4 ml-1'>Group name</Label>
+                            <Input className='w-full mt-2' value={groupName} defaultValue={props?.group?.name} onChange={(e: any) => setGroupName(e.target.value)} />
+                        </div>
 
                         <div className='my-4 mx-1'>
                             <p className='text-sm font-semibold mb-2'>Transfer admin rights to</p>
@@ -154,7 +234,7 @@ export default function EditGroup(props: EditGroupProps) {
                                                 <div className='text-center text-gray-400 my-3'>
                                                     No members found
                                                 </div>
-                                            
+
                                             )}
                                         </SelectGroup>
                                     </SelectContent>
