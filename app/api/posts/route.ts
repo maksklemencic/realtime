@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
                     content: body.content,
                     author: { connect: { id: body.author } },
                     group: { connect: { id: body.group } },
+                    imagesUrls: body.images ?? [],
                 },
             });
 
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
             data: {
                 content: body.content,
                 author: { connect: { id: body.author } },
+                imagesUrls: body.images ?? [],
             },
         });
 

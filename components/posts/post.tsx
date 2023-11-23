@@ -131,7 +131,7 @@ export default function Post(props: PostProps) {
                                                         <Avatar className=" h-7 w-7 rounded-lg absolute right-0">
                                                             <Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>
                                                                 <AvatarImage src={props.post?.author?.image} />
-                                                                <AvatarFallback className=' h-7 w-7 rounded-lg bg-background border'><User className='h-4 w-4'/></AvatarFallback>
+                                                                <AvatarFallback className=' h-7 w-7 rounded-lg bg-background border'><User className='h-4 w-4' /></AvatarFallback>
                                                             </Link>
                                                         </Avatar>
                                                     </div>
@@ -156,7 +156,7 @@ export default function Post(props: PostProps) {
                                                             </Link>
                                                         </Avatar>
                                                     </div>
-                                                
+
                                                 )}
 
                                             </>
@@ -184,6 +184,16 @@ export default function Post(props: PostProps) {
                                         <div className='mt-4 '>
                                             {props.post?.content}
                                         </div>
+                                        {props.post?.imagesUrls && (
+                                            <div className={` grid ${props.post?.imagesUrls?.length == 1 && 'grid-cols-1'} ${props.post?.imagesUrls?.length > 1 && 'grid-cols-2'} gap-4 my-4 px-4 items-center`}>
+                                                {props.post?.imagesUrls?.map((image: any, index: number) => (
+                                                    <div key={index} className='mx-auto grid-cols-1 relative '>
+                                                        <img className='rounded-lg object-contain' src={image} alt={props.post?.author?.name} />
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                        )}
                                     </div>
                                 </div>
                             </Link>
