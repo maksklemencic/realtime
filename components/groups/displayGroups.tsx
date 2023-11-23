@@ -98,6 +98,9 @@ export default function DisplayGroups() {
                                     {group?.image !== null && colors.includes(group.image) && (
                                         <div className={`h-16 w-16 rounded-lg ${group.image}`}></div>
                                     )}
+                                    {group?.image !== null && !colors.includes(group.image) && (
+                                        <img className='h-16 w-16 rounded-lg' src={group?.image} alt={group?.name} />
+                                    )}
 
                                     <div className='flex flex-col justify-evenly items-end gap-1'>
                                         <p className='text-gray-400 text-sm'>{formatDate(group?.createdAt)}</p>

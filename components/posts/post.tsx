@@ -146,6 +146,18 @@ export default function Post(props: PostProps) {
                                                         </Avatar>
                                                     </div>
                                                 )}
+                                                {props?.post?.group?.image !== null && !colors.includes(props.post?.group?.image) && (
+                                                    <div className={`h-10 w-10 rounded-lg relative bg-background border`}>
+                                                        <img className='h-10 w-10 rounded-lg' src={props?.post?.group?.image} alt={props?.post?.group?.name} />
+                                                        <Avatar className=" h-6 w-6 rounded-lg absolute -right-2 -bottom-2">
+                                                            <Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>
+                                                                <AvatarImage src={props.post?.author?.image} />
+                                                                <AvatarFallback className=' h-6 w-6 rounded-lg bg-background border'><User className='h-4 w-4' /></AvatarFallback>
+                                                            </Link>
+                                                        </Avatar>
+                                                    </div>
+                                                
+                                                )}
 
                                             </>
                                         ) : (

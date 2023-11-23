@@ -45,7 +45,8 @@ export default function GroupUsers(props: GroupUsersProps) {
     function displayAdminOnTop() {
         const admin = props.group?.users?.find((user: any) => user.id === props.group?.adminId)
         const users = props.group?.users?.filter((user: any) => user.id !== props.group?.adminId)
-        return [admin, ...users!]
+        if (users.length === 0) return [admin]
+        return [admin, ...users]
     }
 
     return (

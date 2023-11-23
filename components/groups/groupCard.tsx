@@ -123,6 +123,12 @@ export default function GroupCard(props: GroupCardProps) {
                             {props?.group?.image !== null && colors.includes(props?.group?.image) && (
                                 <div className={`sm:h-24 sm:w-24 h-16 w-16 rounded-lg ${props?.group?.image}`}></div>
                             )}
+                            {props?.group?.image !== null && !colors.includes(props?.group?.image) && (
+                                <div className={`sm:h-24 sm:w-24 h-16 w-16 rounded-lg bg-background border`}>
+                                    <img className='object-cover w-full h-full rounded-lg' src={props?.group?.image} alt='Group image' />
+                                </div>
+                            
+                            )}
                             <div className='flex flex-col justify-start items-end gap-3'>
                                 <div className='flex flex-row gap-2 items-end'>
                                     <p className='font-semibold text-sm'>Created:</p>

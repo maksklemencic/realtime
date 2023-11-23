@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation'
 import { formatDateAndTime } from '@/lib/consts'
 import { Badge } from '../ui/badge'
 import { Label } from '@radix-ui/react-label'
-import { uploadProfilePicture } from '@/lib/imagekitApis'
+import { uploadPicture } from '@/lib/imagekitApis'
 
 export default function ProfileEdit() {
 
@@ -50,7 +50,7 @@ export default function ProfileEdit() {
     async function handleEdit() {
         let url = editUser?.image;
         if (file) {
-            const response = await uploadProfilePicture(session?.user?.id, file!);
+            const response = await uploadPicture('/users/' + session?.user?.id  + '/profile-pictures', file!);
         
             const content = await response.json();
             if (!response?.ok) {

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         const fileBlob = formData.get('file') as Blob;
         const fileName = formData.get('fileName') as string;
-        const userId = formData.get('userId') as string;
+        const folder = formData.get('folder') as string;
 
         if (!fileBlob) {
             return new NextResponse('File is required', { status: 400 });
@@ -37,13 +37,12 @@ export async function POST(request: NextRequest) {
                 {
                     file: fileBuffer,
                     fileName: fileName,
-                    folder: '/users/' + userId  + '/profile-pictures',
+                    folder: folder,
                 },
                 function (error, result) {
                     if (error) {
                         reject(error);
                     } else if (result) {
-                        // console.log(result);
                         resolve(result.url);
                     }
                 }

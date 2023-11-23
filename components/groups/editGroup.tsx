@@ -92,6 +92,9 @@ export default function EditGroup(props: EditGroupProps) {
                             {props?.group?.image !== null && colors.includes(props?.group?.image) && (
                                 <div className={`sm:h-20 sm:w-20 h-16 w-16 rounded-lg ${props?.group?.image}`}></div>
                             )}
+                            {props?.group?.image !== null && !colors.includes(props?.group?.image) && (
+                                <img className='sm:h-20 sm:w-20 h-16 w-16 rounded-lg' src={props?.group?.image} alt={props?.group?.name} />
+                            )}
                             <div className='flex flex-col justify-start items-end gap-3'>
                                 <div className='flex flex-row gap-2 items-end'>
                                     <p className='font-semibold text-sm'>Created:</p>

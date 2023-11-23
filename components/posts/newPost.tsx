@@ -144,6 +144,9 @@ export default function NewPost() {
                                     {groups.find((group: any) => group.id === selectedGroup)?.image !== null && colors.includes(groups.find((group: any) => group.id === selectedGroup)?.image) && (
                                         <div className={`h-5 w-5 rounded-lg ${groups.find((group: any) => group.id === selectedGroup)?.image}`}></div>
                                     )}
+                                    {groups.find((group: any) => group.id === selectedGroup)?.image !== null && !colors.includes(groups.find((group: any) => group.id === selectedGroup)?.image) && (
+                                        <img className='h-5 w-5 rounded-lg' src={groups.find((group: any) => group.id === selectedGroup)?.image} alt={groups.find((group: any) => group.id === selectedGroup)?.name} />
+                                    )}
                                     <p>{groups.find((group: any) => group.id === selectedGroup)?.name}</p>
                                 </div>
                             
@@ -169,6 +172,9 @@ export default function NewPost() {
                                             )}
                                             {group?.image !== null && colors.includes(group.image) && (
                                                 <div className={`h-6 w-6 rounded-lg ${group.image}`}></div>
+                                            )}
+                                            {group?.image !== null && !colors.includes(group.image) && (
+                                                <img className='h-6 w-6 rounded-lg' src={group?.image} alt={group?.name} />
                                             )}
                                             <p>{group.name}</p>
                                         </div>

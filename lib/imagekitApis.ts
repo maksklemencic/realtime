@@ -1,8 +1,8 @@
-export async function uploadProfilePicture(userId: string, file: File) {
+export async function uploadPicture(folder: string, file: File) {
     const formData = new FormData();
         formData.append('file', file);
         formData.append('fileName', file.name);
-        formData.append('userId', userId);
+        formData.append('folder', folder);
 
         try {
             const response = await fetch('/api/imagekit/upload', {
