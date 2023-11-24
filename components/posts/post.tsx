@@ -127,11 +127,11 @@ export default function Post(props: PostProps) {
 
     const handleNextClick = () => {
         setCurrentIndex((prevIndex: number) => (prevIndex + 1) % props.post?.imagesUrls?.length);
-      };
-    
-      const handlePrevClick = () => {
+    };
+
+    const handlePrevClick = () => {
         setCurrentIndex((prevIndex: number) => (prevIndex - 1 + props.post?.imagesUrls?.length) % props.post?.imagesUrls?.length);
-      };
+    };
 
     return (
         <>
@@ -248,7 +248,7 @@ export default function Post(props: PostProps) {
                         <div className='text-gray-400 text-sm'><Link href={'http://localhost:3000/users/' + props.post?.authorId + '?show=posts'}>{props.post?.author?.email}</Link></div>
                     </>
                 )}
-                {props.post?.location && (
+                {/* {props.post?.location && (
                     <div className='mt-4 flex gap-2 items-center'>
                         <div className='flex gap-1 items-center'>
                             <MapPin className='h-4 w-4' />
@@ -256,40 +256,40 @@ export default function Post(props: PostProps) {
                         </div>
                         <Badge variant={'outline'} className='text-sm h-6 font-semibold border-primary'>{props.post?.location}</Badge>
                     </div>
-                )}
+                )} */}
                 <div className='mt-4'>
                     {props.post?.content}
                 </div>
                 {props.post?.imagesUrls && (
-                    <div className={` grid grid-cols-1 ${props.post?.imagesUrls?.length == 1 && 'sm:grid-cols-1'} ${props.post?.imagesUrls?.length == 2 && 'sm:grid-cols-2'} ${props.post?.imagesUrls?.length == 3 && 'sm:grid-cols-3'} ${props.post?.imagesUrls?.length > 3 && 'sm:grid-cols-4'} gap-4 my-2 pr-4 items-center`}>
+                    <div className={` grid grid-cols-1 sm:grid-cols-4 gap-4 my-2 pr-4 items-center`}>
                         {props.post?.imagesUrls?.map((image: any, index: number) => (
                             <>
                                 <div key={index} className={`mx-auto grid-cols-1 ${(index >= 3 && !pathname.includes('post')) && 'hidden'}`}>
-                                    <Dialog>
-                                        <DialogTrigger className='rounded-lg object-contain'>
-                                            <img className='rounded-lg object-contain' src={image} alt={props.post?.author?.name} onClick={() => setCurrentIndex(index)}/>
-                                        </DialogTrigger>
-                                        
-                                        <DialogContent className='px-0' >
-                                            <DialogHeader className='px-6'>
-                                                <p>Image {currentIndex + 1} of {props.post?.imagesUrls?.length}</p>
-                                            </DialogHeader>
-                                            <div className='flex justify-between gap-0'>
-                                                <div className='w-10  flex justify-center items-center hover:cursor-pointer hover:bg-accent mx-2 rounded' onClick={handlePrevClick}>
-                                                    <ChevronLeft className='h-9 w-9' />
+                                    {pathname.includes('post') ? (
+                                        <Dialog>
+                                            <DialogTrigger className='rounded-lg object-contain'>
+                                                <img className='rounded-lg object-contain max-h-40 sm:max-h-80' src={image} alt={props.post?.author?.name} onClick={() => setCurrentIndex(index)} />
+                                            </DialogTrigger>
+                                            <DialogContent className='px-0' >
+                                                <DialogHeader className='px-6'>
+                                                    <p>Image {currentIndex + 1} of {props.post?.imagesUrls?.length}</p>
+                                                </DialogHeader>
+                                                <div className='flex justify-between gap-0'>
+                                                    <div className='w-10  flex justify-center items-center hover:cursor-pointer hover:bg-accent mx-2 rounded' onClick={handlePrevClick}>
+                                                        <ChevronLeft className='h-9 w-9' />
+                                                    </div>
+                                                    <div className='w-full'>
+                                                        <img className='rounded-lg object-contain' src={props.post?.imagesUrls[currentIndex]} alt={props.post?.author?.name} />
+                                                    </div>
+                                                    <div className='w-10  flex justify-center items-center hover:cursor-pointer hover:bg-accent mx-2 rounded' onClick={handleNextClick}>
+                                                        <ChevronRight className='h-9 w-9' />
+                                                    </div>
                                                 </div>
-                                                <div className='w-full'>
-                                                    <img className='rounded-lg object-contain' src={props.post?.imagesUrls[currentIndex]} alt={props.post?.author?.name} />
-                                                </div>
-                                                <div className='w-10  flex justify-center items-center hover:cursor-pointer hover:bg-accent mx-2 rounded' onClick={handleNextClick}>
-                                                    <ChevronRight className='h-9 w-9' />
-                                                </div>
-                                            </div>
-                                            
-                                            
-
-                                        </DialogContent>
-                                    </Dialog>
+                                            </DialogContent>
+                                        </Dialog>
+                                    ) : (
+                                        <img className='rounded-lg object-contain max-h-40 sm:max-h-80' src={image} alt={props.post?.author?.name} onClick={() => setCurrentIndex(index)} />
+                                    )}
                                 </div>
                                 {(index == 4 && !pathname.includes('post')) && (
                                     <Link href={'/post/' + props.post?.id}>

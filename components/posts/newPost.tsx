@@ -59,12 +59,12 @@ export default function NewPost() {
             type: "image",
             label: "Image"
         },
-        {
-            icon: <LocateFixedIcon />,
-            color: "bg-blue-400",
-            type: "location",
-            label: "Location"
-        },
+        // {
+        //     icon: <LocateFixedIcon />,
+        //     color: "bg-blue-400",
+        //     type: "location",
+        //     label: "Location"
+        // },
         // {
         //     icon: <Smile />,
         //     color: "bg-orange-400",
@@ -119,14 +119,14 @@ export default function NewPost() {
             content: textContent,
             author: session?.user?.id,
             images: urls,
-            location: location !== "" ? location : null
+            // location: location !== "" ? location : null
         }
         const body2 = {
             content: textContent,
             author: session?.user?.id,
             group: selectedGroup,
             images: urls,
-            location: location !== "" ? location : null
+            // location: location !== "" ? location : null
         }
 
         console.log(location)
