@@ -151,8 +151,9 @@ export async function GET(request: NextRequest, context: { params: { userId: str
                         name: true,
                         image: true,
                     }
-                }
-            },
+                },
+                
+            }
         });
 
         return new NextResponse(JSON.stringify(posts), {

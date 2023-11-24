@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { nullable } from 'zod';
 
 const prisma = new PrismaClient();
 
@@ -23,6 +22,7 @@ export async function POST(request: NextRequest) {
                     author: { connect: { id: body.author } },
                     group: { connect: { id: body.group } },
                     imagesUrls: body.images ?? [],
+                    location: body.location ?? undefined,
                 },
             });
 

@@ -131,6 +131,8 @@ model Post {
   groupId         String? @db.ObjectId
 
   imagesUrls      String[]
+
+  location        String?
 }
 
 model Comment {

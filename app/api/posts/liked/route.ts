@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
                             },
                         },
                         imagesUrls: true,
+                        location: true,
                     },
                 },
             },
@@ -55,6 +56,7 @@ export async function GET(request: NextRequest) {
             groupId: like.likedPost.groupId,
             group: like.likedPost.group,
             imagesUrls: like.likedPost.imagesUrls,
+            location: like.likedPost.location,
         }));
 
         return new NextResponse(JSON.stringify(likedPosts), {

@@ -119,14 +119,17 @@ export default function NewPost() {
             content: textContent,
             author: session?.user?.id,
             images: urls,
+            location: location !== "" ? location : null
         }
         const body2 = {
             content: textContent,
             author: session?.user?.id,
             group: selectedGroup,
             images: urls,
+            location: location !== "" ? location : null
         }
 
+        console.log(location)
         toast.promise(
             fetch(`/api/posts`, {
                 method: 'POST',
@@ -202,9 +205,6 @@ export default function NewPost() {
 
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        // add images to the state. If the user selects multiple files, the files are stored in a FileList object
-        // also if there are already images in the state, we need to add the new ones to the old ones
-        // only images are allowed
         const imagesCount = images.length;
         let endCount = 0;
         const files = e.target.files;
@@ -222,9 +222,9 @@ export default function NewPost() {
     return (
         <div className='my-2'>
             <div className='h-10 my-2 flex justify-end items-center gap-4'>
-                <p className='font-semibold'>Post to: </p>
+                <p className='hidden xs:block font-semibold w-20'>Post to: </p>
                 <Select defaultValue='followers' onValueChange={(e: string) => { setSelectedGroup(e) }}>
-                    <SelectTrigger className="w-[300px]">
+                    <SelectTrigger className="w-min-[300px] w-full">
                         <SelectValue placeholder="Select where to post" >
                             {(selectedGroup === "followers" || selectedGroup === '') && (
                                 <div className={`flex items-center gap-2`}>
@@ -306,7 +306,7 @@ export default function NewPost() {
                         value={textContent}
                         className="resize-none outline-none border-none w-full p-2 bg-transparent"
                     />
-                    <div className={`grid ${images?.length == 1 && 'grid-cols-1'} ${images?.length == 2 && 'grid-cols-2'} ${(images?.length > 2) && 'grid-cols-3'} gap-4 my-4 px-4 items-center`}>
+                    <div className={`grid grid-cols-1 ${images?.length == 1 && 'sm:grid-cols-1'} ${images?.length == 2 && 'sm:grid-cols-2'} ${(images?.length > 2) && 'sm:grid-cols-3'} gap-4 my-4 px-4 items-center`}>
                         {images?.map((image, index) => (
                             <div key={index} className='mx-auto  grid-cols-1 relative '>
                                 <img className='object-contain' src={URL.createObjectURL(image)} alt={index.toString()} />
