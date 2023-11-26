@@ -1,13 +1,13 @@
 "use client"
-import BreadCrumb from "@/components/breadcrumb";
+import BreadCrumb from "@/components/breadcrumb"
 import Navbar from "@/components/navbar"
-import { Sidebar } from "@/components/sidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { Sidebar } from "@/components/sidebar"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Loader2 } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { redirect } from "next/navigation"
 
-export default function SiteLayout({
+export default function ChatSiteLayout({
     children,
 }: {
     children: React.ReactNode
@@ -26,19 +26,12 @@ export default function SiteLayout({
                         <Navbar />
                     </div>
                     <div className="flex flex-col-reverse md:flex-row w-full h-[calc(100%-64px)]">
-
                         <Sidebar />
-
                         <div className="w-full md:h-full h-[calc(100%-64px)] flex flex-col">
-                            <div className="h-14">
-                                <BreadCrumb />
-                            </div>
-                            
-                            <div className='w-full h-[calc(100%-56px)] grid grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 '>
-                                <ScrollArea className='col-span-4 lg:col-span-4 xl:col-span-6 h-[calc(100%)]'>
+                            <div className='w-full h-[calc(100%)]'>
+                                <ScrollArea className='h-[calc(100%)]'>
                                     {children}
                                 </ScrollArea>
-                                <div className="hidden lg:block col-span-1" />
                             </div>
                         </div>
                     </div>
@@ -55,6 +48,5 @@ export default function SiteLayout({
                 </>
             )}
         </>
-    );
-
+    )
 }

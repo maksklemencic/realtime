@@ -252,6 +252,14 @@ export default function SearchPage() {
 															<div className={`h-10 w-10 rounded-lg ${group.image}`}></div>
 														)}
 
+														{group?.image !== null && !colors.includes(group.image) && (
+															<Avatar className=" h-10 w-10 rounded-lg">
+																<AvatarImage src={group?.image} />
+																<AvatarFallback className=' h-10 w-10 rounded-lg bg-background border'><Users /></AvatarFallback>
+															</Avatar>
+														
+														)}
+
 													</div>
 													<div className=' w-full '>
 														<div className='font-bold  text-sm'>{group?.name}</div>
@@ -259,8 +267,8 @@ export default function SearchPage() {
 													</div>
 													<div className='flex flex-col w-32'>
 														<p className='text-xs'>Admin</p>
-														<Link href={'/users/' + group?.adminId + '?show=posts'}>
-															<Badge className='w-32'>{getAdminName(group?.adminId, group?.users)}</Badge>
+														<Link className='w-32' href={'/users/' + group?.adminId + '?show=posts'}>
+															<Badge >{getAdminName(group?.adminId, group?.users)}</Badge>
 														</Link>
 													</div>
 
