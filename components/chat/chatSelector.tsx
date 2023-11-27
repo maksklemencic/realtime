@@ -1,54 +1,108 @@
 import React from 'react'
 import { Separator } from '../ui/separator'
 import { Dot, MessageCircle, Pin, PinOff, PlusCircle } from 'lucide-react'
+import ChatSelectorGhost from './chatSelectorGhost';
 
 interface ChatSelectorProps {
-    conversations: any
+    conversations: any,
+    setConversations: (conversation: any) => void,
+    loading: boolean
 }
 
 export default function ChatSelector(props: ChatSelectorProps) {
+
+    function handlePinClick(conversationId: string) {
+        const isPinned = props.conversations?.find((conversation: any) => conversation.id === conversationId).isPinned;
+        fetch(`/api/conversations`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: conversationId,
+                    isPinned: !isPinned
+                })
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                props.setConversations(props.conversations?.map((conversation: any) => {
+                    if (conversation.id === conversationId) {
+                        conversation.isPinned = !isPinned;
+                    }
+                    return conversation;
+                }));
+            })
+            .catch((error) => {
+                console.error('Error updating conversation:', error);
+            });
+
+    }
+
     return (
-        <div>
-            <div className=' p-2'>
-                <div className='flex justify-between items-center'>
-                    <p className='text-xl font-semibold'>Chat</p>
-                    <PlusCircle className='text-primary mr-2' />
-                </div>
-                <Separator className='my-2' />
-                <div>
-                    <div className='text-md font-semibold flex justify-between items-center'>
-                        <p>Pinned</p>
-                        <Pin className='dark:text-yellow-200 dark:fill-yellow-200 text-yellow-500 fill-yellow-500 h-5 w-5 mr-2' />
+        <>
+            {props.loading ? (
+                <ChatSelectorGhost />
+            ) : (
+                <div className=' p-2'>
+                    <div className='flex justify-between items-center'>
+                        <p className='text-xl font-semibold'>Chat</p >
+                        <PlusCircle className='text-primary mr-2' />
+                    </div >
+                    <Separator className='my-2' />
+                    <div>
+                        {props.conversations?.find((conversation: any) => conversation.id === conversation.id && conversation.isPinned == true) && (
+                            <>
+                                <div className='text-md font-semibold flex justify-between items-center bg-muted px-2 py-1 rounded'>
+                                    <p>Pinned</p>
+                                    <Pin className='dark:text-yellow-200 dark:fill-yellow-200 text-yellow-500 fill-yellow-500 h-5 w-5' />
+                                </div>
+                                <div className='my-2 space-y-2'>
+                                    {props.conversations?.filter((conversation: any) => conversation.isPinned === true)
+                                        .map((conversation: any) => {
+                                            return (
+                                                Conversation(conversation)
+                                            )
+                                        })}
+                                </div>
+                            </>
+                        )}
+
+                        {/* <div className='border border-dashed my-2' /> */}
+                        <div className='text-md font-semibold flex justify-between items-center bg-muted px-2 py-1 rounded'>
+                            <p>Conversations</p>
+                            <MessageCircle className='text-blue-500 fill-blue-500 h-5 w-5' />
+                        </div>
+                        {props.conversations?.find((conversation: any) => conversation.id === conversation.id && conversation.isPinned == false) ? (
+                            <div className='my-2 space-y-2'>
+
+                                {props.conversations?.filter((conversation: any) => conversation.isPinned === false)
+                                    .map((conversation: any) => {
+                                        return (
+                                            Conversation(conversation)
+                                        )
+                                    })}
+                            </div>
+                        ) : (
+                            <p className='w-full p-2 flex justify-center text-sm text-gray-400'>No conversations</p>
+                        )}
+
                     </div>
-                    <div className='my-2 space-y-2'>
-                        {props.conversations?.filter((conversation: any) => conversation.isPinned === true)
-                            .map((conversation: any) => {
-                                return (
-                                    Conversation(conversation)
-                                )
-                            })}
-                    </div>
-                    <div className='border border-dashed my-2' />
-                    <div className='text-md font-semibold flex justify-between items-center'>
-                        <p>Conversations</p>
-                        <MessageCircle className='text-blue-500 fill-blue-500 h-5 w-5 mr-2' />
-                    </div>
-                    <div className='my-2 space-y-2'>
-                        {props.conversations?.filter((conversation: any) => conversation.isPinned === false)
-                            .map((conversation: any) => {
-                                return (
-                                    Conversation(conversation)
-                                )
-                            })}
-                    </div>
-                </div>
-            </div>
-        </div>
+                </div >
+            )
+            }
+
+        </>
     )
 
     function Conversation(conversation: any) {
         return (
-            <div className='w-full flex gap-2 justify-between p-2 rounded-lg hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 '>
+            <div className={`w-full flex gap-2 justify-between p-2 rounded-lg hover:cursor-pointer ${conversation.isPinned && 'border-2 border-yellow-200'} hover:bg-gray-200 dark:hover:bg-gray-800 bg-gray-100 dark:bg-gray-900`}>
                 <div className=''>
                     <div className='bg-blue-200 h-10 w-10 rounded-full'></div>
                 </div>
@@ -57,9 +111,13 @@ export default function ChatSelector(props: ChatSelectorProps) {
                     <div className='w-full flex justify-between items-start gap-1'>
                         {/* <p className='overflow-hidden text-md font-semibold whitespace-nowrap overflow-ellipsis max-w-[80%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[50%] 2xl:max-w-[40%]'> */}
                         <p>
-                            {conversation.name} nionsa soanois a
+                            {conversation.name}
                         </p>
-                        <Pin className='h-5 w-5 hover:text-yellow-300 hover:fill-yellow-300'></Pin>
+                        {conversation?.isPinned ? (
+                            <PinOff className='h-5 w-5 hover:text-destructive hover:fill-destructive ' onClick={() => handlePinClick(conversation?.id)}></PinOff>
+                        ) : (
+                            <Pin className='h-5 w-5 hover:text-yellow-300 hover:fill-yellow-300 ' onClick={() => handlePinClick(conversation?.id)}></Pin>
+                        )}
                     </div>
 
                     <div className='w-full text-sm font-medium flex justify-start items-start'>
@@ -67,9 +125,10 @@ export default function ChatSelector(props: ChatSelectorProps) {
                         <Dot className='w-6 text-gray-500 block sm:hidden lg:block'>...</Dot>
                         {/* <p className='overflow-hidden text-gray-400 whitespace-nowrap overflow-ellipsis '> */}
                         <p className='text-gray-400'>
-                            Last message text here...
+                            {conversation?.messages?.length > 0 ? conversation.messages[conversation.messages.length - 1].body : ''}
                         </p>
                     </div>
+
                 </div>
             </div>
         );

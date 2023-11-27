@@ -48,14 +48,23 @@ export async function GET(request: NextRequest) {
         const id = request.nextUrl.searchParams.get('id');
         const userId = request.nextUrl.searchParams.get('userId');
 
-        // build query. If there is an id, get the conversation with that id. If there is a userId, get all conversations that user is in
-        // if there are both, get the conversation with that id if the user is in it
-        // if there are neither, get all conversations
         const query = {
             where: {
                 id: id ? { equals: id } : undefined,
                 userIds: userId ? { has: userId } : undefined,
             },
+            include: {
+                messages: true,
+                users: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                        email: true,
+                    },
+                },
+            },
+
         };
        
 
@@ -65,6 +74,66 @@ export async function GET(request: NextRequest) {
         );
 
         return new NextResponse(JSON.stringify(conversations), { status: 200, headers: { 'Content-Type': 'application/json' } });
+
+    }
+    catch {
+        return new NextResponse('Internal Server Error', { status: 500 });
+    }
+}
+
+
+export async function PUT(request: NextRequest) {
+    try {
+        if (request.method !== 'PUT') {
+            return new NextResponse('Method Not Allowed', { status: 405 });
+        }
+
+        const body = await request.json();
+
+        if (!body.id) {
+            return new NextResponse('Id of the conversation is required', { status: 400 });
+        }
+
+        // build data based on what is passed in the body
+        const data: any = {};
+        if (body.name) {
+            data.name = body.name;
+        }
+        if (body.userIds) {
+            data.userIds = {
+                set: body.userIds,
+            };
+        }
+        if (body.isGroup) {
+            data.isGroup = body.isGroup;
+        }
+        if (body.messagesIds) {
+            data.messagesIds = {
+                set: body.messagesIds,
+            };
+        }
+        if (body.isPinned) {
+            data.isPinned = body.isPinned;
+        }
+        
+
+        const updatedConversation = await prisma.conversation.update({
+            where: { id: body.id },
+            data: data,
+            include: {
+                messages: true,
+                users: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                        email: true,
+                    },
+                },
+            },
+        });
+
+        return new NextResponse(JSON.stringify(updatedConversation), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
     }
     catch {
