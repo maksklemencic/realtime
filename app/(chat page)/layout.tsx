@@ -29,9 +29,9 @@ export default function ChatSiteLayout({
                         <Sidebar />
                         <div className="w-full md:h-full h-[calc(100%-64px)] flex flex-col">
                             <div className='w-full h-[calc(100%)]'>
-                                <ScrollArea className='h-[calc(100%)]'>
-                                    {children}
-                                </ScrollArea>
+
+                                {children}
+
                             </div>
                         </div>
                     </div>
