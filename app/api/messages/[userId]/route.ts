@@ -37,6 +37,16 @@ export async function POST(request: NextRequest, context: { params: { userId: st
                 },
 
             },
+            include: {
+                sender: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                        email: true,
+                    },
+                },
+            },
         });
 
         await prisma.conversation.update({
