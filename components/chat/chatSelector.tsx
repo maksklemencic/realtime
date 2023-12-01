@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React, { use, useEffect } from 'react'
 import { Separator } from '../ui/separator'
 import { Dot, ListPlus, MessageCircle, Pin, PinOff, PlusCircle } from 'lucide-react'
 import ChatSelectorGhost from './chatSelectorGhost';
@@ -9,13 +10,24 @@ interface ChatSelectorProps {
     conversations: any,
     setConversations: (conversation: any) => void,
     loading: boolean,
-    selectedConversationId: string
+    selectedConversationId: string,
+    sessionUserId: string
 }
 
 export default function ChatSelector(props: ChatSelectorProps) {
 
+    useEffect(() => {
+        console.log(props.conversations);
+    }, [props.conversations])
+
     function handlePinClick(conversationId: string) {
-        const isPinned = props.conversations?.find((conversation: any) => conversation.id === conversationId).isPinned;
+        const isPinned = props.conversations?.find((conversation: any) => conversation.id === conversationId).isPinnedUserIds.includes(props.sessionUserId);
+        let pinUsers = props.conversations?.find((conversation: any) => conversation.id === conversationId).isPinnedUserIds;
+        if (pinUsers.includes(props.sessionUserId)) {
+            pinUsers = pinUsers.filter((userId: string) => userId !== props.sessionUserId);
+        } else {
+            pinUsers.push(props.sessionUserId);
+        }
         fetch(`/api/conversations`,
             {
                 method: 'PUT',
@@ -24,7 +36,7 @@ export default function ChatSelector(props: ChatSelectorProps) {
                 },
                 body: JSON.stringify({
                     id: conversationId,
-                    isPinned: !isPinned
+                    isPinned: pinUsers
                 })
             })
             .then((response) => {
@@ -36,7 +48,7 @@ export default function ChatSelector(props: ChatSelectorProps) {
             .then((data) => {
                 props.setConversations(props.conversations?.map((conversation: any) => {
                     if (conversation.id === conversationId) {
-                        conversation.isPinned = !isPinned;
+                        conversation.isPinnedUserIds = pinUsers;
                     }
                     return conversation;
                 }));
@@ -62,14 +74,14 @@ export default function ChatSelector(props: ChatSelectorProps) {
                     </div >
                     <Separator className='my-2' />
                     <div>
-                        {props.conversations?.find((conversation: any) => conversation.id === conversation.id && conversation.isPinned == true) && (
+                        {props.conversations?.find((conversation: any) => conversation.id === conversation.id && conversation.isPinnedUserIds.includes(props.sessionUserId)) && (
                             <>
                                 <div className='text-md font-semibold flex justify-between items-center bg-muted px-2 py-1 rounded-lg border'>
                                     <p>Pinned</p>
                                     <Pin className='dark:text-yellow-200 dark:fill-yellow-200 text-yellow-500 fill-yellow-500 h-5 w-5' />
                                 </div>
                                 <div className='my-2 space-y-2'>
-                                    {props.conversations?.filter((conversation: any) => conversation.isPinned === true)
+                                    {props.conversations?.filter((conversation: any) => conversation.isPinnedUserIds.includes(props.sessionUserId))
                                         .map((conversation: any) => {
                                             return (
                                                 Conversation(conversation)
@@ -84,10 +96,10 @@ export default function ChatSelector(props: ChatSelectorProps) {
                             <p>Conversations</p>
                             <MessageCircle className='text-blue-500 fill-blue-500 h-5 w-5' />
                         </div>
-                        {props.conversations?.find((conversation: any) => conversation.id === conversation.id && conversation.isPinned == false) ? (
+                        {props.conversations?.find((conversation: any) => conversation.id === conversation.id && !conversation.isPinnedUserIds.includes(props.sessionUserId)) ? (
                             <div className='my-2 space-y-2'>
 
-                                {props.conversations?.filter((conversation: any) => conversation.isPinned === false)
+                                {props.conversations?.filter((conversation: any) => !conversation.isPinnedUserIds.includes(props.sessionUserId))
                                     .map((conversation: any) => {
                                         return (
                                             Conversation(conversation)
@@ -127,7 +139,7 @@ export default function ChatSelector(props: ChatSelectorProps) {
                                 <p>
                                     {conversation.name}
                                 </p>
-                                {conversation?.isPinned ? (
+                                {conversation.isPinnedUserIds.includes(props.sessionUserId) ? (
                                     <PinOff className='h-5 w-5 hover:text-destructive hover:fill-destructive ' onClick={() => handlePinClick(conversation?.id)}></PinOff>
                                 ) : (
                                     <Pin className='h-5 w-5 hover:text-yellow-300 hover:fill-yellow-300 ' onClick={() => handlePinClick(conversation?.id)}></Pin>

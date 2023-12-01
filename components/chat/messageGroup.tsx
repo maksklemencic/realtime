@@ -2,6 +2,7 @@ import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Message from './message';
 import { formatDateTimeChat } from '@/lib/consts';
+import { User } from 'lucide-react';
 
 interface MessageGroupProps {
     messageGroups: any[],
@@ -21,9 +22,7 @@ export default function MessageGroup(props: MessageGroupProps) {
                         <div className='w-10'>
                             <Avatar className='w-8 h-8 rounded-full' >
                                 <AvatarImage src={props.messageGroups[0]?.sender?.image} />
-                                <AvatarFallback >
-                                    {props.messageGroups[0]?.sender?.name}
-                                </AvatarFallback>
+                                <AvatarFallback className=' h-8 w-8 rounded-lg bg-muted border'><User className='w-4 h-4'/></AvatarFallback>
                             </Avatar>
                         </div>
                         <div className='w-full space-y-1 '>

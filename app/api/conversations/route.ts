@@ -27,6 +27,9 @@ export async function POST(request: NextRequest) {
                     set: body.userIds,
                 },
                 isGroup: body.isGroup ?? false,
+                isPinnedUserIds: {
+                    set: body.isPinnedUserIds ?? [],
+                },
             },
         });
 
@@ -113,7 +116,9 @@ export async function PUT(request: NextRequest) {
             };
         }
         if (body.isPinned) {
-            data.isPinned = body.isPinned;
+            data.isPinnedUserIds = {
+                set: body.isPinned,
+            };
         }
         
 
@@ -136,7 +141,7 @@ export async function PUT(request: NextRequest) {
         return new NextResponse(JSON.stringify(updatedConversation), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
     }
-    catch {
-        return new NextResponse('Internal Server Error', { status: 500 });
+    catch(error) {
+        return new NextResponse('Internal Server Error' + error, { status: 500 });
     }
 }
