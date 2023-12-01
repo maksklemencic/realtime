@@ -46,6 +46,16 @@ export default function ChatPage() {
 
     }, [])
 
+    function updateConversation(conversationId: string, message: any) {
+        // add message to conversation with the id
+        setConversations(conversations?.map((conversation: any) => {
+            if (conversation.id === conversationId) {
+                conversation.messages.push(message);
+            }
+            return conversation;
+        }));
+    }
+
 
     return (
         <div className='w-full h-full py-6 px-4 md:px-8 xl:px-16 2xl:px-32 '>
@@ -54,7 +64,8 @@ export default function ChatPage() {
                     <ChatSelector conversations={conversations} setConversations={setConversations} loading={loading} selectedConversationId={conversationId || ""} />
                 </div>
                 <div className='hidden sm:flex sm:w-3/5 lg:w-2/3 h-full'>
-                    <ChatWindow conversationId={conversationId || ""}/>
+                    <ChatWindow conversationId={conversationId || ""} conversationName={conversations.find(conversation => conversation.id === conversationId)?.name}
+                    updateConversation={updateConversation}/>
                 </div>
             </div>
 

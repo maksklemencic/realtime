@@ -1,6 +1,6 @@
 import React from 'react'
 import { Separator } from '../ui/separator'
-import { Dot, MessageCircle, Pin, PinOff, PlusCircle } from 'lucide-react'
+import { Dot, ListPlus, MessageCircle, Pin, PinOff, PlusCircle } from 'lucide-react'
 import ChatSelectorGhost from './chatSelectorGhost';
 import Link from 'next/link';
 import { Card, CardContent } from '../ui/card';
@@ -53,9 +53,12 @@ export default function ChatSelector(props: ChatSelectorProps) {
                 <ChatSelectorGhost />
             ) : (
                 <div className=' p-2  h-full'>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex justify-between items-center h-8'>
                         <p className='text-xl font-semibold'>Chat</p >
-                        <PlusCircle className='text-primary mr-2' />
+                        <div className='p-1 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
+                            <p className='font-semibold'>New</p>
+                            <ListPlus className='text-primary' />
+                        </div>
                     </div >
                     <Separator className='my-2' />
                     <div>

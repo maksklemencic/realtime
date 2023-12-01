@@ -1,14 +1,17 @@
 "use client"
 import React, { use, useEffect, useState } from 'react'
-import Message from './message'
 import { useSession } from 'next-auth/react'
-import { Loader2 } from 'lucide-react'
+import { CopyX, Loader2, PlusCircle } from 'lucide-react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { ScrollArea } from '../ui/scroll-area'
+import MessageGroup from './messageGroup'
+import { Separator } from '../ui/separator'
 
 interface ChatWindowProps {
-    conversationId: string
+    conversationId: string,
+    conversationName: string,
+    updateConversation: (conversationId: string, newConversation: any) => void
 }
 
 export default function ChatWindow(props: ChatWindowProps) {
@@ -59,6 +62,7 @@ export default function ChatWindow(props: ChatWindowProps) {
             })
             .then((data) => {
                 setNewMessage('');
+                props.updateConversation(props.conversationId, data);
                 setMessages([...messages, data]);
             })
             .catch((error) => {
@@ -66,31 +70,66 @@ export default function ChatWindow(props: ChatWindowProps) {
             });
     }
 
+
+    function getMessageGroups(messages: any[]) {
+        const groups: any[] = [];
+        messages.forEach(message => {
+            if (groups.length === 0) {
+                groups.push([message]);
+                return groups;
+            }
+            let currentSender = groups[groups.length - 1][0]?.sender?.id;
+            let firstMessageTime = groups[groups.length - 1][0]?.createdAt;
+            let timeDiff = Math.abs((new Date(message.createdAt)).getDate() - (new Date(firstMessageTime)).getDate());
+            if (currentSender === message.sender?.id && timeDiff < 1) {
+                groups[groups.length - 1].push(message);
+            }
+            else {
+                groups.push([message]);
+            }
+        });
+
+        return groups;
+    }
+
     return (
-        <div className='w-full h-full border rounded-lg p-2'>
+        <div className='w-full h-full p-2 0'>
+            <div className='flex justify-between items-center h-8 '>
+                <p className='text-xl font-semibold'>{props.conversationName}</p >
+                <div className='flex gap-2'>
+                    <div className='p-1 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
+                        <p className='font-semibold'>Add</p>
+                        <PlusCircle className='text-primary' />
+                    </div>
+                    <Separator orientation='vertical' className='h-8' />
+                    <div className='p-1 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
+                    <p className='font-semibold'>Leave</p>
+                        <CopyX className='text-destructive' />
+                    </div>
+                </div>
+            </div >
+            <Separator className='my-2' />
             {loading ? (
                 <div className='w-full h-full flex justify-center items-center'>
                     <Loader2 className='h-10 w-10 text-primary animate-spin' />
                 </div>
             ) : (
-                <div className='w-full h-full flex flex-col justify-between gap-3'>
+                <div className='w-full h-[calc(100%-32px)] flex flex-col justify-between gap-3'>
                     <ScrollArea className='w-full flex flex-col gap-3'>
-                        {messages?.length > 0 ? (
+                        {messages?.length > 0 && (
                             <>
-                                {messages?.map((message) => (
-                                    <Message message={message} myMessage={session?.user?.id === message?.sender?.id}/>
+                                {getMessageGroups(messages)?.map(group => (
+                                    <MessageGroup messageGroups={group} myMessage={session?.user?.id === group[0]?.sender?.id} />
                                 ))}
                             </>
-                        ) : (
-                            <div className='flex w-full h-full justify-center items-center'>
-                                <p>
-                                    No messages yet. Send a message to start a conversation.
-                                </p>
-                            </div>
                         )}
-
-
+                        {messages?.length === 0 && (
+                            <p className=''>
+                                No messages yet. Send a message to start a conversation.
+                            </p>
+                        )}
                     </ScrollArea>
+
                     <div className='flex gap-2'>
                         <Input value={newMessage} onChange={(e: any) => setNewMessage(e.target.value)} />
                         <Button onClick={() => sendMessage(newMessage)}>Send</Button>
