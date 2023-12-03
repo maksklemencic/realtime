@@ -8,6 +8,7 @@ import AuthContext from '@/context/auth'
 import { User } from 'lucide-react'
 import { UserDataProvider } from '@/context/userData'
 
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -25,10 +26,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthContext>
           <UserDataProvider>
-          <ThemeProvider attribute='class' defaultTheme='system' enableSystem={true}>
-            <ToasterContext />
-            {children}
-          </ThemeProvider>
+            <ThemeProvider attribute='class' defaultTheme='system' enableSystem={true}>
+                <ToasterContext />
+                {children}
+            </ThemeProvider>
           </UserDataProvider>
         </AuthContext>
       </body>

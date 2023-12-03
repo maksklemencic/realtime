@@ -34,6 +34,5 @@ export default function MessageGroup(props: MessageGroupProps) {
                 </div>
             </div>
         </div>
-
     )
 }

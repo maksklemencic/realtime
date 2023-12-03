@@ -10,6 +10,11 @@ export const colors = [
     'bg-pink-500',
 ]
 
+export function formatTime(date: string) {
+    const options = { hour: '2-digit', minute: '2-digit' } as const;
+    return new Date(date).toLocaleTimeString('de-DE', options);
+}
+
 
 export function formatDate(date: string) {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;

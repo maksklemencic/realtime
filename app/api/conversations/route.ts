@@ -31,6 +31,17 @@ export async function POST(request: NextRequest) {
                     set: body.isPinnedUserIds ?? [],
                 },
             },
+            include: {
+                messages: true,
+                users: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                        email: true,
+                    },
+                },
+            },
         });
 
         return new NextResponse(JSON.stringify(newConversation), { status: 201, headers: { 'Content-Type': 'application/json' } });

@@ -7,6 +7,9 @@ import { Loader2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 
+import { NextUIProvider } from "@nextui-org/react";
+
+
 export default function ChatSiteLayout({
     children,
 }: {
@@ -19,7 +22,7 @@ export default function ChatSiteLayout({
         }
     })
     return (
-        <>
+        <NextUIProvider>
             {status === 'authenticated' && (
                 <div className="w-screen h-screen bg-background flex flex-col ">
                     <div className="w-full">
@@ -47,6 +50,6 @@ export default function ChatSiteLayout({
                     {children}
                 </>
             )}
-        </>
+        </NextUIProvider>
     )
 }

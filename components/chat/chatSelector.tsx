@@ -1,24 +1,29 @@
-"use client"
-import React, { use, useEffect } from 'react'
+import React from 'react'
 import { Separator } from '../ui/separator'
-import { Dot, ListPlus, MessageCircle, Pin, PinOff, PlusCircle } from 'lucide-react'
+import { Dot, ListPlus, MessageCircle, Pin, PinOff } from 'lucide-react'
 import ChatSelectorGhost from './chatSelectorGhost';
 import Link from 'next/link';
 import { Card, CardContent } from '../ui/card';
+import { formatTime } from '@/lib/consts';
+import { Input } from '../ui/input';
+import {
+    Dialog,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import NewChat from './newChat';
 
 interface ChatSelectorProps {
     conversations: any,
     setConversations: (conversation: any) => void,
     loading: boolean,
     selectedConversationId: string,
-    sessionUserId: string
+    sessionUserId: string,
+    showChatSelector: boolean,
+    setShowChatSelector: (showChatSelector: boolean) => void
 }
 
 export default function ChatSelector(props: ChatSelectorProps) {
-
-    useEffect(() => {
-        console.log(props.conversations);
-    }, [props.conversations])
+    const size = 8;
 
     function handlePinClick(conversationId: string) {
         const isPinned = props.conversations?.find((conversation: any) => conversation.id === conversationId).isPinnedUserIds.includes(props.sessionUserId);
@@ -59,6 +64,8 @@ export default function ChatSelector(props: ChatSelectorProps) {
 
     }
 
+
+
     return (
         <>
             {props.loading ? (
@@ -67,18 +74,28 @@ export default function ChatSelector(props: ChatSelectorProps) {
                 <div className=' p-2  h-full'>
                     <div className='flex justify-between items-center h-8'>
                         <p className='text-xl font-semibold'>Chat</p >
-                        <div className='p-1 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
-                            <p className='font-semibold'>New</p>
-                            <ListPlus className='text-primary' />
-                        </div>
+                        <Dialog>
+                            <DialogTrigger className=''>
+                                <div className='p-1 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
+                                    <p className='font-semibold'>New</p>
+                                    <ListPlus className='text-primary' />
+                                </div>
+                            </DialogTrigger>
+                            <NewChat conversations={props.conversations} setConversations={props.setConversations} />
+                        </Dialog>
+
                     </div >
                     <Separator className='my-2' />
                     <div>
+                        <Input placeholder='Search' className='w-full mb-3 mt-2' />
+                    </div>
+
+                    <div>
                         {props.conversations?.find((conversation: any) => conversation.id === conversation.id && conversation.isPinnedUserIds.includes(props.sessionUserId)) && (
                             <>
-                                <div className='text-md font-semibold flex justify-between items-center bg-muted px-2 py-1 rounded-lg border'>
+                                <div className='text-md font-semibold flex justify-between items-center bg-yellow-200 text-black px-2 py-1 rounded-lg border'>
                                     <p>Pinned</p>
-                                    <Pin className='dark:text-yellow-200 dark:fill-yellow-200 text-yellow-500 fill-yellow-500 h-5 w-5' />
+                                    <Pin className=' h-5 w-5' />
                                 </div>
                                 <div className='my-2 space-y-2'>
                                     {props.conversations?.filter((conversation: any) => conversation.isPinnedUserIds.includes(props.sessionUserId))
@@ -91,10 +108,9 @@ export default function ChatSelector(props: ChatSelectorProps) {
                             </>
                         )}
 
-                        {/* <div className='border border-dashed my-2' /> */}
-                        <div className='text-md font-semibold flex justify-between items-center bg-muted px-2 py-1 rounded-lg border'>
+                        <div className='text-md text-white font-semibold flex justify-between items-center bg-blue-500 px-2 py-1 rounded-lg border'>
                             <p>Conversations</p>
-                            <MessageCircle className='text-blue-500 fill-blue-500 h-5 w-5' />
+                            <MessageCircle className=' h-5 w-5 ' />
                         </div>
                         {props.conversations?.find((conversation: any) => conversation.id === conversation.id && !conversation.isPinnedUserIds.includes(props.sessionUserId)) ? (
                             <div className='my-2 space-y-2'>
@@ -119,20 +135,14 @@ export default function ChatSelector(props: ChatSelectorProps) {
     )
 
     function Conversation(conversation: any) {
+
         return (
             <Link href={'/chat?conversationId=' + conversation.id}>
                 <Card className='mb-2'>
-                    {/* className={`w-full flex gap-2 justify-between p-2 rounded-lg hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800
-                ${!(!conversation.isPinned || (props.selectedConversationId === conversation.id)) && 'bg-yellow-200 dark:bg-gray-900 '} 
-                ${(props.selectedConversationId === conversation.id) ? 'bg-blue-500 text-background dark:text-foreground hover:bg-blue-700 ' :
-                        ''} */}
-                    <CardContent className={`flex gap-2 justify-between p-2 rounded-lg hover:cursor-pointer hover:bg-blue-200 dark:hover:bg-gray-800
-                        ${(props.selectedConversationId === conversation.id) && 'bg-primary  '}
-                    `}>
-                        <div className=''>
-                            <div className='bg-blue-200 h-10 w-10 rounded-full'></div>
-                        </div>
 
+                    <CardContent className={`flex gap-2 justify-between p-2 rounded-lg hover:cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-800
+                        ${(props.selectedConversationId === conversation.id) && 'bg-blue-500 text-white hover:bg-blue-500 dark:hover:bg-blue-500 '}
+                    `}>
                         <div className='w-full h-full flex flex-col gap-0'>
                             <div className='w-full flex justify-between items-start gap-1'>
                                 {/* <p className='overflow-hidden text-md font-semibold whitespace-nowrap overflow-ellipsis max-w-[80%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[50%] 2xl:max-w-[40%]'> */}
@@ -142,17 +152,21 @@ export default function ChatSelector(props: ChatSelectorProps) {
                                 {conversation.isPinnedUserIds.includes(props.sessionUserId) ? (
                                     <PinOff className='h-5 w-5 hover:text-destructive hover:fill-destructive ' onClick={() => handlePinClick(conversation?.id)}></PinOff>
                                 ) : (
-                                    <Pin className='h-5 w-5 hover:text-yellow-300 hover:fill-yellow-300 ' onClick={() => handlePinClick(conversation?.id)}></Pin>
+                                    <Pin className='h-5 w-5 hover:text-gray-500 hover:fill-yellow-300 ' onClick={() => handlePinClick(conversation?.id)}></Pin>
                                 )}
                             </div>
 
                             <div className={`w-full text-sm font-medium flex justify-start items-start 
                                 ${(props.selectedConversationId === conversation.id) ? 'text-background dark:text-foreground ' : 'text-gray-500 dark:text-gray-300 '}
                             `}>
-                                <p className={`w-9 block sm:hidden lg:block `}>
-                                    18:32
+                                {conversation?.messages?.length > 0 && (
+                                                                    <p className={`w-9 block sm:hidden lg:block `}>
+                                    {conversation?.messages?.length > 0 ? (formatTime(conversation.messages[conversation.messages.length - 1].createdAt)) : ''}
                                 </p>
-                                <Dot className='w-6  block sm:hidden lg:block'>...</Dot>
+                                )}
+                                {conversation?.messages?.length > 0 && (
+                                    <Dot className='w-6  block sm:hidden lg:block'>...</Dot>
+                                )}
                                 {/* <p className='overflow-hidden text-gray-400 whitespace-nowrap overflow-ellipsis '> */}
                                 <p className={` `}>
                                     {conversation?.messages?.length > 0 ? conversation.messages[conversation.messages.length - 1].body : 'No messages yet ...'}
@@ -162,7 +176,6 @@ export default function ChatSelector(props: ChatSelectorProps) {
                         </div>
                     </CardContent>
                 </Card>
-
             </Link>
         );
 

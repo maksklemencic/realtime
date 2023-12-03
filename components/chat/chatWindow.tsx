@@ -1,17 +1,22 @@
 "use client"
 import React, { use, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { CopyX, Loader2, PlusCircle } from 'lucide-react'
+import { ChevronLeft, CopyX, Loader2, PlusCircle, User } from 'lucide-react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { ScrollArea } from '../ui/scroll-area'
 import MessageGroup from './messageGroup'
 import { Separator } from '../ui/separator'
+import { AvatarGroup } from '@nextui-org/react';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface ChatWindowProps {
     conversationId: string,
     conversationName: string,
-    updateConversation: (conversationId: string, newConversation: any) => void
+    updateConversation: (conversationId: string, newConversation: any) => void,
+    conversations: any[],
+    isSmallScreen: boolean
+    setShowChatSelector: (showChatSelector: boolean) => void
 }
 
 export default function ChatWindow(props: ChatWindowProps) {
@@ -23,8 +28,13 @@ export default function ChatWindow(props: ChatWindowProps) {
 
     const { data: session } = useSession()
 
+    let currConversation = props.conversations?.find((conversation: any) => conversation.id === props.conversationId);
+
     useEffect(() => {
+
         if (!props.conversationId) return;
+        currConversation = props.conversations?.find((conversation: any) => conversation.id === props.conversationId);
+
         setLoading(true)
         fetch(`/api/messages/${session?.user?.id}?conversationId=${props.conversationId}`)
             .then((response) => {
@@ -93,19 +103,40 @@ export default function ChatWindow(props: ChatWindowProps) {
     }
 
     return (
-        <div className='w-full h-full p-2 0'>
+        <div className='w-full h-full p-2'>
             <div className='flex justify-between items-center h-8 '>
+                <div className='flex items-center gap-4'>
+                    {props.isSmallScreen && (
+                        <div className='p-1 pr-2 flex gap-2 rounded hover:bg-muted hover:cursor-pointer' onClick={() => props.setShowChatSelector(true)}>
+                             <ChevronLeft className='text-primary' />
+                            <p className='font-semibold'>Back</p>
+                        </div>
+
+                    )}
+                    {currConversation && !props.isSmallScreen && (
+                        <AvatarGroup max={6} size='sm' >
+                            {currConversation.users.filter((user: any) => user.id !== session?.user.id).map((user: any) => (
+                                <Avatar key={user.id} className={`w-8 h-8 rounded-full`} >
+                                    <AvatarImage src={user?.image} />
+                                    <AvatarFallback className={` h-11 w-11 rounded-full bg-muted border`}><User className={`w-5 h-5`} /></AvatarFallback>
+                                </Avatar>
+                            ))
+                            }
+                        </AvatarGroup>
+                    )}
+                </div>
                 <p className='text-xl font-semibold'>{props.conversationName}</p >
+
                 <div className='flex gap-2'>
-                    <div className='p-1 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
+                    <div className='p-1 px-2 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
                         <p className='font-semibold'>Add</p>
                         <PlusCircle className='text-primary' />
                     </div>
-                    <Separator orientation='vertical' className='h-8' />
+                    {/* <Separator orientation='vertical' className='h-8' />
                     <div className='p-1 flex gap-2 rounded hover:bg-muted hover:cursor-pointer'>
                     <p className='font-semibold'>Leave</p>
                         <CopyX className='text-destructive' />
-                    </div>
+                    </div> */}
                 </div>
             </div >
             <Separator className='my-2' />
@@ -114,7 +145,7 @@ export default function ChatWindow(props: ChatWindowProps) {
                     <Loader2 className='h-10 w-10 text-primary animate-spin' />
                 </div>
             ) : (
-                <div className='w-full h-[calc(100%-32px)] flex flex-col justify-between gap-3'>
+                <div className='w-full h-[calc(100%-54px)] flex flex-col justify-between gap-3'>
                     <ScrollArea className='w-full flex flex-col gap-3'>
                         {messages?.length > 0 && (
                             <>
@@ -123,11 +154,11 @@ export default function ChatWindow(props: ChatWindowProps) {
                                 ))}
                             </>
                         )}
-                        {messages?.length === 0 && (
+                        {/* {(props.conversations && !loading && messages?.length === 0) && (
                             <p className=''>
                                 No messages yet. Send a message to start a conversation.
                             </p>
-                        )}
+                        )} */}
                     </ScrollArea>
 
                     <div className='flex gap-2'>
